@@ -79,12 +79,23 @@ int Registro::size() {
 	return tam;
 }
 
-Clave* Registro::getClave(){
+Clave* Registro::getClave() {
 	return clave;
 }
 
+Clave* Registro::getClaveCopia() {
+	Clave* c;
+	switch(tipo) {
+	case 0:
+		c = new C_Entero();
+	}
+	(*c) = *clave;
+	return c;
+}
+
+
 std::ostream& operator<<(std::ostream& os, const Registro& r) {
-	os << "Registro = "<< (r.clave)->print() << "  |  Datos = " << r.dato << endl;
+	os << "Registro = "<< (r.clave)->print() << "  |  Datos = " << r.dato;
 	return os;
 }
 

@@ -19,6 +19,8 @@ public:
 	virtual bool operator>(const Clave& c) const = 0;
 	virtual bool operator==(const Clave& c) const = 0;
 	virtual bool operator!=(const Clave& c) const = 0;
+	virtual Clave& operator=(const Clave& c) = 0;
+	virtual std::string serializarDecimal() const = 0;
 	virtual long size() = 0;
 	virtual std::string print() = 0;
 	virtual std::string serializar() const = 0;

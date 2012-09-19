@@ -11,8 +11,7 @@
 #include "NodoExterno.h"
 #include <vector>
 
-class ArbolBp;
-
+#define N_TEST 70
 class NodoInterno : public Nodo {
 friend class ArbolBp;
 public:
@@ -23,19 +22,22 @@ public:
 	std::string serializarDecimal();
 	int getHijoCorrespondiente(Clave* c);	// devuelve el numero de nodo que corresponde a la clave pasada por parametro
 	void insertarClave(Clave* c, int nodo);		// inserta la clave con su correspondiente numero d enodo
-	//virtual int insertarRecursivo(Registro* r);
-	void insertarHijoIzquierdo(int hI);	// agrega el numero de nodo izquierdo
-	list<Clave*> getSobrantes();	// no se usa, era para arbol b+
-	vector<int> getHijosSobrantes();	// no se usa era para b+
-	int getPosicionClave();	// devuelve la posicion del tipo de clave que corresponde a nivel
+	virtual int insertarRecursivo(Registro* r);
+	void insertarHijoIzquierdo(long hI);	// agrega el numero de nodo izquierdo
+	list<Clave*> getSobrantes();
+	vector<int> getHijosSobrantes();
+	bool tieneOverflow();
+	virtual int getNivel();
+	int getHijoMedio();
+	void aumentarNivel();
+	virtual int buscar(Clave* c, Registro*& reg);
 private:
 	list<Clave*> claves;
-	vector<int> nodos;
+	vector<int> nodos;  //  el lugar 0 corresponde a hijo izquierda, el resto corresponden 1 a 1 con las claves
 	int nivel;
 	int libre;
-	int tipo;	// no se usa creo
+	int tipo;
 	ArbolBp* arbol;
-	void buscarEnHijo(Clave* clave, std::vector<std::pair<unsigned int, unsigned int> >& rangos, std::ostream& file_output);
 };
 
 #endif /* NODOINTERNO_H_ */
