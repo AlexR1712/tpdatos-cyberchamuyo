@@ -52,9 +52,13 @@ int NodoExterno::insertarRegistro(Registro* r) {
 		return -1;
 	list<Registro*>::iterator it;
 	for(it = registros.begin();it != registros.end() && (*(*it) < *r)  ; ++it);
-	registros.insert(it, r);
-	libre -= r->totalSize();
-	return 0;
+	if((it != registros.end()) && (*r == **it))
+		throw REGISTRO_YA_EXISTENTE;
+	else {
+		registros.insert(it, r);
+		libre -= r->totalSize();
+		return 0;
+	}
 }
 
 int NodoExterno::insertarRecursivo(Registro* r) {
