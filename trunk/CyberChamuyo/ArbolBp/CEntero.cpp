@@ -85,7 +85,7 @@ long C_Entero::get() const {
 }
 
 std::string C_Entero::print() {
-	std::string s(Auxiliar::int_to_hex(clave));
+	std::string s(Auxiliar::int_to_dec(clave));
 	return s;
 }
 
@@ -94,6 +94,15 @@ std::string C_Entero::serializar() const {
 	return ret;
 }
 
+std::string C_Entero::serializarDecimal() const {
+	std::string ret = Auxiliar::int_to_dec(clave);
+	return ret;
+}
+
+Clave& C_Entero::operator=(const Clave& c) {
+	clave = dynamic_cast<const C_Entero&>(c).clave;
+	return *this;
+}
 
 void C_Entero::hidratar(const std::string& s) {
 	clave = Auxiliar::stoi(s);

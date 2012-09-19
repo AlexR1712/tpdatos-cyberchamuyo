@@ -32,6 +32,7 @@ public:
 	Registro(Registro& r);
 	virtual ~Registro();
 	Clave* getClave();
+	Clave* getClaveCopia();
 	int size();
 	unsigned int sizeClave();	// suma del tamaño de todas las claves
 	bool operator==(const Clave* c) const {

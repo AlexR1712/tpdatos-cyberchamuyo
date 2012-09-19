@@ -20,7 +20,7 @@ public:
 	void set(const long i);
 	virtual std::string print();
 	C_Entero& operator=(unsigned long i);
-
+	virtual Clave& operator=(const Clave& c);
 	virtual bool operator<(const long& i) const;
 	virtual bool operator>(const long& i) const;
 
@@ -37,7 +37,8 @@ public:
 	friend std::string operator<<(std::string& s, const C_Entero& c);
 	friend std::ostream& operator<<(std::ostream& os, const C_Entero& c);
 	friend C_Entero& operator>>(std::istream& is, C_Entero& c);
-	std::string serializar() const;
+	virtual std::string serializar() const;
+	virtual std::string serializarDecimal() const;
 	virtual void hidratar(const std::string& s);
 private:
 	long clave;

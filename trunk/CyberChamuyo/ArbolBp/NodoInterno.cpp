@@ -21,7 +21,8 @@ NodoInterno::~NodoInterno() {
 
 
 void NodoInterno::hidratar(std::string& s) {
-	long p = 0;
+	tipo = s[0];
+	long p = 1;
 	nivel = Auxiliar::leerEntero(p, s);
 	libre = Auxiliar::leerEntero(p, s);
 	int cant_claves = Auxiliar::leerEntero(p, s);
@@ -29,7 +30,7 @@ void NodoInterno::hidratar(std::string& s) {
 	while(cont < cant_claves) {
 		int totalSize = Auxiliar::leerEntero(p, s);
 		Clave* c;
-		if(tipo == 1)
+		if(tipo == 73)
 			c = new C_Entero();
 		string sAux = s.substr(p, totalSize);
 		c->hidratar(sAux);
@@ -76,7 +77,7 @@ std::string NodoInterno::serializarDecimal() {
 		Clave* c = (*it);
 		ret.append(" - ");
 		ret.append("[");
-		//ret.append(c->serializarDecimal());
+		ret.append(c->serializarDecimal());
 		ret.append("]");
 		ret.append(" - ");
 	}
@@ -86,20 +87,27 @@ std::string NodoInterno::serializarDecimal() {
 		ret.append(Auxiliar::int_to_dec(*it2));
 		ret.append(" - ");
 	}
-	cout << ret << std::endl;
+	return ret;
 }
+
 int NodoInterno::getHijoCorrespondiente(Clave* c) {
 	list<Clave*>::iterator it;
 	int i = 0;
 	for(it = claves.begin(); it != claves.end(); ++it) {
 		Clave* cAux = *it;
-		//int res = c->compare(cAux);
-		//if(res < 0)
-		//	return nodos[i];
-		//else
-		//	++i;
+		if(*c < *cAux)
+			return nodos[i];
+		else
+			++i;
 	}
 	return nodos[nodos.size()-1];
+}
+
+
+void NodoInterno::insertarHijoIzquierdo(long hijoIzq) {
+	if(!nodos.size())
+		nodos.push_back(hijoIzq);
+	this->nodos[0] = hijoIzq;
 }
 
 void NodoInterno::insertarClave(Clave* c, int nodo) {
@@ -111,13 +119,16 @@ void NodoInterno::insertarClave(Clave* c, int nodo) {
 		vector<int>::iterator itv = nodos.begin(); ++itv;
 		for(it = claves.begin(); it != claves.end(); ++it) {
 			Clave* cAux = *it;
-			/*if(c->compare(cAux) < 0) {
+			++it;
+			--it;
+			if(*c < *cAux) {
 				it = claves.insert(it, c);
 				itv = nodos.insert(itv, nodo);
 				libre -= c->size();
-				libre -= INT_SIZE;
+				libre -= sizeof(int);
 				return;
-			}*/
+			}
+			++itv;
 		}
 		claves.push_back(c);
 		nodos.push_back(nodo);
@@ -127,11 +138,10 @@ void NodoInterno::insertarClave(Clave* c, int nodo) {
 	}
 }
 
-
 list<Clave*> NodoInterno::getSobrantes() {
 	list<Clave*> listaNueva;
 	list<Clave*>::iterator it = claves.end();
-	for(--it; it != claves.begin() && libre < (N_SIZE)/2 ; --it) {
+	for(--it; it != claves.begin() && libre < (N_SIZE*0.9)/*temporal*/ ; --it) {
 		Clave* c = *it;
 		it = claves.erase(it);
 		listaNueva.push_front(c);
@@ -140,12 +150,21 @@ list<Clave*> NodoInterno::getSobrantes() {
 	return listaNueva;
 }
 
+int NodoInterno::getHijoMedio() {
+	list<Clave*> listaNueva;
+	list<Clave*>::iterator it = claves.end();
+	for(--it; it != claves.begin() && libre < (N_SIZE)/2 ; --it) {
+	}
+	Clave* c = *(++it);
+	return getHijoCorrespondiente(c);
+}
+
 vector<int> NodoInterno::getHijosSobrantes() {
 	list<Clave*> listaNueva;
 	list<Clave*>::iterator it = claves.end();
 	int elibre = libre;
 	vector<int> hijos;
-	for(--it; it != claves.begin() && elibre < (N_SIZE)/2 ; --it) {
+	for(--it; it != claves.begin() && elibre < (N_SIZE)*0.90 ; --it) {
 		Clave* c = *it;
 		int nodo = nodos.back();
 		nodos.pop_back();
@@ -154,86 +173,109 @@ vector<int> NodoInterno::getHijosSobrantes() {
 	}
 	return hijos;
 }
-/*
+
+bool NodoInterno::tieneOverflow() {
+	return (this->libre < N_MIN);
+}
+
+int NodoInterno::getNivel() {
+	return nivel;
+}
+
+int NodoInterno::buscar(Clave* c, Registro*& reg) {
+	int hijo = getHijoCorrespondiente(c);
+	string nodo_string = arbol->leerNodo(hijo);
+	if(nodo_string[0] == 'H') {
+		NodoExterno* nodo_Externo = new NodoExterno(0, arbol);
+		nodo_Externo->hidratar(nodo_string);
+		return nodo_Externo->buscar(c, reg);
+	} else {
+		NodoInterno* nodo_interno = new NodoInterno(nivel - 1, arbol);
+		nodo_interno->hidratar(nodo_string);
+		return nodo_interno->buscar(c, reg);
+	}
+
+}
+
 int NodoInterno::insertarRecursivo(Registro* r) {
-	Clave* c = r->getClave(getPosicionClave());
-	int hc = getHijoCorrespondiente(c);  // cambiar 0 por algo relacionado a k
-	string nes = arbol->leerNodo(hc);
-	if(nes[0] == 'H') {
-		NodoExterno* nE = new NodoExterno(0, arbol);
-		string nodo_externo_string = nes.substr(1);
-		nE->hidratar(nodo_externo_string);
-		int resultado = nE->insertarRegistro(r);
-		if(nE->tieneOverflow()) {
-			NodoExterno* nE2;
-			int hc2;
-			if(libre < N_TEST) {
-				NodoInterno* nodo_interno_nuevo = new NodoInterno(nivel + 1, arbol);
-				int ni_id = arbol->crearNodoInterno(nodo_interno_nuevo, nivel + 1);
-				//int i = nE->getPromedio();
-				int valor_central = nE->getValorCentral();
-				nE2 = new NodoExterno(nivel + 2, arbol);
-				hc2 = arbol->crearNodoExterno(nE2, nivel + 2);
-
-				list<Registro*> lr = nE->getRegistrosDerecha();
-				C_Entero* clave = new C_Entero(valor_central);
-
-				list<Registro*>::iterator it2 = lr.begin();
-
-				list<Registro*>::iterator it;
-				nodo_interno_nuevo->insertarHijoIzquierdo(ni_id);		// guardo el que va a ser el externo
-
-				nodo_interno_nuevo->insertarClave(clave, hc2);
-				nE->aumentarNivel();
-
-				for(it = lr.begin(); it != lr.end(); ++it) {
-					nE2->insertarRegistro(*it);
-				}
-				arbol->guardarNodo(nodo_interno_nuevo, hc);		// guardo el nodo interno en donde estaba el ext
-				arbol->guardarNodo(nE, ni_id);	//  guardo el nodo externo en el lugar que se le dio al interno
-				arbol->guardarNodo(nE2, hc2);
-			} else {
-				int i = nE->getPromedio();
-				nE2 = new NodoExterno(nivel + 1, arbol);
-				hc2 = arbol->crearNodoExterno(nE2, nivel + 1);
-
-				list<Registro*> lr = nE->getRegistrosDerecha();
-
-				list<Registro*>::iterator it;
-
-				C_Entero* clave = new C_Entero();
-				clave->setNum((reinterpret_cast<C_Entero*>((lr.front())->getClave(getPosicionClave())))->getNum());
-				insertarClave(clave, hc2);
-				for(it = lr.begin(); it != lr.end(); ++it) {
-					nE2->insertarRegistro(*it);
-				}
-				arbol->guardarNodo(nE, hc);
-				arbol->guardarNodo(nE2, hc2);
+	Clave* c = r->getClave();
+	int hijo = getHijoCorrespondiente(c);
+	string nodo_string = arbol->leerNodo(hijo);
+	if(nodo_string[0] == 'H') {
+		NodoExterno* nodo_Externo = new NodoExterno(0, arbol);
+		nodo_Externo->hidratar(nodo_string);
+		nodo_Externo->insertarRegistro(r);
+		if(nodo_Externo->tieneOverflow()) {
+			NodoExterno* nodo_Externo2;
+			int hijo2;
+			nodo_Externo2 = new NodoExterno(0, arbol);
+			hijo2 = arbol->crearNodoExterno(nodo_Externo2, 0);
+			list<Registro*> l_reg = nodo_Externo->getRegistrosDerecha();
+			list<Registro*>::iterator it;
+			it = l_reg.begin();
+			Clave* clave;
+			clave = (*(--(l_reg.end())))->getClave();		//  copio clave
+			insertarClave(clave, hijo2);
+			for(it = l_reg.begin(); it != l_reg.end(); ++it) {
+				nodo_Externo2->insertarRegistro(*it);
 			}
-			return OK;
+			*nodo_Externo = *nodo_Externo - *nodo_Externo2;
+			nodo_Externo2->setSiguiente(nodo_Externo->getSiguiente());
+			nodo_Externo->setSiguiente(hijo2);
+			arbol->guardarNodo(nodo_Externo, hijo);
+			arbol->guardarNodo(nodo_Externo2, hijo2);
+			if(this->tieneOverflow())
+				return OVERFLOW;
+			return GUARDAR;
 		} else {
-			arbol->guardarNodo(nE, hc);
+			arbol->guardarNodo(nodo_Externo, hijo);
 			return OK;
 		}
-	} else {
-		NodoInterno* nodo_interno = new NodoInterno(nivel + 1, arbol);
-		std::string nodo_interno_string = nes.substr(1);
-		nodo_interno->hidratar(nodo_interno_string);
-		nodo_interno->insertarRecursivo(r);
+	} else {  //  falta guarDAR
+		NodoInterno* nodo_interno = new NodoInterno(nivel - 1, arbol);
+		nodo_interno->hidratar(nodo_string);
+		int res = nodo_interno->insertarRecursivo(r);
+		if(nodo_interno->tieneOverflow()) {
+			////////////////  inicio copia  /////////////////
+			NodoInterno* nuevo_ni_derecho = new NodoInterno(nivel - 1, arbol);
+
+			int nuevo_ni_derecho_id = arbol->crearNodoInterno(nuevo_ni_derecho, 1);
+
+			std::vector<int> vector_hijos_sobrantes = nodo_interno->getHijosSobrantes();
+			std::list<Clave*> lista_claves_sobrantes = nodo_interno->getSobrantes();
+
+			Clave* c = lista_claves_sobrantes.front();
+			lista_claves_sobrantes.pop_front();
+			insertarClave(c, nuevo_ni_derecho_id);
+
+			std::list<Clave*>::iterator it;
+			int i = 2;		//  cuidado con el orden
+			nuevo_ni_derecho->insertarHijoIzquierdo(vector_hijos_sobrantes[vector_hijos_sobrantes.size() - 1]);
+			for(it = lista_claves_sobrantes.begin(); it != lista_claves_sobrantes.end(); ++it) {
+				nuevo_ni_derecho->insertarClave(*it, vector_hijos_sobrantes[vector_hijos_sobrantes.size() - i]);
+				++i;
+			}
+			///////////////  fin copia  ////////////////////
+			arbol->guardarNodo(nodo_interno, hijo);
+			arbol->guardarNodo(nuevo_ni_derecho, nuevo_ni_derecho_id);
+			if(tieneOverflow())
+				return OVERFLOW;
+			return GUARDAR;
+		}
+		if(res == GUARDAR)
+			arbol->guardarNodo(nodo_interno, hijo);
+		return OK;
 	}
 }
 
+void NodoInterno::aumentarNivel() {
+	++nivel;
+}
+/*
 void NodoInterno::insertarHijoIzquierdo(int hI) {
 	//nodos[0] = hI;
 	nodos.push_back(hI);
 }
-
-
-int NodoInterno::getPosicionClave() {
-	int k = arbol->getK();
-	return nivel % k;
-}
-
 
 void NodoInterno::buscarPorRango(std::vector<std::pair<unsigned int, unsigned int> >& rangos, std::ostream& file_output) {
 	std::list<Clave*>::iterator it;
@@ -262,18 +304,5 @@ void NodoInterno::buscarPorRango(std::vector<std::pair<unsigned int, unsigned in
 			}
 		}
 	}
-}
-
-void NodoInterno::buscarEnHijo(Clave* clave, std::vector<std::pair<unsigned int, unsigned int> >& rangos, std::ostream& file_output) {
-	int hijo = getHijoCorrespondiente(clave);
-	std::string nodo_s = arbol->leerNodo(hijo);
-	Nodo* nodo;
-	if(nodo_s[0] == 'H')
-		nodo = new NodoExterno(nivel + 1, arbol);
-	else
-		nodo = new NodoInterno(nivel + 1, arbol);
-	std::string nodo_string = nodo_s.substr(1);
-	nodo->hidratar(nodo_string);
-	nodo->buscarPorRango(rangos, file_output);
 }
 */

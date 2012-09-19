@@ -134,6 +134,7 @@ void ArchivoBloquesFijos::Escribir(Bloque* elemento, long posicion){
     }
 }
 
+
 void ArchivoBloquesFijos::Leer(long posicion, Bloque* elemento){
 
     int cantRegistros;
@@ -153,8 +154,9 @@ void ArchivoBloquesFijos::Leer(long posicion, Bloque* elemento){
     path.read((char*)&cantRegistros,sizeof(int));
     while (it<cantRegistros){
         path.read((char*)&tamanoDato,sizeof(long));
-        dato = new char[tamanoDato];
+        dato = new char[tamanoDato+1];
         path.read(dato,tamanoDato);
+        dato[tamanoDato] = 0;
         nuevoDato = new string(dato);
         nuevoRegistro = new RegistroVariable(nuevoDato,tamanoDato);
         (*elemento).addRegistro(nuevoRegistro);
