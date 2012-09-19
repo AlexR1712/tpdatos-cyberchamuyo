@@ -194,7 +194,6 @@ int NodoInterno::buscar(Clave* c, Registro*& reg) {
 		nodo_interno->hidratar(nodo_string);
 		return nodo_interno->buscar(c, reg);
 	}
-
 }
 
 int NodoInterno::insertarRecursivo(Registro* r) {

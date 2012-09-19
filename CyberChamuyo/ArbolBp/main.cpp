@@ -135,6 +135,8 @@ int main(int argc, char** argv) {
 	arbol.insertarRegistro(r35);
 	arbol.insertarRegistro(r36);
 	arbol.insertarRegistro(r37);
+	arbol.insertarRegistro(r37);
+
 
 	Registro* regBusqueda = NULL;
 	Clave* clave_busqueda = new C_Entero(26);

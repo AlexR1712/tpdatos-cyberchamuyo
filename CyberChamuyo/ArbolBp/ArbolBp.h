@@ -18,6 +18,7 @@
 #define OVERFLOW 1
 #define GUARDAR 2
 #define N_MIN 413
+#define REGISTRO_YA_EXISTENTE 3
 
 class ArbolBp {
 	friend class NodoInterno;

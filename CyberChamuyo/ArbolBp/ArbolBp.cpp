@@ -17,6 +17,7 @@ ArbolBp::ArbolBp(char* n_arch, int block_size) : arch_arbol(n_arch, N_SIZE), b_s
 		} else {
 			raiz = new NodoInterno(0, this);
 		}
+		raiz->hidratar(raiz_s);
 	} else {
 		NodoExterno* n1 = new NodoExterno(0, this);
 		raiz = n1;
@@ -41,7 +42,13 @@ void ArbolBp::setUltimoLeido(NodoExterno* nE) {
 }
 
 int ArbolBp::insertarRegistro(Registro* r) {
-	int res = raiz->insertarRecursivo(r);
+	int res = 0;
+	try {
+		res = raiz->insertarRecursivo(r);
+	} catch(const int excepcion) {
+		std::cout << "Error registro ya existente" << std::endl;
+		return -1;
+	}
 	if(max == 0) {
 		if(res == OVERFLOW) {
 			NodoExterno* nh2 = new NodoExterno(0, this);
