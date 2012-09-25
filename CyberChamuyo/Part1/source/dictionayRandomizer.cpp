@@ -6,37 +6,41 @@
 #include <time.h>
 #include <stdlib.h>
 
+#include "readBuffer.h"
+#include "writeBuffer.h"
+#include "stringRecord.h"
+#include "binaryRecord.h"
+#include "externalSorter.h"
 #include "stringUtilities.h"
 
 DictionayRandomizer::DictionayRandomizer() {
 }
 
-void DictionayRandomizer::randomizeDictionary(std::string dictionaryPath) {
-	std::ifstream inputFile;
-	std::ofstream randomizedBinary;
-	std::ofstream randomizedText;
+void DictionayRandomizer::randomizeDictionary(std::string dictionaryPath, bool showId) {
+	ReadBuffer<StringRecord> readBuffer(dictionaryPath,N);
+	WriteBuffer<StringRecord> stringWriteBuffer("dictionary_RANDOMIZED.txt",N);
+	WriteBuffer<BinaryRecord> binaryWriteBuffer("dictionary_RANDOMIZED",N);
+	ExternalSorter externalSorter(N,showId);
+	StringRecord stringRecord;
+	BinaryRecord binaryRecord;
 	std::string line;
 	std::string randomizedLine;
 	int random;
 
-	inputFile.open(dictionaryPath.c_str(),std::fstream::in);
-	randomizedBinary.open("dictionary_RANDOMIZED",std::fstream::out | std::fstream::binary);
-	randomizedText.open("dictionary_RANDOMIZED.txt",std::fstream::out);
-
 	srand((unsigned)time(NULL));
 
-	while (std::getline(inputFile,line) && !(line.empty())) {
-		std::cout << "Procesando linea: " << line << std::endl;
-		random = rand() + RANDOM_STARTS_AT;
-		randomizedLine = leftPad(intToString(random),'0',9) + '\t' + line;
-		randomizedText << randomizedLine  << std::endl;
-		randomizedLine = randomizedLine.substr(0,REGISTER_SIZE_IN_CHARS);
-		randomizedBinary << randomizedLine << std::endl;
+	while (!readBuffer.empty()) {
+		random = rand();
+		line = readBuffer.getRecord().getWord();
+		randomizedLine = intToString(random) + '\t' + line;
+		stringRecord.parseString(randomizedLine);
+		binaryRecord.parseString(randomizedLine);
+		stringWriteBuffer.putRecord(stringRecord);
+		binaryWriteBuffer.putRecord(binaryRecord);
 	}
 
-	inputFile.close();
-	randomizedBinary.close();
-	randomizedText.close();
+	binaryWriteBuffer.finalize();
+	externalSorter.sort("dictionary_RANDOMIZED");
 }
 
 DictionayRandomizer::~DictionayRandomizer() {
