@@ -4,29 +4,30 @@
 #include <iostream>
 #include <string>
 
+#include "readBuffer.h"
+#include "writeBuffer.h"
+#include "stringRecord.h"
+
 DictionayNormalizer::DictionayNormalizer() {
 }
 
 void DictionayNormalizer::normalizeDictionary(std::string dictionaryPath) {
-	std::ifstream inputFile;
-	std::ofstream normalizedFile;
-
-	inputFile.open(dictionaryPath.c_str(),std::fstream::in);
-	normalizedFile.open("dictionary_NORMALIZED.txt");
+	ReadBuffer<StringRecord> readBuffer(dictionaryPath,N);
+	WriteBuffer<StringRecord> writeBuffer("dictionary_NORMALIZED.txt",N);
 	std::string line;
+	StringRecord record(false);
 
-	while (std::getline(inputFile,line) && !(line.empty())) {
-		std::cout << "Procesando linea: " << line << std::endl;
-		normalizeWord(line);
-		normalizedFile << line << std::endl;
+	while (!readBuffer.empty()) {
+		line = this->normalizeWord(readBuffer.getRecord().getWord());
+		record.parseString(line);
+		writeBuffer.putRecord(record);
 	}
-
-	inputFile.close();
-	normalizedFile.close();
 }
 
-void DictionayNormalizer::normalizeWord(std::string& string) {
+std::string DictionayNormalizer::normalizeWord(const std::string& string) const {
+	std::string normalizedWord;
 	char c;
+
 	for (unsigned int i = 0; i < string.length(); ++i) {
 		c = string[i];
 		if ( (c == 'Á') || (c == 'á') )
@@ -41,8 +42,10 @@ void DictionayNormalizer::normalizeWord(std::string& string) {
 			c = 'u';
 		if (c >= 'A' && c <= 'Z')
 			c = c + 32;
-		string[i] = c;
+		normalizedWord += c;
 	};
+
+	return normalizedWord;
 }
 
 DictionayNormalizer::~DictionayNormalizer() {

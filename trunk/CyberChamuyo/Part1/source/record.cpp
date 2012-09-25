@@ -5,45 +5,56 @@
 
 #include "stringUtilities.h"
 
-Record::Record() {
+Record::Record(bool idVisible) {
 	this->id = 0;
+	this->idVisible = idVisible;
+	this->sizeInChar = 0;
 }
 
-int Record::getId() const {
+unsigned long int Record::getId() const {
 	return id;
 }
 
-void Record::setId(int id) {
+void Record::setId(unsigned long int id) {
 	this->id = id;
 }
 
 const std::string& Record::getWord() const {
-	return word;
+	return this->word;
 }
 
 void Record::setWord(const std::string& word) {
 	this->word = word;
 }
 
-void Record::parseString(std::string string) {
-	std::vector<std::string> recordParams;
+bool Record::isIdVisible() const {
+    return idVisible;
+}
 
-	splitString(string,recordParams,'\t');
+void Record::setIdVisible(bool isIdVisible) {
+	this->idVisible = isIdVisible;
+}
 
-	this->setId(atoi(recordParams[0].c_str()));
-	this->setWord(recordParams[1]);
+unsigned short int Record::getSizeInChar() const {
+	return this->sizeInChar;
+}
+
+void Record::setSizeInChar(unsigned short int sizeInChar) {
+	this->sizeInChar = sizeInChar;
 }
 
 Record& Record::operator=(const Record& other) {
 	this->setId(other.getId());
 	this->setWord(other.getWord());
+	this->setIdVisible(other.isIdVisible());
+	this->setSizeInChar(other.getSizeInChar());
 	return *this;
 }
 
 bool Record::operator>(const Record& other) {
 	if (this->getId() > other.getId())
 		return true;
-	if ( (this->getId() == other.getId()) && (this->getWord() > other.getWord()) )
+	if ( (this->getId() == other.getId()) && (this->getWord().compare(other.getWord()) > 0) )
 		return true;
 	return false;
 }
@@ -51,14 +62,9 @@ bool Record::operator>(const Record& other) {
 bool Record::operator<(const Record& other) {
 	if (this->getId() < other.getId())
 		return true;
-	if ( (this->getId() == other.getId()) && (this->getWord() < other.getWord()) )
+	if ( (this->getId() == other.getId()) && (this->getWord().compare(other.getWord()) < 0) )
 		return true;
 	return false;
-}
-
-std::ostream& operator<<(std::ostream& ostream, Record& record){
-	ostream << leftPad(intToString(record.getId()),'0',9) + '\t' + record.getWord().substr(0,12) << std::endl;
-	return ostream;
 }
 
 Record::~Record() {

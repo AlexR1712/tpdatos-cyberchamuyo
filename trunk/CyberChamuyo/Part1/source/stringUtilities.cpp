@@ -16,7 +16,7 @@ bool isNumeric(std::string& string) {
 	if (string == "") {
 		return false;
 	} else {
-		for (unsigned int i = 0; i < string.size(); i++) {
+		for (unsigned short int i = 0; i < string.size(); i++) {
 			if (!isdigit(string[i])) {
 				return false;
 			}
@@ -25,11 +25,11 @@ bool isNumeric(std::string& string) {
 	return true;
 }
 
-std::string leftPad(std::string string, char padWith, unsigned int padTo) {
+std::string leftPad(std::string string, char padWith, unsigned short int padTo) {
 	std::string paddedString = "";
 
 	if (padTo >= string.size()) {
-		for (unsigned int i = 0; i < (padTo - string.size()); i++) {
+		for (unsigned short int i = 0; i < (padTo - string.size()); i++) {
 			paddedString += padWith;
 		}
 	}
@@ -43,4 +43,27 @@ std::string intToString(int i) {
 	std::stringstream stringstream;
 	stringstream << i;
 	return stringstream.str();
+}
+
+std::string trim(std::string string) {
+	unsigned short int from = 0;
+	unsigned short int to = string.size();
+	bool finished = false;
+
+	for (unsigned short int i = 0; (i < string.size()) && !finished; i++) {
+		if (string[i] == ' ')
+			from++;
+		else
+			finished = true;;
+	}
+
+	finished = false;
+	for (unsigned short int i = string.size() - 1; (i >= 0) && !finished; i--) {
+		if (string[i] == ' ')
+			to--;
+		else
+			finished = true;
+	}
+
+	return string.substr(from,to);
 }

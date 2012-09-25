@@ -1,26 +1,45 @@
 #include <string>
 #include <ostream>
 
+
+#include <sstream>
+
 #ifndef RECORD_H_
 #define RECORD_H_
 
+#ifndef DEFAULT_SEPARATOR
+#define DEFAULT_SEPARATOR '\t'
+#endif /*DEFAULT_SEPARATOR*/
+
 class Record {
 private:
-	int id;
+	unsigned long int id;
 
 	std::string word;
 
-	void setId(int id);
+	bool idVisible;
+
+	unsigned short int sizeInChar;
+
+protected:
+	void setId(unsigned long int id);
 
 	void setWord(const std::string& word);
-public:
-	Record();
 
-	int getId() const;
+	void setSizeInChar(unsigned short int sizeInChar);
+
+public:
+	Record(bool idVisible = true);
+
+	unsigned long int getId() const;
 
 	const std::string& getWord() const;
 
-	void parseString(std::string string);
+	bool isIdVisible() const;
+
+	void setIdVisible(bool isIdVisible);
+
+	unsigned short int getSizeInChar() const;
 
 	Record& operator=(const Record& other);
 
@@ -28,9 +47,11 @@ public:
 
 	bool operator<(const Record& other);
 
-	friend std::ostream& operator<<(std::ostream& ostream, Record& record);
+	virtual void parseString(std::string string) = 0;
 
-	~Record();
+	virtual std::string serialize() = 0;
+
+	virtual ~Record() = 0;
 };
 
 #endif /* RECORD_H_ */

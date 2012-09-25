@@ -3,19 +3,15 @@
 
 #include <string>
 
-#ifndef RANDOM_STARTS_AT
-#define RANDOM_STARTS_AT 1000
-#endif /*RANDOM_STARTS_AT*/
-
-#ifndef REGISTER_SIZE_IN_CHARS
-#define REGISTER_SIZE_IN_CHARS 22
-#endif /*REGISTER_SIZE_IN_CHARS*/
+#ifndef N
+#define N 5
+#endif /*N*/
 
 class DictionayRandomizer {
 public:
 	DictionayRandomizer();
 
-	void randomizeDictionary(std::string dictionaryPath);
+	void randomizeDictionary(std::string dictionaryPath, bool showId);
 
 	~DictionayRandomizer();
 };
