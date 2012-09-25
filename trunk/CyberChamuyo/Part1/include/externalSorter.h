@@ -2,6 +2,7 @@
 #define EXTERNALSORTER_H_
 
 #include <string>
+#include <sys/stat.h>
 #include "heap.h"
 #include "readBuffer.h"
 #include "writeBuffer.h"
