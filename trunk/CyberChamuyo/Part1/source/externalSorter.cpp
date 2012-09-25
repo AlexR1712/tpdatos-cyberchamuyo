@@ -98,7 +98,7 @@ void ExternalSorter::merge() {
 					statisticsRecord.setLevel(inputFileLevelCounter + 1);
 					outputDirectoryName += "Etapa" + intToString(inputFileLevelCounter + 1) + "\\";
 
-					mkdir(outputDirectoryName.c_str());
+					mkdir(outputDirectoryName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 					directoryCreated = true;
 				}
@@ -153,7 +153,7 @@ void ExternalSorter::merge() {
 void ExternalSorter::sort(std::string filepath){
 	this->clearOutput();
 	this->clearTemp();
-	mkdir("temp");
+	mkdir("temp", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 	unsigned int outputFileNameCounter = 0;
 	unsigned int freezedRegisters = 0;
