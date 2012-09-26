@@ -7,9 +7,6 @@
 #define STATISTICSRECORD_H_
 
 class StatisticsRecord {
-private:
-	int level;
-
 public:
 	std::vector<unsigned int> filesStatistics;
 
@@ -17,11 +14,7 @@ public:
 
 	std::vector<unsigned int>& getFilesStatistics();
 
-	unsigned int getLevel() const;
-
-	void setLevel(unsigned int level);
-
-	std::string serialize();
+	std::string serialize(std::string itemName);
 
 	virtual ~StatisticsRecord();
 };
