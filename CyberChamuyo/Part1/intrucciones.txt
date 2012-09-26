@@ -1,0 +1,6 @@
+"tp1 false" - El archivo de salida NO muestra los id's.
+
+"tp1 true" - El archivo de salida muestra los id's.
+
+"tp1" - Idem "tp1 false".
+
