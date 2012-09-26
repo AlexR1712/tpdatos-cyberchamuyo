@@ -1,12 +1,7 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
 #include <stdlib.h>
 #include "tp1.h"
 #include "dictionaryNormalizer.h"
 #include "dictionaryRandomizer.h"
-#include "externalSorter.h"
 
 int main(int argc, char *argv[]){
 	std::string command;

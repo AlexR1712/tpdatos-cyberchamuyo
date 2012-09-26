@@ -53,10 +53,10 @@ void ExternalSorter::flushHeap(WriteBuffer<BinaryRecord>& writeBuffer) {
 
 void ExternalSorter::unfreeze(ReadBuffer<BinaryRecord>& freezeReadBuffer, WriteBuffer<BinaryRecord>& freezeWriteBuffer) {
 	freezeWriteBuffer.finalize();
-	freezeReadBuffer.initialize("temp\\freezeFile_temp",this->getFileBuffersSize());
+	freezeReadBuffer.initialize("particiones\\freezeFile_temp",this->getFileBuffersSize());
 	this->createHeap(freezeReadBuffer);
 	freezeReadBuffer.finalize();
-	freezeWriteBuffer.initialize("temp\\freezeFile_temp",this->getFileBuffersSize());
+	freezeWriteBuffer.initialize("particiones\\freezeFile_temp",this->getFileBuffersSize());
 }
 
 void ExternalSorter::merge() {
@@ -71,7 +71,7 @@ void ExternalSorter::merge() {
 
 	unsigned int inputFileLevelCounter;
 	unsigned int inputFileFileCounter;
-	std::string inputDirectoryName = "temp\\";
+	std::string inputDirectoryName = "particiones\\";
 
 	unsigned int outputFileFileCounter;
 	unsigned int outputFileRegisterCounter;
@@ -80,7 +80,7 @@ void ExternalSorter::merge() {
 
 	StatisticsRecord statisticsRecord;
 	std::ofstream statisticsFile;
-	statisticsFile.open("estadisticas.txt",std::iostream::out);
+	statisticsFile.open("estadisticas.txt",std::iostream::app);
 
 	inputFileLevelCounter = 0;
 
@@ -89,13 +89,13 @@ void ExternalSorter::merge() {
 	while(levelFinished && directoryCreated) {
 		inputFileFileCounter = 0;
 		outputFileFileCounter = 0;
+		outputFileRegisterCounter = 0;
 		levelFinished = false;
 		directoryCreated = false;
 		while (!levelFinished) {
 			this->getFiles(readBuffers,inputDirectoryName,inputFileLevelCounter,inputFileFileCounter);
-			if ( !(readBuffers.empty()) || ( (readBuffers.size() == 1) && (inputFileFileCounter != 1) ) ) {
+			if ( !( (readBuffers.empty()) || ( (readBuffers.size() == 1) && (inputFileFileCounter == 1) ) ) ) {
 				if (!directoryCreated) {
-					statisticsRecord.setLevel(inputFileLevelCounter + 1);
 					outputDirectoryName += "Etapa" + intToString(inputFileLevelCounter + 1) + "\\";
 
 					mkdir(outputDirectoryName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -106,7 +106,6 @@ void ExternalSorter::merge() {
 				outputFileName = outputDirectoryName + "orderedFile_" + intToString(inputFileLevelCounter + 1) + "_" + intToString(outputFileFileCounter);
 				writeBuffer.initialize(outputFileName,this->getFileBuffersSize());
 				outputFileFileCounter++;
-				outputFileRegisterCounter = 0;
 
 				while ( (!readBuffers.empty()) ) {
 					smallerRegisterIndex = 0;
@@ -123,8 +122,6 @@ void ExternalSorter::merge() {
 					}
 				}
 				writeBuffer.finalize();
-
-				statisticsRecord.getFilesStatistics().push_back(outputFileRegisterCounter);
 			} else {
 				levelFinished = true;
 				if (inputFileLevelCounter == 0)
@@ -134,10 +131,11 @@ void ExternalSorter::merge() {
 			}
 		}
 		if (directoryCreated) {
-			statisticsFile << statisticsRecord.serialize();
-			statisticsRecord.getFilesStatistics().clear();
+			statisticsRecord.getFilesStatistics().push_back(outputFileRegisterCounter);
 		}
 	}
+	statisticsFile << "Etapas: " << std::endl;
+	statisticsFile << statisticsRecord.serialize("Etapa") << std::endl;
 
 	readBuffer.initialize(outputFileName,this->getFileBuffersSize());
 	writeBuffer.initialize("dictionary_RANDOMIZED_ORDERED",this->getFileBuffersSize());
@@ -147,26 +145,31 @@ void ExternalSorter::merge() {
 		binaryRecord.setIdVisible(this->isShowId());
 		writeBuffer.putRecord(binaryRecord);
 	}
-
+	writeBuffer.finalize();
 }
 
 void ExternalSorter::sort(std::string filepath){
 	this->clearOutput();
 	this->clearTemp();
-	mkdir("temp", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	mkdir("particiones", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	unlink(fileName.c_str());
 
 	unsigned int outputFileNameCounter = 0;
 	unsigned int freezedRegisters = 0;
-	std::string outputFileName = "temp\\orderedFile_0_" + intToString(outputFileNameCounter);
+	std::string outputFileName = "particiones\\orderedFile_0_" + intToString(outputFileNameCounter);
 
 	ReadBuffer<BinaryRecord> readBuffer(filepath,this->getFileBuffersSize());
 	WriteBuffer<BinaryRecord> writeBuffer(outputFileName,this->getFileBuffersSize());
 	ReadBuffer<BinaryRecord> freezeReadBuffer;
-	WriteBuffer<BinaryRecord> freezeWriteBuffer("temp\\freezeFile_temp",this->getFileBuffersSize());
+	WriteBuffer<BinaryRecord> freezeWriteBuffer("particiones\\freezeFile_temp",this->getFileBuffersSize());
 	BinaryRecord record;
 
-	this->createHeap(readBuffer);
+	StatisticsRecord statisticsRecord;
+	std::ofstream statisticsFile;
+	statisticsFile.open("estadisticas.txt",std::iostream::app);
+	unsigned int outputFileRegisterCounter = 0;
 
+	this->createHeap(readBuffer);
 	while ( !(readBuffer.empty()) ) {
 		record = readBuffer.getRecord();
 		if (record < this->getHeap().get(0)) {
@@ -175,10 +178,14 @@ void ExternalSorter::sort(std::string filepath){
 
 			if (freezedRegisters == 10 * this->getFileBuffersSize()) {
 				//vaciar heap
+				outputFileRegisterCounter += this->getHeap().size();
+				statisticsRecord.getFilesStatistics().push_back(outputFileRegisterCounter);
+				outputFileRegisterCounter = 0;
+
 				this->flushHeap(writeBuffer);
 
 				outputFileNameCounter++;
-				outputFileName = "temp\\orderedFile_0_" + intToString(outputFileNameCounter);
+				outputFileName = "particiones\\orderedFile_0_" + intToString(outputFileNameCounter);
 				writeBuffer.initialize(outputFileName,this->getFileBuffersSize());
 
 				this->unfreeze(freezeReadBuffer,freezeWriteBuffer);
@@ -187,21 +194,30 @@ void ExternalSorter::sort(std::string filepath){
 			}
 		} else {
 			writeBuffer.putRecord(this->getHeap().get(0));
+			outputFileRegisterCounter++;
 			this->getHeap().replaceRoot(record);
 		}
 	}
 
+	outputFileRegisterCounter += this->getHeap().size();
+	statisticsRecord.getFilesStatistics().push_back(outputFileRegisterCounter);
+	outputFileRegisterCounter = 0;
 	this->flushHeap(writeBuffer);
 
 	if (freezedRegisters != 0) {
 		outputFileNameCounter++;
-		outputFileName = "temp\\orderedFile_0_" + intToString(outputFileNameCounter);
+		outputFileName = "particiones\\orderedFile_0_" + intToString(outputFileNameCounter);
 		writeBuffer.initialize(outputFileName,this->getFileBuffersSize());
 
 		this->unfreeze(freezeReadBuffer,freezeWriteBuffer);
 
+		outputFileRegisterCounter += this->getHeap().size();
+		statisticsRecord.getFilesStatistics().push_back(outputFileRegisterCounter);
 		this->flushHeap(writeBuffer);
 	}
+	writeBuffer.finalize();
+	statisticsFile << "Particiones:" <<std::endl;
+	statisticsFile << statisticsRecord.serialize("Partición") << std::endl;
 
 	this->merge();
 }
@@ -231,7 +247,7 @@ void ExternalSorter::clearTemp() {
 	std::string fileName;
 
 	for (unsigned int i = 0; !finished; i++) {
-		fileName = "temp\\orderedFile_0_" + intToString(i);
+		fileName = "particiones\\orderedFile_0_" + intToString(i);
 		inputFile.open(fileName.c_str(),std::iostream::in);
 		if (!inputFile.fail()) {
 			inputFile.close();
@@ -240,7 +256,7 @@ void ExternalSorter::clearTemp() {
 			finished = true;
 		}
 	}
-	unlink("temp\\freezeFile_temp");
+	unlink("particiones\\freezeFile_temp");
 }
 
 void ExternalSorter::clearOutput(unsigned int level) {
