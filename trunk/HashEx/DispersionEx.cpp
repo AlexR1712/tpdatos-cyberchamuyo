@@ -18,7 +18,7 @@ DispersionEx::DispersionEx(const char* archDir) :
 		crearNuevoBloque(1, this->tabla.getSize());
 }
 
-void DispersionEx::CargarFrases(const char* archFrases) {
+void DispersionEx::cargarFrases(const char* archFrases) {
 	std::string linea;
 	std::ifstream entradaTexto(archFrases);
 	getline(entradaTexto, linea);
@@ -55,7 +55,7 @@ void DispersionEx::ActualizarTablaAlta(unsigned int td, int posTabla) {
 	if (td == this->tabla.getSize())
 		this->tabla.AumentarTabla();
 	this->tabla.RecorrerYReemplazar(posTabla, nuevoBloque, td*2);
-	this->tabla.Imprimir();
+	//this->tabla.Imprimir();
 	crearNuevoBloque(nuevoBloque, td*2);
 }
 
@@ -93,10 +93,10 @@ void DispersionEx::ActualizarDispersion(BloqueDato& bl, int posTabla,
 	redistribuir(list);
 }
 
-int DispersionEx::insertarRecursivo(RegistroVariable* r, int clave) {
-	int posTabla = clave % this->tabla.getSize();
+int DispersionEx::insertarRecursivo(RegistroVariable* r, unsigned int clave) {
+	unsigned int posTabla = clave % this->tabla.getSize();
 	BloqueDato bl(this->arch_disp.getTamanoBloque());
-	int numBloque = this->tabla.getNumeroBloque(posTabla);
+	unsigned int numBloque = this->tabla.getNumeroBloque(posTabla);
 	this->arch_disp.Leer(numBloque, &bl);
 	if (bl.addRegistro(r) == ERR_NO_MEMORIA) {
 		ActualizarDispersion(bl, posTabla, numBloque);
@@ -105,9 +105,98 @@ int DispersionEx::insertarRecursivo(RegistroVariable* r, int clave) {
 	return RES_OK;
 }
 
-void DispersionEx::insertarRegistro(RegistroVariable* r, int clave) {
+void DispersionEx::insertarRegistro(RegistroVariable* r, unsigned int clave) {
 		insertarRecursivo(r, clave);
 		this->tabla.GuardarTabla();
+}
+
+int DispersionEx::buscarRegistro(unsigned int clave, BloqueDato& bl) {
+	int cantReg = bl.getCantRegistros();
+	int i = 0;
+	bool encontrado = false;
+	while ((i <= cantReg) && (encontrado == false)) {
+		RegistroVariable* reg = bl.getRegistro(i);
+		if (clave == reg->getClaveDato())
+			encontrado = true;
+		else ++i;
+	}
+	if (encontrado == true)
+		return i;
+	else return ERR_NO_ENCONTRADO;
+}
+
+void DispersionEx::modificarTdBloques(void) {
+	BloqueTabla* bl = new BloqueTabla(this->arch_disp.getTamanoBloque());
+	this->arch_disp.Leer(POSTABLA, bl);
+	int siguienteTab = bl->getSiguiente();
+	int cantBloques = this->arch_disp.getCantidadBloques();
+	delete bl;
+	for (int i = 1; i < cantBloques; ++i) {
+		if (siguienteTab == i) {
+			BloqueTabla* bl = new BloqueTabla(this->arch_disp.getTamanoBloque());
+			this->arch_disp.Leer(i, bl);
+			siguienteTab = bl->getSiguiente();
+			delete bl;
+		} else {
+			BloqueDato* bl = new BloqueDato(this->arch_disp.getTamanoBloque());
+			if (this->arch_disp.Leer(i, bl) == RES_OK) {
+				unsigned int td = bl->getTd();
+				if (td > this->tabla.getSize())
+					bl->setTd(td/2);
+				this->arch_disp.Escribir(bl, i);
+			}
+			delete bl;
+		}
+	}
+}
+
+void DispersionEx::Borrar(unsigned int clave) {
+	unsigned int posTabla = clave % this->tabla.getSize();
+	BloqueDato bl(this->arch_disp.getTamanoBloque());
+	unsigned int numBloque = this->tabla.getNumeroBloque(posTabla);
+	if (this->arch_disp.Leer(numBloque, &bl) == RES_OK) {
+		int posReg = buscarRegistro(clave, bl);
+		if (posReg != ERR_NO_ENCONTRADO) {
+			bl.borrarRegistro(posReg);
+			this->arch_disp.Escribir(&bl, numBloque);
+			if (bl.estaVacio()) {
+				if (this->tabla.BuscarYReemplazar(posTabla, bl.getTd()/2)) {
+					if (this->tabla.disminuirTabla()) {
+						this->arch_disp.Borrar(numBloque);
+						modificarTdBloques();
+					}
+				}
+			}
+		}
+	}
+}
+
+void DispersionEx::borrarRegistro(unsigned int clave) {
+	Borrar(clave);
+	this->tabla.GuardarTabla();
+}
+
+void DispersionEx::Modificar(RegistroVariable* r, unsigned int clave) {
+	/*unsigned int posTabla = clave % this->tabla.getSize();
+	BloqueDato bl(this->arch_disp.getTamanoBloque());
+	unsigned int numBloque = this->tabla.getNumeroBloque(posTabla);
+	if (this->arch_disp.Leer(numBloque, &bl) == RES_OK) {
+		int posReg = buscarRegistro(clave, bl);
+		if (posReg != ERR_NO_ENCONTRADO) {
+			bl.borrarRegistro(posReg);
+			if (bl.addRegistro(r) == ERR_NO_MEMORIA) {
+				ActualizarDispersion(bl, posTabla, numBloque);
+				insertarRecursivo(r, clave);
+			} else this->arch_disp.Escribir(&bl, numBloque);
+		}
+	}*/
+	this->Borrar(clave);
+	this->insertarRecursivo(r, clave);
+}
+
+void DispersionEx::modificarRegistro(RegistroVariable* r, unsigned int clave) {
+	Modificar(r, clave);
+	this->tabla.GuardarTabla();
 }
 
 std::ostream& operator<<(std::ostream& oss, DispersionEx &disp) {
@@ -125,9 +214,12 @@ std::ostream& operator<<(std::ostream& oss, DispersionEx &disp) {
 		oss << "BLOQUE " << i << std::endl;
 		if (siguienteTab == i) {
 			BloqueTabla* bl = new BloqueTabla(disp.arch_disp.getTamanoBloque());
-			disp.arch_disp.Leer(i, bl);
-			siguienteTab = bl->getSiguiente();
-			bl->ImprimirATexto(oss);
+			if (disp.arch_disp.Leer(i, bl) == ERR_BLOQUE_LIBRE)
+				oss << "BLOQUE LIBRE" << std::endl;
+			else {
+				siguienteTab = bl->getSiguiente();
+				bl->ImprimirATexto(oss);
+			}
 			delete bl;
 		} else {
 			BloqueDato* bl = new BloqueDato(disp.arch_disp.getTamanoBloque());

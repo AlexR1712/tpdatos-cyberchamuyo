@@ -1,12 +1,33 @@
 #include "DispersionEx.h"
+#include "Frase.h"
+#include "RegistroDato.h"
 
+void cargar(std::string valor, Hash::DispersionEx& disp, std::ifstream& entradaTexto) {
+	getline(entradaTexto, valor);
+	while (!entradaTexto.eof()) {
+		unsigned long int num = stoi(valor);
+		std::string autor;
+		getline(entradaTexto, autor);
+		std::string frase;
+		getline(entradaTexto, frase);
+		getline(entradaTexto, valor);
+		Data::Frase* datoInsertar = new Data::Frase(autor, frase, num);
+		RegistroVariable* reg = new Hash::RegistroDato(datoInsertar);
+		disp.insertarRegistro(reg, num);
+	}
+}
 
 int main(void) {
+	std::string valor;
 	Hash::DispersionEx disp("arch.bin");
-	//disp.CargarFrases("Frases_Celebres.csv");
+	//std::ifstream entradaTexto("Frases_Celebres.txt");
+	//disp.cargarFrases("Frases_Celebres.csv");
+	//cargar(valor, disp, entradaTexto);
+	//entradaTexto.close();
+	disp.borrarRegistro(234);
 	std::ofstream salidaTexto("arch.txt");
 	salidaTexto << disp;
 	salidaTexto.close();
-
 	return 0;
 }
+

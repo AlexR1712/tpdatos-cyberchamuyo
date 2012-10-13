@@ -87,6 +87,24 @@ void Bloque::borrarDatos(void) {
 	 }
 }
 
+void Bloque::borrarRegistro(int posicion) {
+	if ((posicion<cantRegistros)&&(posicion>=0)){
+        std::list<RegistroVariable*>::iterator iterador = registros.begin();
+        for (int i=0;i<posicion;i++){
+            iterador ++;
+        }
+        delete *iterador;
+        this->registros.erase(iterador);
+        --this->cantRegistros;
+    }else{
+        throw ExcepcionPosicionInvalidaEnBloque();
+    }
+}
+
+bool Bloque::estaVacio(void) {
+	return this->registros.empty();
+}
+
 Bloque::~Bloque(){
 	borrarDatos();
 }

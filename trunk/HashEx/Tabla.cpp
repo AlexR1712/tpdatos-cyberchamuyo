@@ -96,6 +96,16 @@ void Tabla::ActualizarOCrear(itListaTabla& jt, listaTabla& list,
 	} else
 		CrearBloqueTabla(dato);
 }
+
+void Tabla::ActualizarSiguiente(unsigned int pos) {
+	BloqueTabla bl(this->arch.getTamanoBloque());
+	this->arch.Leer(pos, &bl);
+	int siguiente = bl.getSiguiente();
+	if (siguiente != 0)
+		bl.setSiguiente(0);
+	this->arch.Escribir(&bl, pos);
+}
+
 void Tabla::ParticionarTabla(listaTabla& list) {
 	itListaTabla jt = list.begin();
 	int cant = (this->arch.getTamanoBloque()/sizeof(unsigned int));
@@ -113,18 +123,28 @@ void Tabla::ParticionarTabla(listaTabla& list) {
 			j = 0;
 		}
 	}
+	if (jt != list.end())
+		ActualizarSiguiente(*jt);
 	ActualizarOCrear(jt, list, dato);
 	while (jt != list.end()) {
 		this->arch.Borrar(*jt);
+		++jt;
 	}
 }
 
-void Tabla::GuardarUnicaParticion() {
+void Tabla::GuardarUnicaParticion(listaTabla& list) {
 	Data::ArrayBytes* dato = new Data::ArrayBytes;
 	for (itArray it = this->tabla.begin(); it != this->tabla.end(); ++it) {
 		dato->insertar(*it);
 	}
+	ActualizarSiguiente(POSTABLA);
 	ActualizarBloque(POSTABLA, dato);
+	itListaTabla jt = list.begin();
+	++jt;
+	while (jt != list.end()) {
+		this->arch.Borrar(*jt);
+		++jt;
+	}
 }
 
 void Tabla::cargarListaBloquesTabla(listaTabla& list) {
@@ -142,11 +162,11 @@ void Tabla::GuardarTablaInicial(void) {
 }
 
 void Tabla::GuardarTabla(void) {
+	listaTabla list;
+	cargarListaBloquesTabla(list);
 	if ((this->tabla.size() * 4) <= this->arch.getTamanoBloque()) {
-		GuardarUnicaParticion();
+		GuardarUnicaParticion(list);
 	} else {
-		listaTabla list;
-		cargarListaBloquesTabla(list);
 		ParticionarTabla(list);
 	}
 }
@@ -162,6 +182,21 @@ void Tabla::RecorrerYReemplazar(int posTabla, long nuevoValor, unsigned int td) 
 		this->tabla[j] = nuevoValor;
 		j = j - td;
 	}
+}
+
+bool Tabla::BuscarYReemplazar(int posTabla, unsigned int td) {
+	if (this->tabla.size() != 1) {
+		unsigned int posDerecha = posTabla + td;
+		if (posDerecha >= this->tabla.size())
+			posDerecha = posDerecha - this->tabla.size();
+		int posIzquierda = posTabla - td;
+		if (posIzquierda < 0)
+			posIzquierda = 0 - posIzquierda;
+		if (this->tabla[posIzquierda] == this->tabla[posDerecha]) {
+			this->tabla[posTabla] = this->tabla[posIzquierda];
+			return true;
+		} else return false;
+	} else return true;
 }
 
 void Tabla::AumentarTabla() {
@@ -189,6 +224,28 @@ unsigned int Tabla::getSize(void) {
 
 unsigned int Tabla::getNumeroBloque(int posTabla) {
 	return this->tabla[posTabla];
+}
+
+bool Tabla::verificarEspejamiento() {
+	int mitad = this->tabla.size() / 2;
+	bool noIgual = true;
+	itArray it = this->tabla.begin();
+	while ((it != this->tabla.begin() + mitad) && (noIgual == true)) {
+		if (*it != *(it + mitad)) {
+			noIgual = false;
+		} else
+			++it;
+	}
+	return noIgual;
+}
+
+bool Tabla::disminuirTabla(void) {
+	if (verificarEspejamiento()) {
+		int mitad = this->tabla.size() / 2;
+		itArray it = this->tabla.begin();
+		this->tabla.erase(it + mitad, this->tabla.end());
+		return true;
+	} else return false;
 }
 
 Tabla::~Tabla() {
