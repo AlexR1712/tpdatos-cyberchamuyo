@@ -40,6 +40,8 @@ public:
     int getCantRegistros();
     void anularRegistros(void);
     void vaciar(void);
+    void borrarRegistro(int posicion);
+    bool estaVacio(void);
     virtual ~Bloque();
     friend std::ostream& operator<<(std::ostream& oss,
 					  Bloque &bl);

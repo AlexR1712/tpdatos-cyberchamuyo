@@ -12,5 +12,6 @@
 #define RES_OK 0
 #define SIN_SIGUIENTE 0
 #define TAM_BLOQUE 480
+#define ERR_NO_ENCONTRADO -1
 
 #endif

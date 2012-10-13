@@ -26,7 +26,7 @@ class DispersionEx {
 private:
 	ArchivoBloquesFijos arch_disp;
 	Tabla tabla;
-	int insertarRecursivo(RegistroVariable* r, int clave);
+	int insertarRecursivo(RegistroVariable* r, unsigned int clave);
 	void redistribuir(listReg& list);
 	void ActualizarTablaAlta(unsigned int td, int posTabla);
 	void ActualizarDispersion(BloqueDato& bl, int posTabla, int numBloque);
@@ -34,10 +34,16 @@ private:
 			int numBloque);
 	void LlenarListaRegistros(BloqueDato& bl, listReg& list);
 	void crearNuevoBloque(int nuevoBloque, unsigned int td);
+	void Borrar(unsigned int clave);
+	void Modificar(RegistroVariable* r, unsigned int clave);
+	int buscarRegistro(unsigned int clave, BloqueDato& bl);
+	void modificarTdBloques(void);
 public:
 	DispersionEx(const char* archDir);
-	void insertarRegistro(RegistroVariable* r, int clave);
-	void CargarFrases(const char* archFrases);
+	void insertarRegistro(RegistroVariable* r, unsigned int clave);
+	void modificarRegistro(RegistroVariable* r, unsigned int clave);
+	void borrarRegistro(unsigned int clave);
+	void cargarFrases(const char* archFrases);
 	virtual ~DispersionEx();
 	friend std::ostream& operator<<(std::ostream& oss,
 					  DispersionEx &disp);
