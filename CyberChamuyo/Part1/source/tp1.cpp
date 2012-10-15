@@ -13,8 +13,8 @@ int main(int argc, char *argv[]){
 			showId = true;
 	}
 
-	DictionayNormalizer dictionayNormalizer;
-	dictionayNormalizer.normalizeDictionary("dictionary.txt");
+	DictionaryNormalizer dictionaryNormalizer;
+	dictionaryNormalizer.normalize("dictionary.txt");
 
 	DictionayRandomizer dictionayRandomizer;
 	dictionayRandomizer.randomizeDictionary("dictionary_NORMALIZED.txt",showId);
