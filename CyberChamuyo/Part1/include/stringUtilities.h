@@ -8,7 +8,9 @@ void splitString(std::string& string, std::vector<std::string>& splittedString, 
 
 bool isNumeric(std::string& string);
 
-std::string leftPad(std::string string, char padWith, unsigned short int padTo);
+std::string padLeft(std::string string, char padWith, unsigned int padTo);
+
+std::string padRight(std::string string, char padWith, unsigned int padTo);
 
 std::string intToString(int i);
 

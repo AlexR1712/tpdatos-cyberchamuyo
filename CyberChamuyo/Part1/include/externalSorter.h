@@ -2,33 +2,32 @@
 #define EXTERNALSORTER_H_
 
 #include <string>
-#include <sys/stat.h>
 #include "heap.h"
-#include "readBuffer.h"
-#include "writeBuffer.h"
-#include "binaryRecord.h"
+#include "binaryInputSequentialFile.h"
+#include "binaryOutputSequentialFile.h"
+#include "binaryDictionaryRecord.h"
 
 class ExternalSorter {
 private:
-	Heap<BinaryRecord> heap;
+	Heap<BinaryDictionaryRecord<true> > sortBuffer;
 
 	bool showId;
 
-	unsigned int fileBuffersSize;
+	unsigned int filesBufferSize;
 
-	Heap<BinaryRecord>& getHeap();
+	Heap<BinaryDictionaryRecord<true> >& getSortBuffer();
 
-	unsigned int getFileBuffersSize() const;
+	unsigned int getFilesBufferSize() const;
 
 	bool isShowId() const;
 
-	void createHeap(ReadBuffer<BinaryRecord>& readBuffer);
+	void createSortBuffer(BinaryInputSequentialFile<BinaryDictionaryRecord<true> >& inputFile);
 
-	void flushHeap(WriteBuffer<BinaryRecord>& writeBuffer);
+	void flushSortBuffer(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& outputFile);
 
-	void unfreeze(ReadBuffer<BinaryRecord>& freezeReadBuffer, WriteBuffer<BinaryRecord>& freezeWriteBuffer);
+	void unfreeze(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& outputFreezeFile);
 
-	void getFiles(std::vector<ReadBuffer<BinaryRecord>*>& readBuffers, std::string& directoryName, unsigned int inputFileLevelCounter, unsigned int& inputFileFileCounter);
+	void loadSortBuffer(std::vector<BinaryInputSequentialFile<BinaryDictionaryRecord<true> >*>& sortBuffer, std::string& directoryName, unsigned int inputFileLevelCounter, unsigned int& inputFileFileCounter);
 
 	void clearTemp();
 
@@ -36,7 +35,7 @@ private:
 
 	void merge();
 public:
-	ExternalSorter(unsigned int fileBuffersSize, bool showId);
+	ExternalSorter(unsigned int filesBufferSize, bool showId);
 
 	void sort(std::string filepath);
 
