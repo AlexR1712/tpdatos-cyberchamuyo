@@ -1,22 +1,26 @@
 #ifndef DICTIONARYNORMALIZER_H_
 #define DICTIONARYNORMALIZER_H_
 
-#ifndef N
-#define N 5
-#endif /*N*/
+#ifndef FILE_BUFFER_SIZE
+#define FILE_BUFFER_SIZE 10
+#endif /*FILE_BUFFER_SIZE*/
+
+#ifndef OUTPUT_FILE_PATH
+#define OUTPUT_FILE_PATH "dictionary_NORMALIZED.txt"
+#endif /*OUTPUT_FILE_PATH*/
 
 #include <string>
 
-class DictionayNormalizer {
+class DictionaryNormalizer {
 private:
 	std::string normalizeWord(const std::string& string) const;
 
 public:
-	DictionayNormalizer();
+	DictionaryNormalizer();
 
-	void normalizeDictionary(std::string dictionaryPath);
+	void normalize(std::string dictionaryPath);
 
-	~DictionayNormalizer();
+	~DictionaryNormalizer();
 };
 
 
