@@ -1,30 +1,27 @@
 #include "dictionaryNormalizer.h"
 
-#include <fstream>
-#include <iostream>
 #include <string>
 
-#include "readBuffer.h"
-#include "writeBuffer.h"
-#include "stringRecord.h"
+#include "textInputSequentialFile.h"
+#include "textOutputSequentialFile.h"
+#include "textDictionaryRecord.h"
 
-DictionayNormalizer::DictionayNormalizer() {
+DictionaryNormalizer::DictionaryNormalizer() {
 }
 
-void DictionayNormalizer::normalizeDictionary(std::string dictionaryPath) {
-	ReadBuffer<StringRecord> readBuffer(dictionaryPath,N);
-	WriteBuffer<StringRecord> writeBuffer("dictionary_NORMALIZED.txt",N);
-	std::string line;
-	StringRecord record(false);
+void DictionaryNormalizer::normalize(std::string dictionaryPath) {
+	TextInputSequentialFile<TextDictionaryRecord<false> > dictionaryFile(dictionaryPath,FILE_BUFFER_SIZE);
+	TextOutputSequentialFile<TextDictionaryRecord<false> > normalizedDictionaryFile(OUTPUT_FILE_PATH,FILE_BUFFER_SIZE);
+	TextDictionaryRecord<false> record;
 
-	while (!readBuffer.empty()) {
-		line = this->normalizeWord(readBuffer.getRecord().getWord());
-		record.parseString(line);
-		writeBuffer.putRecord(record);
+	while (!dictionaryFile.endOfFile()) {
+		record = dictionaryFile.getRecord();
+		record.setWord(this->normalizeWord(record.getWord()));
+		normalizedDictionaryFile.putRecord(record);
 	}
 }
 
-std::string DictionayNormalizer::normalizeWord(const std::string& string) const {
+std::string DictionaryNormalizer::normalizeWord(const std::string& string) const {
 	std::string normalizedWord;
 	char c;
 
@@ -48,5 +45,5 @@ std::string DictionayNormalizer::normalizeWord(const std::string& string) const 
 	return normalizedWord;
 }
 
-DictionayNormalizer::~DictionayNormalizer() {
+DictionaryNormalizer::~DictionaryNormalizer() {
 }

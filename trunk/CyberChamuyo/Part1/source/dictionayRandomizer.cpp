@@ -1,46 +1,48 @@
 #include "dictionaryRandomizer.h"
 
-#include <fstream>
-#include <iostream>
-#include <string>
 #include <time.h>
 #include <stdlib.h>
 
-#include "readBuffer.h"
-#include "writeBuffer.h"
-#include "stringRecord.h"
-#include "binaryRecord.h"
+#include "textInputSequentialFile.h"
+#include "textOutputSequentialFile.h"
+#include "binaryOutputSequentialFile.h"
+#include "textDictionaryRecord.h"
+#include "binaryDictionaryRecord.h"
 #include "externalSorter.h"
-#include "stringUtilities.h"
 
 DictionayRandomizer::DictionayRandomizer() {
 }
 
-void DictionayRandomizer::randomizeDictionary(std::string dictionaryPath, bool showId) {
-	ReadBuffer<StringRecord> readBuffer(dictionaryPath,N);
-	WriteBuffer<StringRecord> stringWriteBuffer("dictionary_RANDOMIZED.txt",N);
-	WriteBuffer<BinaryRecord> binaryWriteBuffer("dictionary_RANDOMIZED",N);
-	ExternalSorter externalSorter(N,showId);
-	StringRecord stringRecord;
-	BinaryRecord binaryRecord;
+void DictionayRandomizer::createRandomIds(std::string dictionaryPath) {
+	TextInputSequentialFile<TextDictionaryRecord<false> > dictionary(dictionaryPath,FILE_BUFFER_SIZE);
+	TextOutputSequentialFile<TextDictionaryRecord<true> > textRandomizedDiccionary(OUTPUT_FILE_PATH_TEXT,FILE_BUFFER_SIZE);
+	BinaryOutputSequentialFile<BinaryDictionaryRecord<true> > binaryRandomizedDiccionary(OUTPUT_FILE_PATH_BINARY,FILE_BUFFER_SIZE);
+	TextDictionaryRecord<false> inputRecord;
+	TextDictionaryRecord<true> outputTextRecord;
+	BinaryDictionaryRecord<true> outputBinaryRecord;
 	std::string line;
 	std::string randomizedLine;
 	int random;
-
 	srand((unsigned)time(NULL));
 
-	while (!readBuffer.empty()) {
+	while (!dictionary.endOfFile()) {
 		random = rand();
-		line = readBuffer.getRecord().getWord();
-		randomizedLine = intToString(random) + '\t' + line;
-		stringRecord.parseString(randomizedLine);
-		binaryRecord.parseString(randomizedLine);
-		stringWriteBuffer.putRecord(stringRecord);
-		binaryWriteBuffer.putRecord(binaryRecord);
+		inputRecord = dictionary.getRecord();
+		outputTextRecord.setId(random);
+		outputTextRecord.setWord(inputRecord.getWord());
+		outputBinaryRecord.setId(random);
+		outputBinaryRecord.setWord(inputRecord.getWord());
+		textRandomizedDiccionary.putRecord(outputTextRecord);
+		binaryRandomizedDiccionary.putRecord(outputBinaryRecord);
 	}
+}
 
-	binaryWriteBuffer.finalize();
-	externalSorter.sort("dictionary_RANDOMIZED");
+void DictionayRandomizer::randomizeDictionary(std::string dictionaryPath, bool showId) {
+	ExternalSorter externalSorter(FILE_BUFFER_SIZE,showId);
+
+	this->createRandomIds(dictionaryPath);
+
+	externalSorter.sort(OUTPUT_FILE_PATH_BINARY);
 }
 
 DictionayRandomizer::~DictionayRandomizer() {
