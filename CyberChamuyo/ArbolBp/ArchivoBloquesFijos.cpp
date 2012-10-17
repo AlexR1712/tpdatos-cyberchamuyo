@@ -157,8 +157,12 @@ void ArchivoBloquesFijos::Leer(long posicion, Bloque* elemento){
         dato = new char[tamanoDato+1];
         path.read(dato,tamanoDato);
         dato[tamanoDato] = 0;
-        nuevoDato = new string(dato);
+        nuevoDato = new std::string;
+        for(int i = 0; i < tamanoDato; ++i) {
+        	nuevoDato->push_back(dato[i]);
+        }
         nuevoRegistro = new RegistroVariable(nuevoDato,tamanoDato);
+        //RegistroVariable nuevoRegistro(nuevoDato, tamanoDato);
         (*elemento).addRegistro(nuevoRegistro);
         it++;
         delete[] dato;

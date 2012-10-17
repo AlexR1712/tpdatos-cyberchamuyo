@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include <iomanip>
+#include <cstring>
 
 namespace Auxiliar {
 
@@ -81,11 +82,50 @@ std::string float_to_dec(float f) {
 	stream << std::dec << f;
 	return stream.str();
 }
-
+/*
 long leerEntero(long& p, const std::string dat) {
 	std::string sn = dat.substr(p, sizeof(long));
 	p += sizeof(long);
 	return Auxiliar::stoi(sn);
 }
+*/
+int leerEntero(const std::vector<char>* vec, int& pos) {
+	int int_size = sizeof(int);
+	char buffer[4];
+	for(int i = 0; i < int_size; ++i) {
+		buffer[i] = (*vec)[pos + int_size -1 - i];
+	}
+	pos += sizeof(int);
+	int ret = -1;
+	memcpy(&ret, buffer, sizeof(int));
+	return ret;
+}
+
+std::string& leerString(const std::vector<char>* vec, std::string& s, int& pos, int size) {
+	std::vector<char>::iterator it;
+	for(int i = pos; i < pos + size; ++i) {
+		s.push_back((*vec)[i]);
+	}
+	pos += size;
+	return s;
+}
+
+std::vector<char>* insertarEntero(std::vector<char>* vec, const int j) {
+	char buffer[4];
+	int int_size = sizeof(int);
+	memcpy(buffer, reinterpret_cast<const char*>(&j), sizeof(int));
+	for(int i = 0; i < int_size; ++i) {
+		vec->push_back(buffer[int_size - i - 1]);
+	}
+	return vec;
+}
+
+std::vector<char>* insertarString(std::vector<char>* vec, const std::string& s) {
+	for(unsigned int i = 0; i < s.size(); ++i) {
+		vec->push_back(s[i]);
+	}
+	return vec;
+}
+
 
 }

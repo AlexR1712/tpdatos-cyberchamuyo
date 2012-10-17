@@ -15,14 +15,14 @@ NodoExterno::NodoExterno() {
 NodoExterno::NodoExterno(int lvl) {
 	nivel = lvl;
 	siguiente = 0;
-	tipo = 0;
+	tipo = TIPO_ARBOL;
 	libre = N_SIZE - 4 * sizeof(int);
 }
 
 NodoExterno::NodoExterno(int lvl, ArbolBp* arb) : arbol(arb) {
 	nivel = lvl;
 	siguiente = 0;
-	tipo = 0;
+	tipo = TIPO_ARBOL;
 	libre = N_SIZE - 4 * sizeof(int);
 }
 
@@ -119,7 +119,7 @@ Registro* NodoExterno::popMayor() {
 int NodoExterno::cantRegistros() {
 	return registros.size();
 }
-
+/*
 string NodoExterno::serializar() {
 	string ret("H");
 	ret.append(Auxiliar::int_to_hex(nivel));
@@ -131,23 +131,61 @@ string NodoExterno::serializar() {
 		Registro* r = (*it);
 		int totalSize = r->totalSize();
 		ret.append(Auxiliar::int_to_hex(totalSize));
-		ret.append(r->serializar());
+		//ret.append(r->serializar());
 	}
 	return ret;
 }
+*/
 
+std::vector<char>* NodoExterno::serializar() {
+	std::vector<char>* s = new std::vector<char>;
+	FrontCoding encoder;
+	s->push_back('H');
+	s = Auxiliar::insertarEntero(s, nivel);
+	s = Auxiliar::insertarEntero(s, libre);
+	s = Auxiliar::insertarEntero(s, siguiente);
+	list<Registro*>::iterator it;
+	s = Auxiliar::insertarEntero(s, registros.size());
+	for(it = registros.begin(); it != registros.end(); ++it) {
+		Registro* r = *it;
+		std::vector<char>* s_reg = r->serializar(encoder);
+		s->insert(s->end(), s_reg->begin(), s_reg->end());
+		delete s_reg;
+	}
+	return s;
+}
+
+void NodoExterno::hidratar(const std::vector<char>* data, int& pos) {
+	int offset_control = 4 * sizeof(int) + 1 * sizeof(char);
+	tipo = TIPO_ARBOL;
+	++pos;
+	nivel = Auxiliar::leerEntero(data, pos);
+	libre = Auxiliar::leerEntero(data, pos);
+	siguiente = Auxiliar::leerEntero(data, pos);
+	int cant = Auxiliar::leerEntero(data, pos);
+	int cont = 0;
+	FrontCoding coder;
+	while(cont < cant) {
+		//int totalSize = Auxiliar::leerEntero(data, pos);
+		Registro* reg = new Registro();
+		reg->hidratar(data, coder,pos);
+		registros.push_back(reg);
+		++cont;
+	}
+}
 
 void NodoExterno::hidratar(string& s) {
 	long p = 0;
-	tipo = s[0];
+	tipo = TIPO_ARBOL;
 	++p;
-	nivel = Auxiliar::leerEntero(p, s);
-	libre = Auxiliar::leerEntero(p, s);
-	siguiente = Auxiliar::leerEntero(p, s);
-	int cant = Auxiliar::leerEntero(p, s);
+	//nivel = Auxiliar::leerEntero(p, s);
+	//libre = Auxiliar::leerEntero(p, s);
+	//siguiente = Auxiliar::leerEntero(p, s);
+	//int cant = Auxiliar::leerEntero(p, s);
 	int cont = 0;
+	int cant, totalSize;
 	while(cont < cant) {
-		long totalSize = Auxiliar::leerEntero(p, s);
+		//long totalSize = Auxiliar::leerEntero(p, s);
 		Registro* r = new Registro();
 		string rs = s.substr(p, totalSize);
 		r->hidratar(rs);
@@ -158,7 +196,7 @@ void NodoExterno::hidratar(string& s) {
 }
 
 bool NodoExterno::tieneOverflow() {
-	if(libre < N_MIN)
+	if((libre - E_CONTROL_SIZE) < N_MIN)
 		return true;
 	return false;
 }
@@ -251,11 +289,14 @@ std::list<Registro*> NodoExterno::getRegistrosDerecha() {
 std::list<Registro*> NodoExterno::getRegistrosDerecha() {
 	list<Registro*> listaNueva;
 	list<Registro*>::iterator it = registros.end();
-	for(--it; it != registros.begin() && libre < (N_SIZE*0.9)/*temporal*/ ; --it) {
+	for(--it; it != registros.begin() && libre < (N_SIZE*0.5)/*temporal*/ ; --it) {
 		Registro* reg = *it;
 		it = registros.erase(it);
+		//Registro* nuevoReg = new Registro();
+		//*nuevoReg = *reg;
 		listaNueva.push_back(reg);
-		libre += reg->size();
+		libre += reg->byte_size();
+		//delete reg;
 	}
 	return listaNueva;
 }
@@ -296,3 +337,4 @@ Registro* NodoExterno::getRegistro(int pos) {
 	}
 	return *it;
 }
+

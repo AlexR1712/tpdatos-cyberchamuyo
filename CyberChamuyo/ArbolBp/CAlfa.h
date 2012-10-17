@@ -12,22 +12,33 @@
 
 class CAlfa : public Clave {
 public:
-	CAlfa(std::string s);
+	CAlfa();
+	CAlfa(const std::string& s);
 	virtual ~CAlfa();
-	virtual Clave& operator=(const Clave& c){};
+	std::string get();
+	void set(const std::string& s);
+	virtual Clave& operator=(const Clave& c);
+	virtual CAlfa& operator=(const CAlfa& c);
 	CAlfa operator+(const CAlfa& c);
 	virtual std::string print();
-	virtual std::string serializar() const;
-	virtual void hidratar(const std::string& s);
+	virtual void hidratar(const std::vector<char>* s, int& pos);
 	virtual long size();
-	virtual std::string serializarDecimal() const{};
-	virtual bool operator<(const Clave& c) const {return true;};
-	virtual bool operator>(const Clave& c) const {return true;};
-	virtual bool operator==(const Clave& c) const {return true;};
-	virtual bool operator!=(const Clave& c) const {return true;};
+	virtual int byte_size();
+	virtual void setSize(int size);
+	virtual std::string serializarDecimal() const;
+	virtual bool operator<(const Clave& c) const;
+	virtual bool operator>(const Clave& c) const;
+	virtual bool operator==(const Clave& c) const;
+	virtual bool operator!=(const Clave& c) const;
+	virtual std::vector<char>*& serializar(std::vector<char>*& ret) const;
 
+	friend std::ostream& operator<<(std::ostream& os, const CAlfa& c);
+	friend CAlfa& operator>>(std::istream& is, CAlfa& c);
+
+	virtual int getTipo() const;
 private:
 	std::string clave;
+	int tam;
 };
 
 #endif /* CALFA_H_ */
