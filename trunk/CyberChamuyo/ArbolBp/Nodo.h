@@ -12,6 +12,7 @@
 #include <list>
 #include <string>
 #include "common.h"
+#include "CAlfa.h"
 
 using namespace std;
 
@@ -19,8 +20,10 @@ class Nodo {
 public:
 	Nodo();
 	virtual ~Nodo();
-	virtual std::string serializar() = 0;
+	//virtual std::string serializar() = 0;
+	virtual std::vector<char>* serializar() = 0;
 	virtual void hidratar(string& s) = 0;
+	virtual void hidratar(const std::vector<char>* data, int& pos) = 0;
 	virtual int insertarRecursivo(Registro* r);
 	virtual int getNivel() = 0;
 	bool overflow();

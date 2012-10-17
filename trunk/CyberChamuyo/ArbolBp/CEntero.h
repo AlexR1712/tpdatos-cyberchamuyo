@@ -9,6 +9,7 @@
 #define CENTERO_H_
 
 #include "Clave.h"
+#include <vector>
 
 class C_Entero : public Clave {
 public:
@@ -16,6 +17,8 @@ public:
 	C_Entero(long i);
 	virtual ~C_Entero();
 	virtual long size();
+	virtual int byte_size();
+	virtual void setSize(int size);
 	long get() const;
 	void set(const long i);
 	virtual std::string print();
@@ -37,11 +40,12 @@ public:
 	friend std::string operator<<(std::string& s, const C_Entero& c);
 	friend std::ostream& operator<<(std::ostream& os, const C_Entero& c);
 	friend C_Entero& operator>>(std::istream& is, C_Entero& c);
-	virtual std::string serializar() const;
 	virtual std::string serializarDecimal() const;
-	virtual void hidratar(const std::string& s);
+	virtual void hidratar(const std::vector<char>* s, int& pos);
+	virtual std::vector<char>*& serializar(std::vector<char>*& ret) const;
+	virtual int getTipo() const;
 private:
-	long clave;
+	unsigned int clave;
 };
 
 

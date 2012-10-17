@@ -11,6 +11,7 @@
 #include "RegistroVariable.h"
 #include <list>
 #include <stdexcept>
+#include <vector>
 using std::runtime_error;
 
 
@@ -19,13 +20,14 @@ class Bloque
 {
 private:
     long tamanoBloque;
-    std::list <RegistroVariable> registros;
+    std::list <RegistroVariable*> registros;
     long espacioLibre;
     int cantRegistros;
 
     void setEspacioLibre(long espacioOcupado);
 public:
     Bloque(long tamanoBloque);
+    Bloque(long tamanoBloque, std::vector<char>* data, int data_size);
     long getTamanoBloque();
     long getEspacioLibre();
     void addRegistro(RegistroVariable* registro);
