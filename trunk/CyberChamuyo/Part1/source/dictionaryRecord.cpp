@@ -37,7 +37,6 @@ void DictionaryRecord::setIdInFile(bool withId) {
 DictionaryRecord& DictionaryRecord::operator=(const DictionaryRecord& other) {
 	this->setId(other.getId());
 	this->setWord(other.getWord());
-	this->setIdInFile(other.getIdInFile());
 	return *this;
 }
 

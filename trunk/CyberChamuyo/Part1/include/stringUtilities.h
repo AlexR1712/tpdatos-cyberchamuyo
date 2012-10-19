@@ -14,6 +14,8 @@ std::string padRight(std::string string, char padWith, unsigned int padTo);
 
 std::string intToString(int i);
 
+std::string floatToString(float f);
+
 std::string trim(std::string string);
 
 #endif /* STRINGUTILITIES_H_ */

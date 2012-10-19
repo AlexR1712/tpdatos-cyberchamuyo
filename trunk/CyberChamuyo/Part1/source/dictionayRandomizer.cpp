@@ -42,7 +42,7 @@ void DictionayRandomizer::randomizeDictionary(std::string dictionaryPath, bool s
 
 	this->createRandomIds(dictionaryPath);
 
-	externalSorter.sort(OUTPUT_FILE_PATH_BINARY);
+	externalSorter.sort(OUTPUT_FILE_PATH_BINARY,true);
 }
 
 DictionayRandomizer::~DictionayRandomizer() {
