@@ -1,5 +1,7 @@
 #include "externalSorter.h"
 
+#include <time.h>
+
 #include "textInputSequentialFile.h"
 #include "binaryInputSequentialFile.h"
 #include "binaryoutputSequentialFile.h"
@@ -154,21 +156,20 @@ void ExternalSorter::merge() {
 	binaryOutputSequentialFile.close();
 }
 
-void ExternalSorter::sort(std::string filepath){
-	this->clearOutput();
-	this->clearTemp();
+void ExternalSorter::sort(std::string filepath, bool leaveTraces){
+	std::string tempFolderName = "particiones" + (unsigned)time(NULL);
 	//WINDOWS
-	CreateDirectory("particiones",NULL);
+	CreateDirectory(tempFolderName.c_str(),NULL);
 
 	//LINUX
-	//mkdir("particiones", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	//mkdir(tempFolderName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 	unsigned int outputFileNameCounter = 0;
 	unsigned int freezedRegisters = 0;
-	std::string outputFilePath = "particiones\\orderedFile_0_" + intToString(outputFileNameCounter);
+	std::string outputFilePath = tempFolderName + "\\orderedFile_0_" + intToString(outputFileNameCounter);
 	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > inputFile(filepath,this->getFilesBufferSize());
 	BinaryOutputSequentialFile<BinaryDictionaryRecord<true> > outputlFile(outputFilePath,this->getFilesBufferSize());
-	BinaryOutputSequentialFile<BinaryDictionaryRecord<true> > freezeFile("particiones\\freezeFile_temp",this->getFilesBufferSize());
+	BinaryOutputSequentialFile<BinaryDictionaryRecord<true> > freezeFile(tempFolderName + "\\freezeFile_temp",this->getFilesBufferSize());
 	BinaryDictionaryRecord<true> record;
 
 	StatisticsRecord statisticsRecord;
@@ -192,7 +193,7 @@ void ExternalSorter::sort(std::string filepath){
 				this->flushSortBuffer(outputlFile);
 
 				outputFileNameCounter++;
-				outputFilePath = "particiones\\orderedFile_0_" + intToString(outputFileNameCounter);
+				outputFilePath = tempFolderName + "\\orderedFile_0_" + intToString(outputFileNameCounter);
 				outputlFile.open(outputFilePath,this->getFilesBufferSize());
 
 				this->unfreeze(freezeFile);
@@ -213,7 +214,7 @@ void ExternalSorter::sort(std::string filepath){
 
 	if (freezedRegisters != 0) {
 		outputFileNameCounter++;
-		outputFilePath = "particiones\\orderedFile_0_" + intToString(outputFileNameCounter);
+		outputFilePath = tempFolderName + "\\orderedFile_0_" + intToString(outputFileNameCounter);
 		outputlFile.open(outputFilePath,this->getFilesBufferSize());
 
 		this->unfreeze(freezeFile);
@@ -227,6 +228,11 @@ void ExternalSorter::sort(std::string filepath){
 	statisticsFile << statisticsRecord.serialize("Partición") << std::endl;
 
 	this->merge();
+
+	if (!leaveTraces) {
+		this->clearOutput();
+		this->clearTemp(tempFolderName);
+	}
 }
 
 void ExternalSorter::loadSortBuffer(std::vector<BinaryInputSequentialFile<BinaryDictionaryRecord<true> >*>& readBuffers, std::string& directoryName, unsigned int inputFileLevelCounter, unsigned int& inputFileFileCounter) {
@@ -248,13 +254,14 @@ void ExternalSorter::loadSortBuffer(std::vector<BinaryInputSequentialFile<Binary
 	}
 }
 
-void ExternalSorter::clearTemp() {
+void ExternalSorter::clearTemp(std::string tempFolderName) {
 	bool finished = false;
 	std::ifstream inputFile;
 	std::string fileName;
 
+
 	for (unsigned int i = 0; !finished; i++) {
-		fileName = "particiones\\orderedFile_0_" + intToString(i);
+		fileName = tempFolderName + "\\orderedFile_0_" + intToString(i);
 		inputFile.open(fileName.c_str(),std::iostream::in);
 		if (!inputFile.fail()) {
 			inputFile.close();
@@ -267,9 +274,9 @@ void ExternalSorter::clearTemp() {
 		}
 	}
 	//WINDOWS
-	DeleteFile("particiones\\freezeFile_temp");
+	DeleteFile((tempFolderName + "\\freezeFile_temp").c_str());
 	//LINUX
-	//unlink("particiones\\freezeFile_temp");
+	//unlink((tempFolderName + "\\freezeFile_temp").c_str());
 }
 
 void ExternalSorter::clearOutput(unsigned int level) {

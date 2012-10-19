@@ -57,6 +57,12 @@ std::string intToString(int i) {
 	return stringstream.str();
 }
 
+std::string floatToString(float f) {
+	std::stringstream stringstream;
+	stringstream << f;
+	return stringstream.str();
+}
+
 std::string trim(std::string string) {
 	unsigned int from = 0;
 	unsigned int to = string.size();

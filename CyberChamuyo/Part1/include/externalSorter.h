@@ -29,7 +29,7 @@ private:
 
 	void loadSortBuffer(std::vector<BinaryInputSequentialFile<BinaryDictionaryRecord<true> >*>& sortBuffer, std::string& directoryName, unsigned int inputFileLevelCounter, unsigned int& inputFileFileCounter);
 
-	void clearTemp();
+	void clearTemp(std::string tempFolderName);
 
 	void clearOutput(unsigned int level = 1);
 
@@ -37,7 +37,7 @@ private:
 public:
 	ExternalSorter(unsigned int filesBufferSize, bool showId);
 
-	void sort(std::string filepath);
+	void sort(std::string filepath, bool leaveTraces);
 
 	~ExternalSorter();
 };
