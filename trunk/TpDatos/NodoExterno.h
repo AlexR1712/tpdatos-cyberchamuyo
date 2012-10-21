@@ -10,6 +10,8 @@
 
 #include "Nodo.h"
 
+#define E_CONTROL_SIZE (3 * sizeof(int) + 1 * sizeof(char))
+
 class ArbolBp;
 
 class NodoExterno : public Nodo {
@@ -22,7 +24,9 @@ public:
 	bool eliminarRegistro(Clave* c);
 	Registro* sacarRegistro(Clave* c);
 	Registro* popMayor();
-	virtual string serializar();
+	//virtual std::string serializar();
+	virtual std::vector<char>* serializar();
+	virtual void hidratar(const std::vector<char>* data, int& pos);
 	virtual void hidratar(string& s);
 	int cantRegistros();
 	Registro* popMenor();

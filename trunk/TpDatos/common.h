@@ -21,7 +21,10 @@ std::string cambiarSeparadores(std::string& s, char sep1, char sep2);
 std::string int_to_hex( int i );
 std::string int_to_dec( int i );
 std::string float_to_dec(float f);
-long leerEntero(long& p, const std::string dat);
+int leerEntero(const std::vector<char>* vec, int& pos);
+std::string& leerString(const std::vector<char>* vec, std::string& s, int& pos, int size);
+std::vector<char>* insertarEntero(std::vector<char>* vec, const int j);
+std::vector<char>* insertarString(std::vector<char>* vec, const std::string& s);
 }
 
 #endif /* AUXILIAR_H_ */

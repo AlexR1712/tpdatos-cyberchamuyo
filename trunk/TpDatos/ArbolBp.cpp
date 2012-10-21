@@ -9,28 +9,31 @@
 #include "ArbolBp.h"
 #include "common.h"
 
-ArbolBp::ArbolBp(char* n_arch, int block_size) : arch_arbol(n_arch, N_SIZE), b_size(block_size) {
+ArbolBp::ArbolBp(const char* n_arch, int block_size) : arch_arbol(n_arch, N_SIZE), b_size(block_size) {
 	if(arch_arbol.getCantidadBloques() > 0) {
-		string raiz_s = leerNodo(0);
-		if(raiz_s[0] == 'H') {
+		std::vector<char>* raiz_data = leerNodo2(0);
+		if((*raiz_data)[0] == 'H') {
 			raiz = new NodoExterno(0, this);
 		} else {
 			raiz = new NodoInterno(0, this);
 		}
-		raiz->hidratar(raiz_s);
+		int pos = 0;
+		raiz->hidratar(raiz_data, pos);
+		max = raiz->getNivel();
 	} else {
+		max = 0;
 		NodoExterno* n1 = new NodoExterno(0, this);
 		raiz = n1;
 		int n_id = crearNodoExterno(n1, 0);
 		guardarNodo(n1, n_id);
 	}
-	max = 0;
 	ultimoNodoLeido = NULL;
 	ultimoRegistroLeido = 0;
 }
 
 ArbolBp::~ArbolBp() {
 	delete raiz;
+	delete ultimoNodoLeido;
 }
 
 int ArbolBp::buscar(Clave* c, Registro*& reg) {
@@ -73,11 +76,13 @@ int ArbolBp::insertarRegistro(Registro* r) {
 			nh2->setSiguiente(0);
 			dynamic_cast<NodoExterno*>(raiz)->setSiguiente(ni1_id);
 
+			++max;
 			guardarNodo(nh2, ni1_id);
 			guardarNodo(nueva_raiz, 0);
 			guardarNodo(raiz, ne2_id);
+			delete raiz;
 			raiz = nueva_raiz;
-			++max;
+			delete nh2;
 			return 0;
 		} else {
 			if(res == GUARDAR)
@@ -108,44 +113,55 @@ int ArbolBp::insertarRegistro(Registro* r) {
 				nuevo_ni_derecho->insertarClave(*it, vector_hijos_sobrantes[vector_hijos_sobrantes.size() - i]);
 				++i;
 			}
+			++max;
 			guardarNodo(nuevo_ni_derecho, nuevo_ni_derecho_id);
 			guardarNodo(nueva_raiz, 0);
 			guardarNodo(raiz, nuevo_ni_izquierdo_id);
+			delete raiz;
 			raiz = nueva_raiz;
+			delete nuevo_ni_derecho;
 		} else {
 			if(res == GUARDAR)
 				guardarNodo(raiz, 0);
 		}
 	}
-	++max;
+	return OK;
 }
 
 void ArbolBp::imprimirNodos() {
 	int cant = arch_arbol.getCantidadBloques();
+	int pos;
+	std::fstream file;
+	file.open("Arboltest.bin", std::fstream::in|std::fstream::out|std::fstream::binary);
 	for(int i = 0; i < cant; ++i) {
-		std::string nodo = leerNodo(i);
-		char t = nodo[0];
+		std::vector<char>* nodo = leerNodo2(i);
+		char t = (*nodo)[0];
 		if(t == 'I'){
+			pos = 0;
 			NodoInterno* nI;
 			nI = new NodoInterno(0, this);
-			nI->hidratar(nodo);
+			nI->hidratar(nodo, pos);
 			long p = 1;
-			long nivel = Auxiliar::leerEntero(p, nodo);
+			long nivel = nI->getNivel();
 			for(int i = 0; i < nivel; ++i) {
 				cout << "	";
 			}
 			std::cout << nI->serializarDecimal() << std::endl;
+			delete nI;
 		} else {
+			pos = 0;
 			NodoExterno* nE;
 			nE = new NodoExterno(0, this);
-			nE->hidratar(nodo);
+			nE->hidratar(nodo, pos);
 			long p = 1;
-			int nivel = Auxiliar::leerEntero(p, nodo);
+			int nivel = nE->getNivel();
 			for(int i = nivel; i > 0; --i) {
 				cout << "	";
 			}
 			std::cout << *nE << std::endl;
+			delete nE;
 		}
+		delete nodo;
 	}
 }
 
@@ -158,7 +174,6 @@ void ArbolBp::guardarNodo(Nodo* n, unsigned int id) {
 	arch_arbol.Escribir(&b, id);
 
 }
-
 
 int ArbolBp::crearNodoExterno(NodoExterno* nE, int nivel) {
 	int libre = arch_arbol.ObtenerBloqueLibre();
@@ -190,6 +205,21 @@ std::string ArbolBp::leerNodo(int id) {
 	std::ostringstream oss;
 	reg->serializar(oss);
 	return oss.str();
+}
+
+std::vector<char>* ArbolBp::leerNodo2(int id) {
+	BloqueNodo b(N_SIZE);
+	arch_arbol.Leer(id, &b);
+	RegistroVariable* reg = b.getRegistro(0);
+	std::ostringstream oss;
+	reg->serializar(oss);
+	std::string data_s = oss.str();
+	std::string::iterator it;
+	std::vector<char>* data = new std::vector<char>;
+	for(it = data_s.begin(); it != data_s.end(); ++it) {
+		data->push_back(*it);
+	}
+	return data;
 }
 
 bool ArbolBp::isEmpty() {

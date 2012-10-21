@@ -10,6 +10,7 @@
 
 #include <string>
 #include <iostream>
+#include <vector>
 
 class Clave {
 public:
@@ -22,9 +23,12 @@ public:
 	virtual Clave& operator=(const Clave& c) = 0;
 	virtual std::string serializarDecimal() const = 0;
 	virtual long size() = 0;
+	virtual int byte_size() = 0;
+	virtual void setSize(int size) = 0;
 	virtual std::string print() = 0;
-	virtual std::string serializar() const = 0;
-	virtual void hidratar(const std::string& s) = 0;
+	virtual std::vector<char>*& serializar(std::vector<char>*& ret) const = 0;
+	virtual void hidratar(const std::vector<char>* s, int& pos) = 0;
+	virtual int getTipo() const = 0;
 };
 
 #endif /* CLAVE_H_ */
