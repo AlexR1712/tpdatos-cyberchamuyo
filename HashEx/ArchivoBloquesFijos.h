@@ -21,6 +21,7 @@ private:
     long tamanoBloque;
     std::vector <unsigned int> bloquesLibres;
     int cantidadBloquesLibres;
+    std::string dir;
     void setCantidadBloques(int cantidadBloques);
     void setCantidadBloquesLibres (int cantidad);
     void SetearBloqueLibre (unsigned int bloque);
@@ -35,6 +36,7 @@ public:
     void Borrar (long posicion);
     virtual ~ArchivoBloquesFijos();
     int VerificarBloqueLibre(unsigned int bloque);
+    void clear(void);
     friend std::ostream& operator<<(std::ostream& oss,
 					  ArchivoBloquesFijos &arch);
 };
@@ -54,6 +56,14 @@ class ExcepcionBloqueLibre : public std::exception
 public:
 	virtual const char* what() const throw() {
 		return "Error Bloque Libre";
+	}
+};
+
+class ExcepcionDelete : public std::exception
+{
+public:
+	virtual const char* what() const throw() {
+		return "Error al Borrar Archivo";
 	}
 };
 
