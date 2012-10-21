@@ -23,8 +23,6 @@ template<bool withId> class TextDictionaryRecord : public DictionaryRecord {
 public:
 	TextDictionaryRecord();
 
-	bool asText();
-
 	void deserialize(std::string string);
 
 	std::string serialize();
@@ -33,10 +31,6 @@ public:
 };
 
 template<bool withId> TextDictionaryRecord<withId>::TextDictionaryRecord():DictionaryRecord(withId) {
-}
-
-template<bool withId> bool TextDictionaryRecord<withId>::asText() {
-	return true;
 }
 
 template<bool withId> void TextDictionaryRecord<withId>::deserialize(std::string string) {

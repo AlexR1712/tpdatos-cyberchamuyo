@@ -5,84 +5,45 @@
 #include <set>
 #include <vector>
 
-#ifndef COMMAND_PRINT_AVG_WORDS_PER_PHRASE
-#define COMMAND_PRINT_AVG_WORDS_PER_PHRASE "palabrasPromedio"
-#endif /*COMMAND_PRINT_AVG_WORDS_PER_PHRASE*/
+#include "outputTexts.h"
 
-#ifndef COMMAND_PRINT_AVG_FAILURES
-#define COMMAND_PRINT_AVG_FAILURES "fallosPromedio"
-#endif /*COMMAND_PRINT_AVG_FAILURES*/
+#ifndef STATUS_FILE_PATH
+#define STATUS_FILE_PATH "config//statisticsManager//statisticsManager.properties"
+#endif /*STATUS_FILE_PATH*/
 
-#ifndef COMMAND_PRINT_NOT_FOUND_WORDS
-#define COMMAND_PRINT_NOT_FOUND_WORDS "palabrasNoEncontradas"
-#endif /*COMMAND_PRINT_NOT_FOUND_WORDS*/
+#ifndef STOP_WORDS_FILE_PATH
+#define STOP_WORDS_FILE_PATH "inputFiles//stop-words.txt"
+#endif /*STOP_WORDS_FILE_PATH*/
 
-#ifndef COMMAND_PRINT_WORD_RANKING
-#define COMMAND_PRINT_WORD_RANKING "palabrasMasBuscadas"
-#endif /*COMMAND_PRINT_WORD_RANKING*/
+#ifndef RANKINGS_FILE_PATH
+#define RANKINGS_FILE_PATH "output//rankings"
+#endif /*RANKINGS_FILE_PATH*/
 
-#ifndef COMMAND_LOAD_DICTIONARY
-#define COMMAND_LOAD_DICTIONARY "cargaDiccionario"
-#endif /*COMMAND_LOAD_DICTIONARY*/
+#ifndef RANKINGS_FILE_PATH_ORDERED
+#define RANKINGS_FILE_PATH_ORDERED "output//rankings_ordered"
+#endif /*RANKINGS_FILE_PATH_ORDERED*/
 
-#ifndef COMMAND_LOAD_PHRASES
-#define COMMAND_LOAD_PHRASES "cargaFrases"
-#endif /*COMMAND_LOAD_PHRASES*/
+#ifndef FILES_BUFFER_SIZE
+#define FILES_BUFFER_SIZE 10
+#endif /*FILES_BUFFER_SIZE*/
 
-#ifndef COMMAND_PRINT_HELP
-#define COMMAND_PRINT_HELP "ayuda"
-#endif /*COMMAND_PRINT_HELP*/
+#ifndef AUTHOR_QUOTE_SEPARATOR
+#define AUTHOR_QUOTE_SEPARATOR '\t'
+#endif /*AUTHOR_QUOTE_SEPARATOR*/
 
-#ifndef ERROR_TEXT_INVALID_COMMAND
-#define ERROR_TEXT_INVALID_COMMAND "Comando invalido"
-#endif /*ERROR_TEXT_INVALID_COMMAND*/
-
-#ifndef HELP_TITLE
-#define HELP_TITLE "Ayuda:"
-#endif /*HELP_TITLE*/
-
-#ifndef HELP_TEXT_AVG_WORDS_PER_PHRASE
-#define HELP_TEXT_AVG_WORDS_PER_PHRASE "	palabrasPromedio: Muestra la cantidad de palabras promedio por frase."
-#endif /*HELP_TEXT_AVG_WORDS_PER_PHRASE*/
-
-#ifndef HELP_TEXT_AVG_FAILURES
-#define HELP_TEXT_AVG_FAILURES "	fallosPromedio: Muestra la cantidad de fallos promedio."
-#endif /*HELP_TEXT_AVG_FAILURES*/
-
-#ifndef HELP_TEXT_NOT_FOUND_WORDS
-#define HELP_TEXT_NOT_FOUND_WORDS "	palabrasNoEncontradas: Muestra el listado de palabras no encontradas."
-#endif /*HELP_TEXT_NOT_FOUND_WORDS*/
-
-#ifndef HELP_TEXT_WORD_RANKING
-#define HELP_TEXT_WORD_RANKING "	palabrasMasBuscadas N: Muestra el ranking de las N palabras mas buscadas."
-#endif /*HELP_TEXT_WORD_RANKING*/
-
-#ifndef HELP_TEXT_LOAD_DICTIONARY
-#define HELP_TEXT_LOAD_DICTIONARY "	cargaDiccionario path: Cargar un nuevo diccionario ubicado en la ruta espedificada."
-#endif /*HELP_TEXT_LOAD_DICTIONARY*/
-
-#ifndef HELP_TEXT_LOAD_PHRASES
-#define HELP_TEXT_LOAD_PHRASES "	cargaFrases path: Cargar un nuevo archivo de frases ubicado en la ruta especificada."
-#endif /*HELP_TEXT_LOAD_PHRASES*/
-
-#ifndef HELP_TEXT_CALLHELP
-#define HELP_TEXT_CALLHELP "	ayuda: reimprimir esta ayuda."
-#endif /*HELP_TEXT_CALLHELP*/
-
-#ifndef HELP_TEXT_EXIT
-#define HELP_TEXT_EXIT "	salir: abandonar la aplicación."
-#endif /*HELP_TEXT_EXIT*/
-
+#ifndef QUOTES_WORDS_SEPARATOR
+#define QUOTES_WORDS_SEPARATOR ' '
+#endif /*QUOTES_WORDS_SEPARATOR*/
 
 class StatisticsManager {
 private:
 	std::string dictionaryFilePath;
 
-	std::string phrasesFilePath;
+	std::string memorableQuotesFilePath;
 
 	unsigned int numberOfWords;
 
-	unsigned int numberOfPhrases;
+	unsigned int numberOfQuotes;
 
 	unsigned int numberOfFailures;
 
@@ -94,7 +55,7 @@ private:
 	//ObjetoDeSeba dictionary;
 
 	//A falta de mejores nombres por ahora
-	//ObjetoDeLucas phrases;
+	//ObjetoDeLucas memorableQuotes;
 
 	//ObjetoDeSeba notFoundWords;
 
@@ -102,17 +63,17 @@ private:
 
 	void setDictionaryFilePath(std::string dictionaryFilePath);
 
-	std::string getPhrasesFilePath() const;
+	std::string getMemorableQuotesFilePath() const;
 
-	void setPhrasesFilePath(std::string phrasesFilePath);
+	void setMemorableQuotesFilePath(std::string memorableQuotesFilePath);
 
 	unsigned int getNumberOfWords() const;
 
 	void setNumberOfWords(unsigned int numberOfWords);
 
-	unsigned int getNumberOfPhrases() const;
+	unsigned int getNumberOfQuotes() const;
 
-	void setNumberOfPhrases(unsigned int numberOfPhrases);
+	void setNumberOfQuotes(unsigned int numberOfPhrases);
 
 	unsigned int getNumberOfFailures() const;
 
@@ -122,7 +83,7 @@ private:
 
 	//ObjetoDeSeba& getDictionary();
 
-	//ObjetoDeLucas& getPhrases();
+	//ObjetoDeLucas& getMemorableQuotes();
 
 	//ObjetoDeSeba& getNotFoundWords();
 
@@ -130,7 +91,7 @@ private:
 
 	void loadStopWords();
 
-	void loadPhrases(bool insertInHash);
+	void loadMemorableQuotes(bool insertInHash);
 
 	void clearStatistics();
 

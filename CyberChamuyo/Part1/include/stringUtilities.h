@@ -12,6 +12,8 @@ std::string padLeft(std::string string, char padWith, unsigned int padTo);
 
 std::string padRight(std::string string, char padWith, unsigned int padTo);
 
+int StringToInt (const std::string& Text );
+
 std::string intToString(int i);
 
 std::string floatToString(float f);
