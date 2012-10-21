@@ -7,11 +7,23 @@
 
 #include "CAlfa.h"
 
-CAlfa::CAlfa(std::string s) {
+CAlfa::CAlfa() {
+
+}
+
+CAlfa::CAlfa(const std::string& s) {
 	clave = s;
 }
 
 CAlfa::~CAlfa() {
+}
+
+std::string CAlfa::get() {
+	return clave;
+}
+
+void CAlfa::set(const std::string& s) {
+	clave = s;
 }
 
 CAlfa CAlfa::operator+(const CAlfa& c) {
@@ -19,16 +31,74 @@ CAlfa CAlfa::operator+(const CAlfa& c) {
 	return cAux;
 }
 
-void CAlfa::hidratar(const std::string& s) {
+void CAlfa::hidratar(const std::vector<char>* data, int& pos){
+	for(int i = 0; i < tam; ++i)
+		clave.push_back((*data)[i]);
 }
 
 std::string CAlfa::print() {
+	return clave;
 }
 
+Clave& CAlfa::operator=(const Clave& c) {
+	clave = dynamic_cast<const CAlfa&>(c).clave;
+	tam = dynamic_cast<const CAlfa&>(c).tam;
+}
+
+CAlfa& CAlfa::operator=(const CAlfa& c) {
+	clave = dynamic_cast<const CAlfa&>(c).clave;
+	tam = c.tam;
+}
+
+std::string CAlfa::serializarDecimal() const {
+	return clave;
+}
 long CAlfa::size() {
-	return clave.size() * sizeof(char);
+	return (clave.size() * sizeof(char));
 }
 
-std::string CAlfa::serializar() const {
+int CAlfa::byte_size() {
+	bool notAligned = (clave.size() % 4) > 0?1:0;
+	return (notAligned * (sizeof(int) - 1)) + (clave.size() * sizeof(char));
+}
 
+bool CAlfa::operator<(const Clave& c) const {
+	return clave < (dynamic_cast<const CAlfa&>(c)).clave;
+}
+
+bool CAlfa::operator>(const Clave& c) const {
+	return clave > (dynamic_cast<const CAlfa&>(c)).clave;
+}
+
+bool CAlfa::operator!=(const Clave& c) const {
+	return (clave != (dynamic_cast<const CAlfa&>(c)).clave);
+}
+
+bool CAlfa::operator==(const Clave& c) const {
+	return (clave == (dynamic_cast<const CAlfa&>(c)).clave);
+}
+
+std::vector<char>*& CAlfa::serializar(std::vector<char>*& ret) const {
+	for(int i = 0; i < clave.size(); ++i)
+		ret->push_back(clave[i]);
+	return ret;
+}
+
+void CAlfa::setSize(int size) {
+	tam = size;
+}
+
+std::ostream& operator<<(std::ostream& os, const CAlfa& c) {
+	return (os << c.clave);
+}
+
+CAlfa& operator>>(std::istream& is, CAlfa& c) {
+	std::string s;
+	is >> s;
+	c.set(s);
+	return c;
+}
+
+int CAlfa::getTipo() const {
+	return 1;
 }

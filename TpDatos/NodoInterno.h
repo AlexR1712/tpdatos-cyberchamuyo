@@ -11,14 +11,16 @@
 #include "NodoExterno.h"
 #include <vector>
 
-#define N_TEST 70
+#define I_CONTROL_SIZE (3 * sizeof(int) + 1 * sizeof(char))
+
 class NodoInterno : public Nodo {
 friend class ArbolBp;
 public:
 	NodoInterno(int lvl, ArbolBp* arbol);
 	virtual ~NodoInterno();
 	virtual void hidratar(std::string& s);
-	std::string serializar();
+	virtual void hidratar(const std::vector<char>* data, int& pos);
+	virtual std::vector<char>* serializar();
 	std::string serializarDecimal();
 	int getHijoCorrespondiente(Clave* c);	// devuelve el numero de nodo que corresponde a la clave pasada por parametro
 	void insertarClave(Clave* c, int nodo);		// inserta la clave con su correspondiente numero d enodo

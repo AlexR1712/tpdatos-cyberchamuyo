@@ -11,7 +11,7 @@
 #include <string>
 #include "CEntero.h"
 #include <vector>
-
+//#include "FrontCoding.h"
 
 struct filtro {
 	unsigned int first;
@@ -19,6 +19,7 @@ struct filtro {
 	bool mostrar;
 };
 
+#define REG_CONTROL_SIZE (3 * sizeof(int))
 
 using namespace std;
 
@@ -34,6 +35,7 @@ public:
 	Clave* getClave();
 	Clave* getClaveCopia();
 	int size();
+	int byte_size();
 	unsigned int sizeClave();	// suma del tamaño de todas las claves
 	bool operator==(const Clave* c) const {
 		return clave == c;
@@ -53,12 +55,14 @@ public:
 	bool operator==(const Registro& r) const {
 		return ((*clave) == (*r.clave));
 	}
+	Registro& operator=(const Registro& r);
 	void hidratar(const string& s);
 	int totalSize();		// tamaño total del regisytro serializado
 	void insertarClave(Clave* c, int pos);
 	void setTipo(int t);
 	void setDato(char* dato);
-	std::string serializar();
+	virtual std::vector<char>* serializar(FrontCoding& encoder);
+	virtual void hidratar(const std::vector<char>* vec, FrontCoding& decoder, int& pos);
 	friend std::ostream& operator<<(std::ostream& os, const Registro& r);
 private:
 	Clave* clave;
