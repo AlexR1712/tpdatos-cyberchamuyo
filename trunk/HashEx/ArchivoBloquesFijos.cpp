@@ -31,6 +31,12 @@ ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque
             it++;
         }
     }
+    this->dir = filename;
+}
+
+void ArchivoBloquesFijos::clear(void) {
+	if(remove(this->dir.c_str()) != 0)
+		throw ExcepcionDelete();
 }
 
 long ArchivoBloquesFijos::getTamanoBloque(){

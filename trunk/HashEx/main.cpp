@@ -20,14 +20,21 @@ void cargar(std::string valor, Hash::DispersionEx& disp, std::ifstream& entradaT
 int main(void) {
 	std::string valor;
 	Hash::DispersionEx disp("arch.bin");
-	//std::ifstream entradaTexto("Frases_Celebres.txt");
+	/*std::ifstream entradaTexto("Frases_Celebres.csv");
 	//disp.cargarFrases("Frases_Celebres.csv");
-	//cargar(valor, disp, entradaTexto);
-	//entradaTexto.close();
-	disp.borrarRegistro(234);
+	std::string linea;
+	getline(entradaTexto, linea);
+	while(!entradaTexto.eof()) {
+		disp.insert(linea);
+		getline(entradaTexto, linea);
+
+	}
+	entradaTexto.close();
+	//disp.borrarRegistro(234);
 	std::ofstream salidaTexto("arch.txt");
 	salidaTexto << disp;
-	salidaTexto.close();
+	salidaTexto.close();*/
+	disp.clear();
 	return 0;
 }
 

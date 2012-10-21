@@ -16,6 +16,11 @@ DispersionEx::DispersionEx(const char* archDir) :
 	BloqueDato bl(this->arch_disp.getTamanoBloque());
 	if (this->arch_disp.Leer(1, &bl) == ERR_BLOQUE_INEXISTENTE)
 		crearNuevoBloque(1, this->tabla.getSize());
+	this->numRandom = 1;
+}
+
+void DispersionEx::clear(void) {
+	this->arch_disp.clear();
 }
 
 void DispersionEx::cargarFrases(const char* archFrases) {
@@ -40,6 +45,22 @@ void DispersionEx::cargarFrases(const char* archFrases) {
 		++num;
 	}
 	entradaTexto.close();
+}
+
+void DispersionEx::insert(std::string& phrase) {
+	int posActual = phrase.find("\t");
+	int posAnterior = 0;
+	std::string autor = phrase.substr(posAnterior, posActual);
+	obtenerSiguientePosicion(posAnterior, posActual, phrase);
+	std::string nombre = phrase.substr(posAnterior + 1, posActual - posAnterior - 1);
+	autor.append(" ");
+	autor.append(nombre);
+	obtenerSiguientePosicion(posAnterior, posActual, phrase);
+	std::string frase = phrase.substr(posAnterior + 1, posActual - posAnterior - 1);
+	Data::Frase* datoInsertar = new Data::Frase(autor, frase, this->numRandom);
+	RegistroVariable* reg = new Hash::RegistroDato(datoInsertar);
+	this->insertarRegistro(reg, this->numRandom);
+	++this->numRandom;
 }
 
 void DispersionEx::crearNuevoBloque(int nuevoBloque, unsigned int td) {
@@ -177,21 +198,21 @@ void DispersionEx::borrarRegistro(unsigned int clave) {
 }
 
 void DispersionEx::Modificar(RegistroVariable* r, unsigned int clave) {
-	/*unsigned int posTabla = clave % this->tabla.getSize();
+	unsigned int posTabla = clave % this->tabla.getSize();
 	BloqueDato bl(this->arch_disp.getTamanoBloque());
 	unsigned int numBloque = this->tabla.getNumeroBloque(posTabla);
-	if (this->arch_disp.Leer(numBloque, &bl) == RES_OK) {
-		int posReg = buscarRegistro(clave, bl);
-		if (posReg != ERR_NO_ENCONTRADO) {
-			bl.borrarRegistro(posReg);
-			if (bl.addRegistro(r) == ERR_NO_MEMORIA) {
-				ActualizarDispersion(bl, posTabla, numBloque);
-				insertarRecursivo(r, clave);
-			} else this->arch_disp.Escribir(&bl, numBloque);
+	if (r->getTamanoDato() <= this->arch_disp.getTamanoBloque()) {
+		if (this->arch_disp.Leer(numBloque, &bl) == RES_OK) {
+			int posReg = buscarRegistro(clave, bl);
+			if (posReg != ERR_NO_ENCONTRADO) {
+				bl.borrarRegistro(posReg);
+				if (bl.addRegistro(r) == ERR_NO_MEMORIA) {
+					ActualizarDispersion(bl, posTabla, numBloque);
+					insertarRecursivo(r, clave);
+				} else this->arch_disp.Escribir(&bl, numBloque);
+			}
 		}
-	}*/
-	this->Borrar(clave);
-	this->insertarRecursivo(r, clave);
+	}
 }
 
 void DispersionEx::modificarRegistro(RegistroVariable* r, unsigned int clave) {
