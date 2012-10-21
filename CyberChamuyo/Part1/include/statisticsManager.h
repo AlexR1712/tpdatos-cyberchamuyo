@@ -76,22 +76,47 @@
 
 class StatisticsManager {
 private:
+	std::string dictionaryFilePath;
+
+	std::string phrasesFilePath;
+
+	unsigned int numberOfWords;
+
+	unsigned int numberOfPhrases;
+
+	unsigned int numberOfFailures;
+
+	//Es un set porque la búsqueda es generalmente mas rápida que la búsqueda binaria en un vector.
+	//TODO Mariano. Corregir la configuración del proyecto para usar unordered_set que debería ser aun mas rápido.
+	std::set<std::string> stopWords;
+
 	//A falta de mejores nombres por ahora
 	//ObjetoDeSeba dictionary;
 
 	//A falta de mejores nombres por ahora
 	//ObjetoDeLucas phrases;
 
-	//TODO definir si se usa este objeto o el hashing.
 	//ObjetoDeSeba notFoundWords;
 
-	//Es un set porque la búsqueda es generalmente mas rápida que la búsqueda binaria en un vector.
-	//TODO Mariano. Corregir la configuración del proyecto para usar unordered_set que debería ser aun mas rápido.
-	std::set<std::string> stopWords;
+	std::string getDictionaryFilePath() const;
 
-	float averageWordsPerPhrase;
+	void setDictionaryFilePath(std::string dictionaryFilePath);
 
-	float averageFailures;
+	std::string getPhrasesFilePath() const;
+
+	void setPhrasesFilePath(std::string phrasesFilePath);
+
+	unsigned int getNumberOfWords() const;
+
+	void setNumberOfWords(unsigned int numberOfWords);
+
+	unsigned int getNumberOfPhrases() const;
+
+	void setNumberOfPhrases(unsigned int numberOfPhrases);
+
+	unsigned int getNumberOfFailures() const;
+
+	void setNumberOfFailures(unsigned int numberOfFailures);
 
 	std::set<std::string>& getStopWords();
 
@@ -99,24 +124,17 @@ private:
 
 	//ObjetoDeLucas& getPhrases();
 
-	//ObjetoDeSeba& notFoundWords;
+	//ObjetoDeSeba& getNotFoundWords();
 
-	float getAverageWordsPerPhrase() const;
-
-	void setAverageWordsPerPhrase(float averageWordsPerPhrase);
-
-	float getAverageFailures() const;
-
-	void setAverageFailures(float averageFailures);
+	void loadStatus();
 
 	void loadStopWords();
 
-	void initializeIndexes(std::string dictionaryFilePath = "dictionary.txt");
+	void loadPhrases(bool insertInHash);
+
+	void clearStatistics();
 
 	bool isValidCommand(std::string& command, std::vector<std::string>& commandParams);
-
-	//ver de ponerle un nombre mejor
-	void createPhrases(std::string phrasesFilePath = "frases-celebres.txt");
 
 	void printAverageWordsPerPhrase();
 
@@ -125,6 +143,8 @@ private:
 	void printNotFoundWords();
 
 	void printWordRanking(unsigned int rankingSize);
+
+	void saveStatus();
 
 public:
 	StatisticsManager();

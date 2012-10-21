@@ -10,10 +10,57 @@
 
 
 StatisticsManager::StatisticsManager() {
+	this->loadStatus();
 	this->loadStopWords();
-	this->initializeIndexes();
+	//this->getDictionary().createIndex(this->getDictionaryFilePath());
+	//this->getPhrases().createIndex(this->getPhrasesFilePath());
+	if (this->getNumberOfWords() == 0)
+		this->loadPhrases(true);
 }
 
+std::string StatisticsManager::getDictionaryFilePath() const {
+	return dictionaryFilePath;
+}
+
+void StatisticsManager::setDictionaryFilePath(std::string dictionaryFilePath) {
+	this->dictionaryFilePath = dictionaryFilePath;
+}
+
+std::string StatisticsManager::getPhrasesFilePath() const {
+	return phrasesFilePath;
+}
+
+void StatisticsManager::setPhrasesFilePath(std::string phrasesFilePath) {
+	this->phrasesFilePath = phrasesFilePath;
+}
+
+unsigned int StatisticsManager::getNumberOfWords() const {
+	return this->numberOfWords;
+}
+
+void StatisticsManager::setNumberOfWords(unsigned int numberOfWords) {
+	this->numberOfWords = numberOfWords;
+}
+
+unsigned int StatisticsManager::getNumberOfPhrases() const {
+	return this->numberOfPhrases;
+}
+
+void StatisticsManager::setNumberOfPhrases(unsigned int numberOfPhrases) {
+	this->numberOfPhrases = numberOfPhrases;
+}
+
+unsigned int StatisticsManager::getNumberOfFailures() const {
+	return this->numberOfFailures;
+}
+
+void StatisticsManager::setNumberOfFailures(unsigned int numberOfFailures) {
+	this->numberOfFailures = numberOfFailures;
+}
+
+std::set<std::string>& StatisticsManager::getStopWords() {
+	return this->stopWords;
+}
 
 //ObjetoDeSeba& StatisticsManager::getDictionary() {
 //	return this->dictionary;
@@ -27,27 +74,15 @@ StatisticsManager::StatisticsManager() {
 //	return this->notFoundWords;
 //}
 
-std::set<std::string>& StatisticsManager::getStopWords() {
-	return this->stopWords;
+void StatisticsManager::loadStatus() {
+	TextInputSequentialFile<TextDictionaryRecord<false> > statusFile("statisticsManager.properties",10);
+
+	this->setDictionaryFilePath(statusFile.getRecord().getWord());
+	this->setPhrasesFilePath(statusFile.getRecord().getWord());
+	this->setNumberOfWords(atoi(statusFile.getRecord().getWord().c_str()));
+	this->setNumberOfPhrases(atoi(statusFile.getRecord().getWord().c_str()));
+	this->setNumberOfFailures(atoi(statusFile.getRecord().getWord().c_str()));
 }
-
-float StatisticsManager::getAverageWordsPerPhrase() const {
-	return this->averageWordsPerPhrase;
-}
-
-void StatisticsManager::setAverageWordsPerPhrase(float averageWordsPerPhrase) {
-	this->averageWordsPerPhrase = averageFailures;
-}
-
-float StatisticsManager::getAverageFailures() const {
-	return this->averageFailures;
-}
-
-void StatisticsManager::setAverageFailures(float averageFailures) {
-	this->averageFailures = averageWordsPerPhrase;
-}
-
-
 
 void StatisticsManager::loadStopWords() {
 	//TODO Mariano. Crear un objeto registro de texto puro para estos casos usarlo donde corresponda.
@@ -60,14 +95,8 @@ void StatisticsManager::loadStopWords() {
 	}
 }
 
-void StatisticsManager::initializeIndexes(std::string dictionaryFilePath) {
-	//this->getDictionary().createIndex(dictionaryFilePath);
-	this->createPhrases();
-}
-
-//ver de ponerle un nombre mejor
-void StatisticsManager::createPhrases(std::string phrasesFilePath) {
-	TextInputSequentialFile<TextDictionaryRecord<false> > phrasesFile(phrasesFilePath,10);
+void StatisticsManager::loadPhrases(bool insertInHash) {
+	TextInputSequentialFile<TextDictionaryRecord<false> > phrasesFile(this->getPhrasesFilePath(),10);
 	std::string phrase;
 	std::vector<std::string> phraseWords;
 	unsigned int totalPhrases = 0;
@@ -95,30 +124,39 @@ void StatisticsManager::createPhrases(std::string phrasesFilePath) {
 				//}
 			}
 		}
-		//this->getPhrases().insert(phrase);
+		if (insertInHash) {
+			//this->getPhrases().insert(phrase);
+		}
 	}
 
-	//Se guardan las tasas pedidas.
-	//TODO Chequear si son realmente las tasas pedidas.
-	this->setAverageWordsPerPhrase(totalWords / totalPhrases);
-	this->setAverageFailures(totalFailures / totalWords);
+	//Se guardan las estadísticas.
+	this->setNumberOfWords(totalWords);
+	this->setNumberOfPhrases(totalPhrases);
+	this->setNumberOfFailures(totalFailures);
 
 	//Se genera el ranking de palabras.
 	//this->getDictionary().export("dictionary-export");
-	//TODO ver que onda con el archivo de particiones. Dado que se Maxi dijo que se debe poder decirle si se
-	//quiere que deje o no la carpeta de particiones, ahora crea una carpeta de particiones nueva cada vez.
-	//Se podrían discutir posibilidades
 	externalSorter.sort("dictionary-export",true);
+}
+
+void StatisticsManager::clearStatistics() {
+	this->setNumberOfWords(0);
+	this->setNumberOfPhrases(0);
+	this->setNumberOfFailures(0);
 }
 
 void StatisticsManager::printAverageWordsPerPhrase() {
 	//TODO Mariano. Usar constante para el texto.
-	std::cout << "Cantidad de terminos promedio por frase: " << floatToString(this->getAverageWordsPerPhrase()) << std::endl;
+	std::cout << "Cantidad de terminos promedio por frase: "
+			  << floatToString(this->getNumberOfWords() / this->getNumberOfPhrases())
+			  << std::endl;
 }
 
 void StatisticsManager::printAverageFailures() {
 	//TODO Mariano. Usar constante para el texto.
-	std::cout << "Tasa de fallos de terminos: " << floatToString(this->getAverageFailures()) << std::endl;
+	std::cout << "Tasa de fallos de terminos: "
+			  << floatToString(this->getNumberOfFailures() / this->getNumberOfWords())
+			  << std::endl;
 }
 
 void StatisticsManager::printNotFoundWords() {
@@ -144,6 +182,27 @@ void StatisticsManager::printWordRanking(unsigned int rankingSize) {
 	}
 }
 
+bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::string>& commandParams) {
+	//TODO Mariano.
+	return true;
+}
+
+void StatisticsManager::saveStatus() {
+	TextOutputSequentialFile<TextDictionaryRecord<false> > statusFile("statisticsManager.properties",10);
+	TextDictionaryRecord<false> statusRecord;
+
+	statusRecord.setWord(this->getDictionaryFilePath());
+	statusFile.putRecord(statusRecord);
+	statusRecord.setWord(this->getPhrasesFilePath());
+	statusFile.putRecord(statusRecord);
+	statusRecord.setWord(intToString(this->getNumberOfWords()));
+	statusFile.putRecord(statusRecord);
+	statusRecord.setWord(intToString(this->getNumberOfPhrases()));
+	statusFile.putRecord(statusRecord);
+	statusRecord.setWord(intToString(this->getNumberOfFailures()));
+	statusFile.putRecord(statusRecord);
+}
+
 void StatisticsManager::printHelp() {
 	std::cout 	<< std::endl
 				<< HELP_TITLE << std::endl
@@ -163,11 +222,6 @@ void StatisticsManager::printHelp() {
 				<< std::endl
 				<< HELP_TEXT_EXIT <<std::endl
 				<< std::endl;
-}
-
-bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::string>& commandParams) {
-	//TODO Mariano.
-	return true;
 }
 
 void StatisticsManager::processCommand(std::string& command, std::vector<std::string>& commandParams) {
@@ -190,11 +244,19 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 		}
 
 		if (command == COMMAND_LOAD_DICTIONARY) {
-			this->initializeIndexes(commandParams[1].c_str());
+			//this->getDictionary().clear();
+			this->clearStatistics();
+			this->setDictionaryFilePath(commandParams[1]);
+			//this->getDictionary().createIndex(this->getDictionaryFilePath());
+			this->loadPhrases(false);
 		}
 
 		if (command == COMMAND_LOAD_PHRASES) {
-			this->createPhrases(commandParams[1].c_str());
+			//this->getPhrases().clear();
+			clearStatistics();
+			this->setPhrasesFilePath(commandParams[1]);
+			//this->getPhrases().createIndex(this->getPhrasesFilePath());
+			this->loadPhrases(true);
 		}
 
 		if (command == COMMAND_PRINT_HELP) {
@@ -206,4 +268,5 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 }
 
 StatisticsManager::~StatisticsManager() {
+	this->saveStatus();
 }
