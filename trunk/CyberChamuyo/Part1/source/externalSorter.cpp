@@ -4,7 +4,7 @@
 
 #include "textInputSequentialFile.h"
 #include "binaryInputSequentialFile.h"
-#include "binaryoutputSequentialFile.h"
+#include "binaryOutputSequentialFile.h"
 #include "statisticsRecord.h"
 #include "stringUtilities.h"
 
