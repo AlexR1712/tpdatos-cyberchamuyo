@@ -9,8 +9,6 @@ template<bool withId> class BinaryDictionaryRecord : public DictionaryRecord {
 public:
 	BinaryDictionaryRecord();
 
-	bool asText();
-
 	void deserialize(std::string string);
 
 	std::string serialize();
@@ -19,10 +17,6 @@ public:
 };
 
 template<bool withId> BinaryDictionaryRecord<withId>::BinaryDictionaryRecord():DictionaryRecord(withId) {
-}
-
-template<bool withId> bool BinaryDictionaryRecord<withId>::asText() {
-	return false;
 }
 
 template<bool withId> void BinaryDictionaryRecord<withId>::deserialize(std::string string) {
