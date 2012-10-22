@@ -13,7 +13,6 @@ Frase::Frase(std::string& author, std::string& phrase, unsigned long int m):auto
 	this->n = m;
 }
 
-
 std::string* Frase::Deshidratar(void) {
 	std::ostringstream buffer;
 	buffer << *this;
@@ -21,10 +20,8 @@ std::string* Frase::Deshidratar(void) {
 	return dato;
 }
 
-
 Frase::Frase(void):autor(""), frase("") {
 	this->n = 0;
-
 }
 
 int Frase::getTamano() {
@@ -50,6 +47,9 @@ void Frase::Imprimir(std::ostream& oss) {
 	//oss << "***********************" << std::endl;
 }
 
+// FUNCIONAMIENTO OPERATOR<<:
+// Imprime los datos de la frase en un archivo binario.
+
 std::ostream& operator<<(std::ostream& oss, Frase &phrase) {
 	oss.write((char*)&phrase.n, sizeof(phrase.n));
 	int N = phrase.autor.length();
@@ -60,6 +60,9 @@ std::ostream& operator<<(std::ostream& oss, Frase &phrase) {
 	oss.write(phrase.frase.c_str(), phrase.frase.length());
 	return oss;
 }
+
+// FUNCIONAMIENTO OPERATOR>>:
+// Lee y carga los datos de la frase de un archivo binario.
 
 std::istream& operator>>(std::istream& oss, Frase &phrase) {
 	int tamanoAutor = 0;

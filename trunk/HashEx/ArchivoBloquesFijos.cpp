@@ -9,6 +9,10 @@
 #include <fstream>
 #include "ArchivoBloquesFijos.h"
 
+// FUNCIONAMIENTO Constructor de ArchivoBloquesFijos:
+// Construye el objeto seteando sus valores en default o
+// lee y carga del archivo en caso de existir.
+
 ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque){
     int it = 0;
     int bloqueLibre;
@@ -33,6 +37,9 @@ ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque
     }
     this->dir = filename;
 }
+
+// FUNCIONAMIENTO CLEAR:
+// Destruye el archivo de bloques fijos.
 
 void ArchivoBloquesFijos::clear(void) {
 	if(remove(this->dir.c_str()) != 0)
@@ -59,6 +66,10 @@ void ArchivoBloquesFijos::setCantidadBloquesLibres(int cantidad){
     this->cantidadBloquesLibres = cantidad;
 }
 
+// FUNCIONAMIENTO OBTENER BLOQUE LIBRE:
+// Devuelve el primer bloque libre del vector de bloques libres.
+// En caso de no existir devuelve ERR_BLOQUE_INEXISTENTE.
+
 unsigned int ArchivoBloquesFijos::ObtenerBloqueLibre(){
     unsigned int bloqueLibre;
     if (cantidadBloquesLibres>0){
@@ -66,6 +77,10 @@ unsigned int ArchivoBloquesFijos::ObtenerBloqueLibre(){
         return (bloqueLibre);
     }else return ERR_BLOQUE_INEXISTENTE;
 }
+
+// FUNCIONAMIENTO VERIFICAR BLOQUE LIBRE:
+// Verifica su el número de bloque pasado por parámetro es un
+// bloque libre..
 
 int ArchivoBloquesFijos::VerificarBloqueLibre(unsigned int bloque){
     int it = 0;
@@ -80,6 +95,9 @@ int ArchivoBloquesFijos::VerificarBloqueLibre(unsigned int bloque){
     return resultado;
 }
 
+// FUNCIONAMIENTO SETEAR BLOQUE LIBRE:
+// Borra un bloque libre pasado por parámetro.
+
 void ArchivoBloquesFijos::SetearBloqueLibre(unsigned int bloque){
     int it = 0;
     std::vector<unsigned int>::iterator iterador = bloquesLibres.begin();
@@ -93,6 +111,9 @@ void ArchivoBloquesFijos::SetearBloqueLibre(unsigned int bloque){
     	iterador++;
     }
 }
+
+// FUNCIONAMIENTO ESCRIBIR:
+// Escribe un bloque en el archivo. Cada clase sabe como persistirse.
 
 int ArchivoBloquesFijos::Escribir(Bloque* elemento, long posicion){
     if (posicion > (cantidadBloques)){
@@ -109,6 +130,9 @@ int ArchivoBloquesFijos::Escribir(Bloque* elemento, long posicion){
    return RES_OK;
 }
 
+// FUNCIONAMIENTO LEER:
+// Lee un bloque en el archivo. Cada clase sabe como leerse.
+
 int ArchivoBloquesFijos::Leer(long posicion, Bloque* elemento){
     if (posicion >= cantidadBloques){
         return ERR_BLOQUE_INEXISTENTE;
@@ -122,6 +146,9 @@ int ArchivoBloquesFijos::Leer(long posicion, Bloque* elemento){
     return RES_OK;
 }
 
+// FUNCIONAMIENTO BORRAR:
+// Borra un bloque convirtiéndolo en bloque libre.
+
 void ArchivoBloquesFijos::Borrar(long posicion){
     if (posicion<cantidadBloques){
     	if (VerificarBloqueLibre(posicion)){
@@ -134,6 +161,10 @@ void ArchivoBloquesFijos::Borrar(long posicion){
         throw ExcepcionBloqueInexistente();
     }
 }
+
+// FUNCIONAMIENTO DESTRUCTOR DE ARCHIVO BLOQUES FIJOS:
+// Escribe en el archivo la metadata para ser utilizada
+// en otra sesión.
 
 ArchivoBloquesFijos::~ArchivoBloquesFijos(){
 	int it = 0;
@@ -149,6 +180,10 @@ ArchivoBloquesFijos::~ArchivoBloquesFijos(){
 	}
 	path.close();
 }
+
+// FUNCIONAMIENTO OPERATOR<<:
+// Escribe en un archivo de texto la metadata de
+// el archivo de bloques fijos.
 
 std::ostream& operator<<(std::ostream& oss, ArchivoBloquesFijos &arch) {
     oss << "***********************" << std::endl;

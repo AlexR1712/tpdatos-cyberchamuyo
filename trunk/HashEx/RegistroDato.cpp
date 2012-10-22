@@ -36,10 +36,16 @@ unsigned long int RegistroDato::getClaveDato(void) {
 	return this->dato->getClave();
 }
 
+// FUNCIONAMIENTO READ:
+// Lee el dato del archivo binario.
+
 void RegistroDato::read(std::istream& oss) {
 	this->dato = new Data::Frase;
 	oss >> *(this->dato);
 }
+
+// FUNCIONAMIENTO PRINT:
+// Escribe el dato al archivo binario.
 
 void RegistroDato::print(std::ostream& oss) {
 	oss << *(this->dato);

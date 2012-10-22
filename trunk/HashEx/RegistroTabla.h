@@ -11,6 +11,13 @@
 #include "RegistroVariable.h"
 #include "ArrayBytes.h"
 
+// REGISTRO TABLA: Registro que contiene una partición de la tabla.
+
+// ATRIBUTOS REGISTRO TABLA:
+//
+// DATO: el dato que contiene el registro.
+//
+
 namespace Hash {
 
 class RegistroTabla: public RegistroVariable {

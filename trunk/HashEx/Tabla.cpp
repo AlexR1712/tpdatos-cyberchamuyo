@@ -13,6 +13,9 @@ Tabla::Tabla(ArchivoBloquesFijos& arch_disp):arch(arch_disp) {
 	CargarTabla();
 }
 
+// FUNCIONAMIENTO HIDRATAR:
+// Hidrata una partición de la tabla y la agrega.
+
 void Tabla::Hidratar(const std::string& dato) {
 	int posActual = dato.find("\t");
 	int posAnterior = 0;
@@ -24,6 +27,10 @@ void Tabla::Hidratar(const std::string& dato) {
 		valor = dato.substr(posAnterior + 1, posActual - posAnterior - 1);
 	}
 }
+
+// FUNCIONAMIENTO CARGAR TABLA RECURSIVO:
+// Carga la tabla recursivamente siguiendo la secuencia de
+// de bloques tabla.
 
 void Tabla::CargarTablaRecursivo(unsigned long int pos) {
 	BloqueTabla bl(this->arch.getTamanoBloque());
@@ -47,6 +54,9 @@ void Tabla::CargarTabla(void) {
 	}
 }
 
+// FUNCIONAMIENTO VINCULAR ANTERIOR:
+// Vincula un bloque tabla con su anterior en la secuencia.
+
 void Tabla::VincularAnterior(int pos, int siguiente) {
 	BloqueTabla bl(this->arch.getTamanoBloque());
 	if (this->arch.Leer(pos, &bl) != ERR_BLOQUE_INEXISTENTE) {
@@ -57,6 +67,9 @@ void Tabla::VincularAnterior(int pos, int siguiente) {
 	}
 }
 
+// FUNCIONAMIENTO CARGAR LISTA BLOQUES TABLA RECURSIVA:
+// Carga en una lista de la tabla.
+
 void Tabla::cargarListaBloquesTablaRecursiva(unsigned int pos, listaTabla& list) {
 	long tamanoBloque = this->arch.getTamanoBloque();
 	list.push_back(pos);
@@ -66,6 +79,9 @@ void Tabla::cargarListaBloquesTablaRecursiva(unsigned int pos, listaTabla& list)
 	if (sig != SIN_SIGUIENTE)
 		cargarListaBloquesTablaRecursiva(sig, list);
 }
+
+// FUNCIONAMIENTO ACTUALIZAR BLOQUE:
+// Actualiza un bloque tabla.
 
 void Tabla::ActualizarBloque(unsigned int pos, Data::ArrayBytes* dato) {
 	BloqueTabla bl(this->arch.getTamanoBloque());
@@ -97,6 +113,9 @@ void Tabla::ActualizarOCrear(itListaTabla& jt, listaTabla& list,
 		CrearBloqueTabla(dato);
 }
 
+// FUNCIONAMIENTO ACTUALIZAR SIGUIENTE:
+// Actualiza un el siguiente de un bloque.
+
 void Tabla::ActualizarSiguiente(unsigned int pos) {
 	BloqueTabla bl(this->arch.getTamanoBloque());
 	this->arch.Leer(pos, &bl);
@@ -105,6 +124,10 @@ void Tabla::ActualizarSiguiente(unsigned int pos) {
 		bl.setSiguiente(0);
 	this->arch.Escribir(&bl, pos);
 }
+
+// FUNCIONAMIENTO PARTICIONAR TABLA:
+// Particiona la tabla en array de bytes para ser guardados en
+// la estructura.
 
 void Tabla::ParticionarTabla(listaTabla& list) {
 	itListaTabla jt = list.begin();
@@ -171,6 +194,10 @@ void Tabla::GuardarTabla(void) {
 	}
 }
 
+// FUNCIONAMIENTO RECORRER Y REEMPLAZAR:
+// Recorre la tabla y reemplaza la mitad de las apariciones de
+// postabla por nuevo valor.
+
 void Tabla::RecorrerYReemplazar(int posTabla, long nuevoValor, unsigned int td) {
 	unsigned int i = posTabla;
 	while (i < this->tabla.size()) {
@@ -183,6 +210,10 @@ void Tabla::RecorrerYReemplazar(int posTabla, long nuevoValor, unsigned int td) 
 		j = j - td;
 	}
 }
+
+// FUNCIONAMIENTO BUSCAR Y REEMPLAZAR:
+// Reemplaza valores de la tabla por el que se encuentra a
+// derecha e izquierda del mismo en td posiciones.
 
 bool Tabla::BuscarYReemplazar(int posTabla, unsigned int td) {
 	if (this->tabla.size() != 1) {
@@ -226,6 +257,9 @@ unsigned int Tabla::getNumeroBloque(int posTabla) {
 	return this->tabla[posTabla];
 }
 
+// FUNCIONAMIENTO VERIFICAR ESPEJAMIENTO:
+// Verifica si la mitad de la tabla es igual a la otra.
+
 bool Tabla::verificarEspejamiento() {
 	int mitad = this->tabla.size() / 2;
 	bool noIgual = true;
@@ -238,6 +272,10 @@ bool Tabla::verificarEspejamiento() {
 	}
 	return noIgual;
 }
+
+// FUNCIONAMIENTO DISMINUIR TABLA
+// Disminuye la tabla por la mitad en el caso de que esta este
+// espejada.
 
 bool Tabla::disminuirTabla(void) {
 	if (verificarEspejamiento()) {

@@ -8,6 +8,9 @@
 #include "BloqueTabla.h"
 
 
+// FUNCIONAMIENTO CONSTRUCTOR DE BLOQUE TABLA:
+// LLama al constructor del bloque para setear los valores
+// del padre y setea el siguiente.
 
 BloqueTabla::BloqueTabla(long tamanoBloque):Bloque(tamanoBloque) {
 	this->siguiente = 0;
@@ -25,13 +28,22 @@ void BloqueTabla::setSiguiente(unsigned int siguiente) {
 	this->siguiente = siguiente;
 }
 
+// FUNCIONAMIENTO PRINT:
+// Escribe del archivo binario el valor de su siguiente.
+
 void BloqueTabla::print(std::ostream& oss) const {
 	oss.write((char*)&(this->siguiente), sizeof(unsigned int));
 }
 
+// FUNCIONAMIENTO INPUT:
+// Lee del archivo binario el valor de su siguiente.
+
 void BloqueTabla::input(std::istream& oss) const {
 	oss.read((char*) &(this->siguiente), sizeof(unsigned int));
 }
+
+// FUNCIONAMIENTO LLenarRegistros:
+// Lee del archivo binario los registros y los carga al bloque.
 
 void BloqueTabla::LlenarRegistros(std::istream& oss, int cantReg) {
 	int it = 0;
@@ -43,13 +55,9 @@ void BloqueTabla::LlenarRegistros(std::istream& oss, int cantReg) {
 	}
 }
 
-/*void BloqueTabla::cargarTabla(array& vec) {
-	int cantReg = this->getCantRegistros();
-	for (int i = 0; i < cantReg; ++i) {
-		RegistroVariable* Registro = this->getRegistro(i);
-		this->
-	}
-}*/
+// FUNCIONAMIENTO IMPRIMIR A TEXTO:
+// Imprime en un archivo de texto el contenido de los datos
+// y los registros.
 
 void BloqueTabla::ImprimirATexto(std::ostream& oss) {
 	//oss << "***********************" << std::endl;

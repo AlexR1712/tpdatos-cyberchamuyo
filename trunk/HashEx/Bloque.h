@@ -1,8 +1,7 @@
 /* 
  * File:   Bloque.h
- * Author: emperor
  *
- * Created on 6 de abril de 2012, 19:30
+ *
  */
 
 #ifndef BLOQUE_H
@@ -16,6 +15,23 @@ using std::runtime_error;
 
 typedef std::list <RegistroVariable*> listaReg;
 typedef std::list <RegistroVariable*>::iterator itListaReg;
+
+// BLOQUE: Clase que representa la entidad bloque. Contiene
+// registros variables que podrán ser agregados dependiendo
+// del total de memoria disponible que posea.
+
+// ATRIBUTOS BLOQUE
+//
+// TAMANOBLOQUE: Contiene el tamaño del bloque.
+//
+// REGISTRO: La lista de registros variables que contiene
+// el bloque.
+//
+// ESPACIOLIBRE: La cantidad de espacio libre qu poseé el bloque.
+//
+// CANTIDAD REGISTROS: La cantidad total de registros que poseé
+// el bloque.
+//
 
 class Bloque
 {

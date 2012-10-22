@@ -11,6 +11,17 @@
 #include "Bloque.h"
 #include "RegistroTabla.h"
 
+// BLOQUE TABLA: Tipo de Bloque que contiene particiones de la tabla
+// de dispersión. Como esta tabla se guarda como una lista enlazada
+// en el archivo binario, los bloques poseen una referencia al
+// siguiente bloque con la continuación de la tabla.
+
+// ATRIBUTOS BLOQUE TABLA
+//
+// SIGUIENTE: Número de bloque que contiene el próximo bloque
+// tabla con la próxima partición de la tabla de dispersión.
+//
+
 class BloqueTabla: public Bloque {
 private:
 	unsigned int siguiente;

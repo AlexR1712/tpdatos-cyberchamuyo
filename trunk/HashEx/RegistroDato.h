@@ -12,6 +12,13 @@
 #include <iostream>
 #include "RegistroVariable.h"
 
+// REGISTRO DATO: Registro que contiene los datos de la dispersión.
+
+// ATRIBUTOS REGISTRO DATO:
+//
+// DATO: el dato que contiene el registro
+//
+
 namespace Hash {
 
 class RegistroDato: public RegistroVariable {

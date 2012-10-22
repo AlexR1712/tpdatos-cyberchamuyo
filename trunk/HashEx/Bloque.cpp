@@ -1,8 +1,6 @@
 /*
- * File:   Estruct.cpp
- * Author: emperor
+ * File: Bloque.cpp
  *
- * Created on 7 de abril de 2012, 20:30
  */
 
 #include <list>
@@ -10,12 +8,22 @@
 
 #include "Bloque.h"
 
+// FUNCIONAMIENTO CONSTRUCTOR DE BLOQUE:
+// Setea los valores iniciales del bloque.
+// La cantidad de espacio libre es el tamaño del
+// bloque.
 
 Bloque::Bloque(long tamanoBloque){
     this->tamanoBloque=tamanoBloque;
     this->espacioLibre=tamanoBloque;
     this->cantRegistros=0;
  }
+
+// FUNCIONAMIENTO ADDREGISTRO:
+// Agrega un registro a la estructura. En caso
+// de no haber lugar devolverá error. En caso
+// afirmativo lo agrega a la lista y modifica el
+// espacio libre.
 
 int Bloque::addRegistro(RegistroVariable *registro){
     long espacioOcupado;
@@ -30,6 +38,9 @@ int Bloque::addRegistro(RegistroVariable *registro){
     return RES_OK;
 }
 
+// FUNCIONAMIENTO VACIAR:
+// Vacia un bloque.
+
 void Bloque::vaciar(void) {
 	this->espacioLibre = tamanoBloque;
 	this->cantRegistros = 0;
@@ -41,6 +52,10 @@ long Bloque::getEspacioLibre(){
 
     return (this->espacioLibre);
 }
+
+// FUNCIONAMIENTO GET REGISTRO:
+// Devuelve un registro variable dada la posición
+// pasada por parámetro.
 
 RegistroVariable* Bloque::getRegistro(int posicion){
 
@@ -79,6 +94,9 @@ void Bloque::anularRegistros(void) {
 	registros.clear();
 }
 
+// FUNCIONAMIENTO BORRAR DATOS:
+// Libera la memoria dinámica de los registros variables.
+
 void Bloque::borrarDatos(void) {
 	std::list<RegistroVariable*>::iterator it;
 	 for (it = registros.begin(); it != registros.end(); ++it) {
@@ -86,6 +104,11 @@ void Bloque::borrarDatos(void) {
 			 delete *it;
 	 }
 }
+
+// FUNCIONAMIENTO BORRAR REGISTROS:
+// Elimina un registro de un bloque dada la posición
+// pasada como argumento. En caso afirmativo lo elimina
+// en caso contrario devuelve error.
 
 void Bloque::borrarRegistro(int posicion) {
 	if ((posicion<cantRegistros)&&(posicion>=0)){
@@ -109,6 +132,10 @@ Bloque::~Bloque(){
 	borrarDatos();
 }
 
+// FUNCIONAMIENTO OPERATOR<<:
+// Serializa al archivo binario la metadata del bloque
+// como la información de sus registros.
+
 std::ostream& operator<<(std::ostream& oss,	Bloque &bl) {
 	int cantReg = bl.cantRegistros;
 	oss.write((char*)&(cantReg), sizeof(int));
@@ -120,6 +147,10 @@ std::ostream& operator<<(std::ostream& oss,	Bloque &bl) {
 	}
 	return oss;
 }
+
+// FUNCIONAMIENTO OPERATOR>>:
+// Lee y carga del archivo binario la metadata del bloque
+// como la información de sus registros.
 
 std::istream& operator>>(std::istream& oss, Bloque &bl) {
 	int cantReg;
