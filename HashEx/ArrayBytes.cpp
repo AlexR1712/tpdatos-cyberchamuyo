@@ -13,6 +13,9 @@ ArrayBytes::ArrayBytes() {
 
 }
 
+// FUNCIONAMIENTO SERIALIZAR:
+// Serializa el arreglo de bytes como una cadena de caracteres.
+
 void ArrayBytes::serializar(std::ostream& oss) {
 	itArray it;
 	for (it = this->arreglo.begin(); it != this->arreglo.end(); ++it) {
@@ -28,6 +31,9 @@ void ArrayBytes::insertar(unsigned int num) {
 	this->arreglo.push_back(num);
 }
 
+// FUNCIONAMIENTO CONCATENAR:
+// Concatena vectores.
+
 void ArrayBytes::concatenar(array& vec) {
 	vec.insert(vec.begin(), this->arreglo.begin(), this->arreglo.end());
 }
@@ -35,6 +41,9 @@ void ArrayBytes::concatenar(array& vec) {
 ArrayBytes::~ArrayBytes() {
 
 }
+
+// FUNCIONAMIENTO IMPRIMIR:
+// Imprime el array en un archivo de texto.
 
 void ArrayBytes::Imprimir(std::ostream& oss) {
 	oss << "PARTICION: " << std::endl;
@@ -45,6 +54,9 @@ void ArrayBytes::Imprimir(std::ostream& oss) {
 	oss << std::endl;
 }
 
+// FUNCIONAMIENTO OPERATOR<<:
+// Serializa en un archivo binario el contenido de la clase.
+
 std::ostream& operator<<(std::ostream& oss, ArrayBytes &a) {
 	int n = a.arreglo.size();
 	oss.write((char*)&n, sizeof(char));
@@ -54,6 +66,9 @@ std::ostream& operator<<(std::ostream& oss, ArrayBytes &a) {
 	}
 	return oss;
 }
+
+// FUNCIONAMIENTO OPERATOR>>:
+// Lee y carga de un archivo binario el contenido de la clase.
 
 std::istream& operator>>(std::istream& oss, ArrayBytes &a) {
 	int n = 0;

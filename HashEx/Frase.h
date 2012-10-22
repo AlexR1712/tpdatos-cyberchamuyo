@@ -11,6 +11,16 @@
 #include <iostream>
 #include "Aux.h"
 
+// FRASE: Clase que contiene los datos de una frase.
+
+// ATRIBUTOS FRASE:
+//
+// N: Número aleatorio de la frase.
+//
+// AUTOR: Autor de la frase.
+//
+// FRASE: Frase.
+
 namespace Data {
 
 class Frase {

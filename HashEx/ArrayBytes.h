@@ -15,6 +15,15 @@
 typedef std::vector<unsigned int> array;
 typedef std::vector<unsigned int>::iterator itArray;
 
+// ARRAY BYTES: Clase que contiene particiones de la tabla de dispersión.
+//
+
+// ATRIBUTOS ArrayBytes
+//
+// ARREGLO: vector de unsigned int. que contiene una partición de
+// la tabla de dispersión.
+//
+
 namespace Data {
 
 class ArrayBytes {

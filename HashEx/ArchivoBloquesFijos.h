@@ -1,8 +1,6 @@
 /* 
  * File:   ArchivoBloquesFijos.h
- * Author: emperor
  *
- * Created on 6 de abril de 2012, 19:23
  */
 
 #ifndef ARCHIVOBLOQUESFIJOS_H
@@ -13,6 +11,26 @@
 #include <vector>
 #include <string>
 #include <iostream>
+
+// ARCHIVO BLOQUES FIJOS: Clase que administra el archivo binario
+// que posee bloques con registros variables. Determina la inserción
+// de un bloque como así los bloques libres que vayan quedando luego
+// de operaciones de borrado.
+
+// ATRIBUTOS ArchivoBloquesFijos:
+//
+// PATH: El file descriptor del archivo de bloques.
+//
+// CANTIDADBLOQUES: Cantidad de bloques del archivo.
+//
+// TAMANOBLOQUE: El tamaño del bloque.
+//
+// BLOQUESLIBRES: Vector que contiene el número de bloque libre.
+//
+// CANTIDADBLOQUESLIBRES: Cantidad de bloques Libres.
+//
+// DIR: Path del file descriptor.
+//
 
 class ArchivoBloquesFijos {
 private:

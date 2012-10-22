@@ -20,6 +20,18 @@
 typedef std::list<RegistroVariable*> listReg;
 typedef std::list<RegistroVariable*>::iterator itListReg;
 
+// DISPERSION EX: Clase que implementa la dispersión extensible,
+
+// ATRIBUTOS DISPERSION EX:
+//
+// ARCH_DISP: El archivo de bloques fijos que guarda los datos
+// de la dispersión.
+//
+// TABLA: Clase que contiene la tabla de dispersión.
+//
+// numRandom: Número aleatorio que se le asigna a la frase.
+
+
 namespace Hash {
 
 class DispersionEx {

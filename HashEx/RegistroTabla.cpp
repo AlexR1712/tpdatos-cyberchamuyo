@@ -35,10 +35,16 @@ unsigned long int RegistroTabla::getClaveDato(void) {
 	return 0;
 }
 
+// FUNCIONAMIENTO READ:
+// Lee el dato del archivo binario.
+
 void RegistroTabla::read(std::istream& oss) {
 	this->dato = new Data::ArrayBytes;
 	oss >> *(this->dato);
 }
+
+// FUNCIONAMIENTO PRINT:
+// Escribe el dato al archivo binario.
 
 void RegistroTabla::print(std::ostream& oss) {
 	oss << *(this->dato);
@@ -52,6 +58,9 @@ void RegistroTabla::borrarDato() {
 int RegistroTabla::getTamanoDato() {
 	return this->dato->getTamano();
 }
+
+// FUNCIONAMIENTO SERIALIZAR:
+// Serializa la tabla en un ostream.
 
 void RegistroTabla::serializar(std::ostream& oss) {
 	this->dato->serializar(oss);

@@ -17,6 +17,15 @@
 typedef std::list<unsigned int>::iterator itListaTabla;
 typedef std::list<unsigned int> listaTabla;
 
+// TABLA: Clase que representa la tabla de la dispersión.
+
+// ATRIBUTOS TABLA:
+//
+// TABLA: Array de unsigned int con la tabla completa.
+//
+// ARCH: Archivo de Bloques Fijos.
+//
+
 namespace Hash {
 
 class Tabla {

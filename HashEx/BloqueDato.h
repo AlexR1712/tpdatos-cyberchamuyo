@@ -11,6 +11,14 @@
 #include "Bloque.h"
 #include "RegistroDato.h"
 
+// BLOQUE DATO: Tipo de Bloque que contiene la frase y sus datos.
+// También poseé el número de td asociado al bloque.
+
+// ATRIBUTOS BLOQUE DATO
+//
+// TD: El número de td asociado al bloque.
+//
+
 class BloqueDato: public Bloque {
 private:
 	unsigned int td;

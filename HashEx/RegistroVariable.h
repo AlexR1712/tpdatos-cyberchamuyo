@@ -13,6 +13,9 @@
 #include <sstream>
 using std::string;
 
+// REGISTRO VARIABLE: Clase abstracta que representa un registro
+// variable.
+
 class RegistroVariable
 {
 public:
