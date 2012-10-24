@@ -8,7 +8,7 @@
 #include "outputTexts.h"
 
 #ifndef STATUS_FILE_PATH
-#define STATUS_FILE_PATH "config//statisticsManager//statisticsManager.properties"
+#define STATUS_FILE_PATH "config//statisticsManager//statisticsManagerStatus"
 #endif /*STATUS_FILE_PATH*/
 
 #ifndef STOP_WORDS_FILE_PATH
@@ -16,11 +16,11 @@
 #endif /*STOP_WORDS_FILE_PATH*/
 
 #ifndef RANKINGS_FILE_PATH
-#define RANKINGS_FILE_PATH "output//rankings"
+#define RANKINGS_FILE_PATH "outputFiles//rankings"
 #endif /*RANKINGS_FILE_PATH*/
 
 #ifndef RANKINGS_FILE_PATH_ORDERED
-#define RANKINGS_FILE_PATH_ORDERED "output//rankings_ordered"
+#define RANKINGS_FILE_PATH_ORDERED "outputFiles//rankings_ordered"
 #endif /*RANKINGS_FILE_PATH_ORDERED*/
 
 #ifndef FILES_BUFFER_SIZE
@@ -90,6 +90,8 @@ private:
 	void loadStatus();
 
 	void loadStopWords();
+
+	void createDictionary(bool force);
 
 	void loadMemorableQuotes(bool insertInHash);
 

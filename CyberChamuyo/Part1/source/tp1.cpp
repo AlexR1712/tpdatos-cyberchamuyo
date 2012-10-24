@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <iostream>
 
-#include "dictionaryNormalizer.h"
-#include "dictionaryRandomizer.h"
 #include "stringUtilities.h"
 #include "statisticsManager.h"
 
@@ -13,19 +11,6 @@ int main(int argc, char *argv[]){
 	std::string command;
 	std::vector<std::string> commandParams;
 	StatisticsManager statisticsManager;
-	bool showId = false;
-
-	if (argc == 2) {
-		command = argv[1];
-		if (command == "true")
-			showId = true;
-	}
-
-	DictionaryNormalizer dictionaryNormalizer;
-	dictionaryNormalizer.normalize("dictionary.txt");
-
-	DictionayRandomizer dictionayRandomizer;
-	dictionayRandomizer.randomizeDictionary("dictionary_NORMALIZED.txt",showId);
 
 	statisticsManager.printHelp();
 	do {

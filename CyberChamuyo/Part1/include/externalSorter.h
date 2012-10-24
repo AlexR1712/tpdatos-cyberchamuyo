@@ -15,6 +15,8 @@ private:
 
 	unsigned int filesBufferSize;
 
+	std::string tempFolderName;
+
 	Heap<BinaryDictionaryRecord<true> >& getSortBuffer();
 
 	unsigned int getFilesBufferSize() const;
@@ -33,11 +35,12 @@ private:
 
 	void clearOutput(unsigned int level = 1);
 
-	void merge();
+	void merge(std::string outputFilepath);
+
 public:
 	ExternalSorter(unsigned int filesBufferSize, bool showId);
 
-	void sort(std::string filepath, bool leaveTraces);
+	void sort(std::string inputFilepath, std::string outputFilepath, bool leaveTraces);
 
 	~ExternalSorter();
 };

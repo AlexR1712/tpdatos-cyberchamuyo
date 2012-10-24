@@ -1,7 +1,7 @@
 #include <sstream>
 #include "stringUtilities.h"
 
-void splitString(std::string& string, std::vector<std::string>& splittedString, char delimiter) {
+void splitString(std::string string, std::vector<std::string>& splittedString, char delimiter) {
 	unsigned int from = 0;
 	unsigned int to = 0;
 
@@ -12,7 +12,7 @@ void splitString(std::string& string, std::vector<std::string>& splittedString, 
 	}
 }
 
-bool isNumeric(std::string& string) {
+bool isNumeric(std::string string) {
 	if (string == "") {
 		return false;
 	} else {
@@ -51,7 +51,7 @@ std::string padRight(std::string string, char padWith, unsigned int padTo) {
 	return paddedString;
 }
 
-int StringToInt (const std::string& Text ) {
+int StringToInt (const std::string Text ) {
 	int result;
 	std::stringstream stringstream(Text);
 	return stringstream >> result ? result : 0;

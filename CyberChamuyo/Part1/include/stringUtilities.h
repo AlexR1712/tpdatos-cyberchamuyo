@@ -4,15 +4,15 @@
 #include <string>
 #include <vector>
 
-void splitString(std::string& string, std::vector<std::string>& splittedString, char delimiter);
+void splitString(std::string string, std::vector<std::string>& splittedString, char delimiter);
 
-bool isNumeric(std::string& string);
+bool isNumeric(std::string string);
 
 std::string padLeft(std::string string, char padWith, unsigned int padTo);
 
 std::string padRight(std::string string, char padWith, unsigned int padTo);
 
-int StringToInt (const std::string& Text );
+int StringToInt (const std::string Text );
 
 std::string intToString(int i);
 

@@ -4,16 +4,20 @@
 
 #include "textInputSequentialFile.h"
 #include "textOutputSequentialFile.h"
+#include "binaryInputSequentialFile.h"
 #include "binaryDictionaryRecord.h"
 #include "textRecord.h"
 #include "stringUtilities.h"
 #include "externalSorter.h"
+#include "dictionaryNormalizer.h"
+#include "dictionaryRandomizer.h"
 
 
 StatisticsManager::StatisticsManager() {
 	this->loadStatus();
 	this->loadStopWords();
-	//this->getDictionary().createIndex(this->getDictionaryFilePath());
+	this->createDictionary(false);
+	//this->getDictionary().createIndex("outputFiles//dictionary_RANDOMIZED_ORDERED");
 	//this->getMemorableQuotes().createIndex(this->getMemorableQuotesFilePath());
 	if (this->getNumberOfWords() == 0)
 		this->loadMemorableQuotes(true);
@@ -95,6 +99,17 @@ void StatisticsManager::loadStopWords() {
 	}
 }
 
+void StatisticsManager::createDictionary(bool force) {
+	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > dictionaryFile("outputFiles//dictionary_RANDOMIZED_ORDERED");
+	if (dictionaryFile.fail() || force) {
+		DictionaryNormalizer dictionaryNormalizer;
+		DictionayRandomizer dictionayRandomizer;
+
+		dictionaryNormalizer.normalize(this->getDictionaryFilePath());
+		dictionayRandomizer.randomizeDictionary("outputFiles//dictionary_NORMALIZED.txt",false);
+	}
+}
+
 void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	TextInputSequentialFile<TextRecord> memorableQuotesFile(this->getMemorableQuotesFilePath(),FILES_BUFFER_SIZE);
 	std::string phrase;
@@ -139,7 +154,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 
 	//Se genera el ranking de palabras.
 	//this->getDictionary().export(RANKINGS_FILE_PATH);
-	externalSorter.sort(RANKINGS_FILE_PATH,true);
+	externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
 }
 
 void StatisticsManager::clearStatistics() {
@@ -264,7 +279,8 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 			//this->getDictionary().clear();
 			this->clearStatistics();
 			this->setDictionaryFilePath(commandParams[0]);
-			//this->getDictionary().createIndex(this->getDictionaryFilePath());
+			this->createDictionary(true);
+			//this->getDictionary().createIndex("outputFiles//dictionary_RANDOMIZED_ORDERED");
 			this->loadMemorableQuotes(false);
 		}
 
