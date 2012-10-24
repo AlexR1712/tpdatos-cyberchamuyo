@@ -1,5 +1,9 @@
 #include "dictionaryRandomizer.h"
 
+//#include <random>
+//#include <chrono>
+
+//quitar esto cuando ande c++ 11
 #include <time.h>
 #include <stdlib.h>
 
@@ -7,34 +11,50 @@
 #include "textOutputSequentialFile.h"
 #include "binaryOutputSequentialFile.h"
 #include "textDictionaryRecord.h"
+#include "textRecord.h"
 #include "binaryDictionaryRecord.h"
 #include "externalSorter.h"
 
 DictionayRandomizer::DictionayRandomizer() {
+//	this->getGenerator().seed(std::chrono::system_clock::now().time_since_epoch().count());
+
+	//quitar esto cuando ande c++ 11
+	srand((unsigned)time(NULL));
 }
 
+//std::default_random_engine& DictionayRandomizer::getGenerator() {
+//	return this->generator;
+//}
+
 void DictionayRandomizer::createRandomIds(std::string dictionaryPath) {
-	TextInputSequentialFile<TextDictionaryRecord<false> > dictionary(dictionaryPath,FILE_BUFFER_SIZE);
+	TextInputSequentialFile<TextRecord> dictionary(dictionaryPath,FILE_BUFFER_SIZE);
 	TextOutputSequentialFile<TextDictionaryRecord<true> > textRandomizedDiccionary(OUTPUT_FILE_PATH_TEXT,FILE_BUFFER_SIZE);
 	BinaryOutputSequentialFile<BinaryDictionaryRecord<true> > binaryRandomizedDiccionary(OUTPUT_FILE_PATH_BINARY,FILE_BUFFER_SIZE);
-	TextDictionaryRecord<false> inputRecord;
+	TextRecord inputRecord;
 	TextDictionaryRecord<true> outputTextRecord;
 	BinaryDictionaryRecord<true> outputBinaryRecord;
 	std::string line;
 	std::string randomizedLine;
-	int random;
-	srand((unsigned)time(NULL));
+	long random;
 
 	while (!dictionary.endOfFile()) {
-		random = rand();
+		random = generateRandomId();
 		inputRecord = dictionary.getRecord();
 		outputTextRecord.setId(random);
-		outputTextRecord.setWord(inputRecord.getWord());
+		outputTextRecord.setWord(inputRecord.getData());
 		outputBinaryRecord.setId(random);
-		outputBinaryRecord.setWord(inputRecord.getWord());
+		outputBinaryRecord.setWord(inputRecord.getData());
 		textRandomizedDiccionary.putRecord(outputTextRecord);
 		binaryRandomizedDiccionary.putRecord(outputBinaryRecord);
 	}
+}
+
+long DictionayRandomizer::generateRandomId() {
+//	std::uniform_int_distribution<int> distribution(RANDOM_RANGE_MIN,RANDOM_RANGE_MAX);
+//	return distribution(this->grtGenerator());
+
+	//quitar esto cuando ande c++ 11
+	return rand();
 }
 
 void DictionayRandomizer::randomizeDictionary(std::string dictionaryPath, bool showId) {
@@ -42,7 +62,7 @@ void DictionayRandomizer::randomizeDictionary(std::string dictionaryPath, bool s
 
 	this->createRandomIds(dictionaryPath);
 
-	externalSorter.sort(OUTPUT_FILE_PATH_BINARY,true);
+	externalSorter.sort(OUTPUT_FILE_PATH_BINARY,OUTPUT_FILE_PATH_BINARY_ORDERED,true);
 }
 
 DictionayRandomizer::~DictionayRandomizer() {

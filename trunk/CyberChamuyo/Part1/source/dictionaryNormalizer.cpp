@@ -1,48 +1,58 @@
 #include "dictionaryNormalizer.h"
 
-#include <string>
-
 #include "textInputSequentialFile.h"
 #include "textOutputSequentialFile.h"
-#include "textDictionaryRecord.h"
+#include "textRecord.h"
 
 DictionaryNormalizer::DictionaryNormalizer() {
+	loadCharmap();
 }
 
-void DictionaryNormalizer::normalize(std::string dictionaryPath) {
-	TextInputSequentialFile<TextDictionaryRecord<false> > dictionaryFile(dictionaryPath,FILE_BUFFER_SIZE);
-	TextOutputSequentialFile<TextDictionaryRecord<false> > normalizedDictionaryFile(OUTPUT_FILE_PATH,FILE_BUFFER_SIZE);
-	TextDictionaryRecord<false> record;
+std::map<char,char>& DictionaryNormalizer::getCharMap() {
+	return this->charMap;
+}
 
-	while (!dictionaryFile.endOfFile()) {
-		record = dictionaryFile.getRecord();
-		record.setWord(this->normalizeWord(record.getWord()));
-		normalizedDictionaryFile.putRecord(record);
+void DictionaryNormalizer::loadCharmap() {
+	TextInputSequentialFile<TextRecord> charMapFile(CHAR_MAP_FILE_PATH,FILE_BUFFER_SIZE);
+	std::string charMapLine;
+
+	while (!charMapFile.endOfFile()) {
+		charMapLine = charMapFile.getRecord().getData();
+		this->getCharMap().insert(std::pair<char,char>(charMapLine[0],charMapLine[2]));
 	}
 }
 
-std::string DictionaryNormalizer::normalizeWord(const std::string& string) const {
+std::string DictionaryNormalizer::normalizeWord(const std::string string) {
 	std::string normalizedWord;
 	char c;
+	std::map<char,char>::iterator it;
 
 	for (unsigned int i = 0; i < string.length(); ++i) {
 		c = string[i];
-		if ( (c == 'Á') || (c == 'á') )
-			c = 'a';
-		if ( (c == 'É') || (c == 'é') )
-			c = 'e';
-		if ( (c == 'Í') || (c == 'í') )
-			c = 'i';
-		if ( (c == 'Ó') || (c == 'ó') )
-			c = 'o';
-		if ( (c == 'Ú') || (c == 'ú') || (c == 'Ü') || (c == 'ü') )
-			c = 'u';
+
+		it = this->getCharMap().find(c);
+		if (it != this->getCharMap().end())
+			c = it->second;
+
 		if (c >= 'A' && c <= 'Z')
 			c = c + 32;
+
 		normalizedWord += c;
 	};
 
 	return normalizedWord;
+}
+
+void DictionaryNormalizer::normalize(std::string dictionaryPath) {
+	TextInputSequentialFile<TextRecord> dictionaryFile(dictionaryPath,FILE_BUFFER_SIZE);
+	TextOutputSequentialFile<TextRecord> normalizedDictionaryFile(OUTPUT_FILE_PATH,FILE_BUFFER_SIZE);
+	TextRecord record;
+
+	while (!dictionaryFile.endOfFile()) {
+		record = dictionaryFile.getRecord();
+		record.setData(this->normalizeWord(record.getData()));
+		normalizedDictionaryFile.putRecord(record);
+	}
 }
 
 DictionaryNormalizer::~DictionaryNormalizer() {

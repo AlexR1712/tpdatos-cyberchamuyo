@@ -88,7 +88,7 @@
 #endif /*TEXT_NOT_FOUND_WORDS*/
 
 #ifndef TEXT_MOST_SEARCHED_WORDS_TITLE
-#define TEXT_MOST_SEARCHED_WORDS_TITLE(N) "Ranking de las " + N + "palabras mas buscadas: "
+#define TEXT_MOST_SEARCHED_WORDS_TITLE(N) "Ranking de las " + N + " palabras mas buscadas: "
 #endif /*TEXT_MOST_SEARCHED_WORDS_TITLE*/
 
 #ifndef TEXT_MOST_SEARCHED_WORDS_ITEM

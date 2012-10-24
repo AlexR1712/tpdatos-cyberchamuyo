@@ -32,6 +32,8 @@ public:
 
 	const bool endOfFile();
 
+	const bool fail();
+
 	virtual ~SequentialFile() = 0;
 };
 
@@ -56,6 +58,10 @@ template<class T> void SequentialFile<T>::setBufferMaxSize(unsigned int bufferMa
 
 template<class T> const bool SequentialFile<T>::endOfFile() {
 	return this->getBuffer().empty();
+}
+
+template<class T> const bool SequentialFile<T>::fail() {
+	return this->getFile().fail();
 }
 
 template<class T> SequentialFile<T>::~SequentialFile(){
