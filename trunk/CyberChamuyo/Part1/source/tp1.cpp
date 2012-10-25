@@ -27,10 +27,10 @@ int main(int argc, char *argv[]){
 	return EXIT_SUCCESS;
 }
 
-std::string parseCommand(std::string& userInput, std::vector<std::string>& commandParams) {
+std::string parseCommand(std::string userInput, std::vector<std::string>& commandParams) {
 	std::string command = "";
 
-	splitString(userInput,commandParams,USER_COMMAND_SEPARATOR);
+	StringUtilities::splitString(userInput,commandParams,USER_COMMAND_SEPARATOR);
 	command = commandParams[0];
 	commandParams.erase(commandParams.begin());
 

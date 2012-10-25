@@ -6,11 +6,11 @@
 #endif /*FILE_BUFFER_SIZE*/
 
 #ifndef CHAR_MAP_FILE_PATH
-#define CHAR_MAP_FILE_PATH "config//dictionaryRandomizer//charMap"
+#define CHAR_MAP_FILE_PATH "config/dictionaryRandomizer/charMap"
 #endif /*CHAR_MAP_FILE_PATH*/
 
 #ifndef OUTPUT_FILE_PATH
-#define OUTPUT_FILE_PATH "outputFiles//dictionary_NORMALIZED.txt"
+#define OUTPUT_FILE_PATH "outputFiles/dictionary_NORMALIZED.txt"
 #endif /*OUTPUT_FILE_PATH*/
 
 #include <string>

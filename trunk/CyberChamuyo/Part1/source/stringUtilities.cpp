@@ -1,6 +1,8 @@
 #include <sstream>
 #include "stringUtilities.h"
 
+namespace StringUtilities {
+
 void splitString(std::string string, std::vector<std::string>& splittedString, char delimiter) {
 	unsigned int from = 0;
 	unsigned int to = 0;
@@ -90,4 +92,6 @@ std::string trim(std::string string) {
 	}
 
 	return string.substr(from,to);
+}
+
 }
