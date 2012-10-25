@@ -1,11 +1,9 @@
 #include "dictionaryRandomizer.h"
 
-//#include <random>
-//#include <chrono>
 
 //quitar esto cuando ande c++ 11
-#include <time.h>
-#include <stdlib.h>
+//#include <time.h>
+//#include <stdlib.h>
 
 #include "textInputSequentialFile.h"
 #include "textOutputSequentialFile.h"
@@ -16,15 +14,15 @@
 #include "externalSorter.h"
 
 DictionayRandomizer::DictionayRandomizer() {
-//	this->getGenerator().seed(std::chrono::system_clock::now().time_since_epoch().count());
+	this->getGenerator().seed(std::chrono::system_clock::now().time_since_epoch().count());
 
 	//quitar esto cuando ande c++ 11
-	srand((unsigned)time(NULL));
+	//srand((unsigned)time(NULL));
 }
 
-//std::default_random_engine& DictionayRandomizer::getGenerator() {
-//	return this->generator;
-//}
+std::default_random_engine& DictionayRandomizer::getGenerator() {
+	return this->generator;
+}
 
 void DictionayRandomizer::createRandomIds(std::string dictionaryPath) {
 	TextInputSequentialFile<TextRecord> dictionary(dictionaryPath,FILE_BUFFER_SIZE);
@@ -50,11 +48,11 @@ void DictionayRandomizer::createRandomIds(std::string dictionaryPath) {
 }
 
 long DictionayRandomizer::generateRandomId() {
-//	std::uniform_int_distribution<int> distribution(RANDOM_RANGE_MIN,RANDOM_RANGE_MAX);
-//	return distribution(this->grtGenerator());
+	std::uniform_int_distribution<int> distribution(RANDOM_RANGE_MIN,RANDOM_RANGE_MAX);
+	return distribution(this->getGenerator());
 
 	//quitar esto cuando ande c++ 11
-	return rand();
+	//return rand();
 }
 
 void DictionayRandomizer::randomizeDictionary(std::string dictionaryPath, bool showId) {

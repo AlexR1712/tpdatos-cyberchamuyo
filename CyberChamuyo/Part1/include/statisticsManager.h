@@ -6,21 +6,22 @@
 #include <vector>
 
 #include "outputTexts.h"
+#include "IndiceArbol.h"
 
 #ifndef STATUS_FILE_PATH
-#define STATUS_FILE_PATH "config//statisticsManager//statisticsManagerStatus"
+#define STATUS_FILE_PATH "config/statisticsManager/statisticsManagerStatus"
 #endif /*STATUS_FILE_PATH*/
 
 #ifndef STOP_WORDS_FILE_PATH
-#define STOP_WORDS_FILE_PATH "inputFiles//stop-words.txt"
+#define STOP_WORDS_FILE_PATH "inputFiles/stop-words.txt"
 #endif /*STOP_WORDS_FILE_PATH*/
 
 #ifndef RANKINGS_FILE_PATH
-#define RANKINGS_FILE_PATH "outputFiles//rankings"
+#define RANKINGS_FILE_PATH "outputFiles/rankings"
 #endif /*RANKINGS_FILE_PATH*/
 
 #ifndef RANKINGS_FILE_PATH_ORDERED
-#define RANKINGS_FILE_PATH_ORDERED "outputFiles//rankings_ordered"
+#define RANKINGS_FILE_PATH_ORDERED "outputFiles/rankings_ordered"
 #endif /*RANKINGS_FILE_PATH_ORDERED*/
 
 #ifndef FILES_BUFFER_SIZE
@@ -47,17 +48,17 @@ private:
 
 	unsigned int numberOfFailures;
 
-	//Es un set porque la búsqueda es generalmente mas rápida que la búsqueda binaria en un vector.
-	//TODO Mariano. Corregir la configuración del proyecto para usar unordered_set que debería ser aun mas rápido.
+	//Es un set porque la bï¿½squeda es generalmente mas rï¿½pida que la bï¿½squeda binaria en un vector.
+	//TODO Mariano. Corregir la configuraciï¿½n del proyecto para usar unordered_set que deberï¿½a ser aun mas rï¿½pido.
 	std::set<std::string> stopWords;
 
 	//A falta de mejores nombres por ahora
-	//ObjetoDeSeba dictionary;
+	IndiceArbol dictionary;
 
 	//A falta de mejores nombres por ahora
 	//ObjetoDeLucas memorableQuotes;
 
-	//ObjetoDeSeba notFoundWords;
+	IndiceArbol notFoundWords;
 
 	std::string getDictionaryFilePath() const;
 
@@ -81,11 +82,11 @@ private:
 
 	std::set<std::string>& getStopWords();
 
-	//ObjetoDeSeba& getDictionary();
+	IndiceArbol& getDictionary();
 
 	//ObjetoDeLucas& getMemorableQuotes();
 
-	//ObjetoDeSeba& getNotFoundWords();
+	IndiceArbol& getNotFoundWords();
 
 	void loadStatus();
 

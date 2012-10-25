@@ -37,7 +37,7 @@ template<bool withId> void TextDictionaryRecord<withId>::deserialize(std::string
 	std::vector<std::string> recordParams;
 
 	if (this->getIdInFile()) {
-		splitString(string,recordParams,SEPARATOR);
+		StringUtilities::splitString(string,recordParams,SEPARATOR);
 		this->setId(atol(recordParams[0].c_str()));
 		this->setWord(recordParams[1]);
 	} else {
@@ -49,7 +49,7 @@ template<bool withId> std::string TextDictionaryRecord<withId>::serialize() {
 	std::string recordAsString;
 
 	if (this->getIdInFile())
-		recordAsString += padLeft(intToString(this->getId()),ID_PADDING_CHAR,ID_LENGTH) + SEPARATOR;
+		recordAsString += StringUtilities::padLeft(StringUtilities::intToString(this->getId()),ID_PADDING_CHAR,ID_LENGTH) + SEPARATOR;
 	recordAsString += this->getWord();
 
 	return recordAsString;
