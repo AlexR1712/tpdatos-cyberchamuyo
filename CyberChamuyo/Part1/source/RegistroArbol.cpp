@@ -5,8 +5,8 @@
  *      Author: sebastian
  */
 
-#include "RegistroArbol.h"
-#include "ArbolBp.h"
+#include "../include/RegistroArbol.h"
+#include "../include/ArbolBp.h"
 
 RegistroArbol::RegistroArbol() {
 	tipo = TIPO_ARBOL;

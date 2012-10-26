@@ -5,11 +5,11 @@
  *      Author: Shazgath
  */
 
-#include "Registro.h"
-#include "common.h"
+#include "../include/Registro.h"
+#include "../include/common.h"
 #include <cstring>
-#include "CAlfa.h"
-#include "ArbolBp.h"
+#include "../include/CAlfa.h"
+#include "../include/ArbolBp.h"
 
 Registro::Registro() {
 	tipo = TIPO_ARBOL;

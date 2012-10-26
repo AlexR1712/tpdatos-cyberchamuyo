@@ -5,10 +5,10 @@
  *      Author: sebastian
  */
 
-#include "NodoExterno.h"
-#include "ArbolBp.h"
-#include "common.h"
-#include "RegistroArbol.h"
+#include "../include/NodoExterno.h"
+#include "../include/ArbolBp.h"
+#include "../include/common.h"
+#include "../include/RegistroArbol.h"
 
 ArbolBp::ArbolBp(const char* n_arch, int block_size) : arch_arbol(n_arch, N_SIZE), b_size(block_size) {
 	if(arch_arbol.getCantidadBloques() > 0) {
@@ -21,6 +21,7 @@ ArbolBp::ArbolBp(const char* n_arch, int block_size) : arch_arbol(n_arch, N_SIZE
 		int pos = 0;
 		raiz->hidratar(raiz_data, pos);
 		max = raiz->getNivel();
+		delete raiz_data;
 	} else {
 		max = 0;
 		NodoExterno* n1 = new NodoExterno(0, this);
@@ -61,6 +62,7 @@ int ArbolBp::insertarRegistro(Registro* r) {
 		std::cout << "Error registro ya existente" << std::endl;
 		return -1;
 	}
+	delete r;
 	if(max == 0) {
 		if(res == OVERFLOW) {
 			NodoExterno* nh2 = new NodoExterno(0, this);
@@ -174,13 +176,11 @@ void ArbolBp::imprimirNodos() {
 
 void ArbolBp::guardarNodo(Nodo* n, unsigned int id) {
 	std::vector<char>* ns = n->serializar();
-	Bloque b(N_SIZE, ns, ns->size());
-	try {
-		arch_arbol.Escribir(&b, id);
-	} catch(const ExcepcionBloqueInexistente& exc) {
-		throw(Exc_GuardarArchivo());
-	}
-	delete ns;
+	DatoNodo* dato = new DatoNodo(ns);
+	RegistroVariable* reg = new RegistroNodo(dato);
+	BloqueNodo b(N_SIZE);
+	b.addRegistro(reg);
+	arch_arbol.Escribir(&b, id);
 }
 /*
 int ArbolBp::crearNodoExterno(NodoExterno* nE, int nivel) {
@@ -197,7 +197,7 @@ int ArbolBp::crearNodoExterno(NodoExterno* nE, int nivel) {
 int ArbolBp::crearNodo() {
 	int libre = arch_arbol.ObtenerBloqueLibre();
 	if(libre == -1) {
-		Bloque b(N_SIZE);
+		BloqueNodo b(N_SIZE);
 		arch_arbol.Escribir(&b, arch_arbol.getCantidadBloques());
 		return arch_arbol.getCantidadBloques() - 1;
 	} else {
@@ -209,26 +209,29 @@ void ArbolBp::clear() {
 	delete raiz;
 	delete ultimoNodoLeido;
 	ultimoRegistroLeido = 0;
-	arch_arbol.Clear();
+	arch_arbol.clear();
 }
 
 
 std::string ArbolBp::leerNodo(int id) {
-	Bloque b(N_SIZE);
+	BloqueNodo b(N_SIZE);
 	arch_arbol.Leer(id, &b);
 	RegistroVariable* reg = b.getRegistro(0);
-	std::string* data = reg->getDato();
-	return *data;
+	std::ostringstream oss;
+	reg->serializar(oss);
+	return oss.str();
 }
 
 std::vector<char>* ArbolBp::leerNodo2(int id) {
-	Bloque b(N_SIZE);
+	BloqueNodo b(N_SIZE);
 	arch_arbol.Leer(id, &b);
 	RegistroVariable* reg = b.getRegistro(0);
-	std::string* data_s = reg->getDato();
+	std::ostringstream oss;
+	reg->serializar(oss);
+	std::string data_s = oss.str();
 	std::string::iterator it;
 	std::vector<char>* data = new std::vector<char>;
-	for(it = data_s->begin(); it != data_s->end(); ++it) {
+	for(it = data_s.begin(); it != data_s.end(); ++it) {
 		data->push_back(*it);
 	}
 	return data;

@@ -1,17 +1,17 @@
-#include "dictionaryRandomizer.h"
+#include "../include/dictionaryRandomizer.h"
 
 
 //quitar esto cuando ande c++ 11
 //#include <time.h>
 //#include <stdlib.h>
 
-#include "textInputSequentialFile.h"
-#include "textOutputSequentialFile.h"
-#include "binaryOutputSequentialFile.h"
-#include "textDictionaryRecord.h"
-#include "textRecord.h"
-#include "binaryDictionaryRecord.h"
-#include "externalSorter.h"
+#include "../include/textInputSequentialFile.h"
+#include "../include/textOutputSequentialFile.h"
+#include "../include/binaryOutputSequentialFile.h"
+#include "../include/textDictionaryRecord.h"
+#include "../include/textRecord.h"
+#include "../include/binaryDictionaryRecord.h"
+#include "../include/externalSorter.h"
 
 DictionayRandomizer::DictionayRandomizer() {
 	this->getGenerator().seed(std::chrono::system_clock::now().time_since_epoch().count());

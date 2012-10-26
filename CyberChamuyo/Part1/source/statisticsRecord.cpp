@@ -1,9 +1,9 @@
-#include "statisticsRecord.h"
+#include "../include/statisticsRecord.h"
 
 #include <stdlib.h>
 #include <iostream>
 
-#include "stringUtilities.h"
+#include "../include/stringUtilities.h"
 
 StatisticsRecord::StatisticsRecord() {
 }

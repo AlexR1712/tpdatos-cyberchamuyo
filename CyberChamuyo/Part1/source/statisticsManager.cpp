@@ -1,16 +1,16 @@
-#include "statisticsManager.h"
+#include "../include/statisticsManager.h"
 
 #include <iostream>
 
-#include "textInputSequentialFile.h"
-#include "textOutputSequentialFile.h"
-#include "binaryInputSequentialFile.h"
-#include "binaryDictionaryRecord.h"
-#include "textRecord.h"
-#include "externalSorter.h"
-#include "dictionaryNormalizer.h"
-#include "dictionaryRandomizer.h"
-#include "stringUtilities.h"
+#include "../include/textInputSequentialFile.h"
+#include "../include/textOutputSequentialFile.h"
+#include "../include/binaryInputSequentialFile.h"
+#include "../include/binaryDictionaryRecord.h"
+#include "../include/textRecord.h"
+#include "../include/externalSorter.h"
+#include "../include/dictionaryNormalizer.h"
+#include "../include/dictionaryRandomizer.h"
+#include "../include/stringUtilities.h"
 
 StatisticsManager::StatisticsManager() {
 	this->loadStatus();

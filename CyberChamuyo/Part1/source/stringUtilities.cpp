@@ -1,5 +1,5 @@
 #include <sstream>
-#include "stringUtilities.h"
+#include "../include/stringUtilities.h"
 
 namespace StringUtilities {
 

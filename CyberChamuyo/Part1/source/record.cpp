@@ -1,9 +1,9 @@
-#include "record.h"
+#include "../include/record.h"
 
 #include <stdlib.h>
 #include <iostream>
 
-#include "stringUtilities.h"
+#include "../include/stringUtilities.h"
 
 Record::Record() {
 }

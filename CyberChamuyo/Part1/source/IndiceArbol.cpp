@@ -5,11 +5,11 @@
  *      Author: sebastian
  */
 
-#include "IndiceArbol.h"
+#include "../include/IndiceArbol.h"
 #include <fstream>
-#include "CAlfa.h"
+#include "../include/CAlfa.h"
 #include <cstring>
-#include "RegistroArbol.h"
+#include "../include/RegistroArbol.h"
 
 IndiceArbol::IndiceArbol() : arbol("arch_arbol.bin", 512) {
 

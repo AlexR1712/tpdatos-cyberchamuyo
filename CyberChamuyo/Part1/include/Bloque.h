@@ -1,56 +1,77 @@
 /* 
  * File:   Bloque.h
- * Author: emperor
  *
- * Created on 6 de abril de 2012, 19:30
+ *
  */
 
 #ifndef BLOQUE_H
 #define	BLOQUE_H
 
 #include "RegistroVariable.h"
+#include "BloqueCtes.h"
 #include <list>
 #include <stdexcept>
-#include <vector>
 using std::runtime_error;
 
+typedef std::list <RegistroVariable*> listaReg;
+typedef std::list <RegistroVariable*>::iterator itListaReg;
 
+// BLOQUE: Clase que representa la entidad bloque. Contiene
+// registros variables que podrán ser agregados dependiendo
+// del total de memoria disponible que posea.
+
+// ATRIBUTOS BLOQUE
+//
+// TAMANOBLOQUE: Contiene el tamaño del bloque.
+//
+// REGISTRO: La lista de registros variables que contiene
+// el bloque.
+//
+// ESPACIOLIBRE: La cantidad de espacio libre qu poseé el bloque.
+//
+// CANTIDAD REGISTROS: La cantidad total de registros que poseé
+// el bloque.
+//
 
 class Bloque
 {
 private:
     long tamanoBloque;
-    std::list <RegistroVariable*> registros;
+    listaReg registros;
     long espacioLibre;
     int cantRegistros;
-
     void setEspacioLibre(long espacioOcupado);
+    virtual void print(std::ostream& oss) const = 0;
+	virtual void input(std::istream& oss) const = 0;
+	virtual void LlenarRegistros(std::istream& oss, int cantReg) = 0;
+	void borrarDatos(void);
 public:
     Bloque(long tamanoBloque);
-    Bloque(long tamanoBloque, std::vector<char>* data, int data_size);
     long getTamanoBloque();
     long getEspacioLibre();
-    void addRegistro(RegistroVariable* registro);
+    virtual void ImprimirATexto(std::ostream& oss) = 0;
+    int addRegistro(RegistroVariable* registro);
     RegistroVariable* getRegistro(int posicion);
     void setCantRegistros(int cantReg);
     int getCantRegistros();
+    void anularRegistros(void);
+    void vaciar(void);
+    void borrarRegistro(int posicion);
+    bool estaVacio(void);
     virtual ~Bloque();
+    friend std::ostream& operator<<(std::ostream& oss,
+					  Bloque &bl);
+	friend std::istream& operator>>(std::istream& oss,
+					  Bloque &bl);
 };
 
 
-class ExcepcionNoHayMemoriaEnBloque : public runtime_error
+class ExcepcionPosicionInvalidaEnBloque : std::exception
 {
-public:
-    ExcepcionNoHayMemoriaEnBloque()
-            : runtime_error("El elemento no entra en el bloque") {}
-};
 
-
-class ExcepcionPosicionInvalidaEnBloque : public runtime_error
-{
-public:
-    ExcepcionPosicionInvalidaEnBloque()
-            : runtime_error("No existe un elemento con esa posicion en el bloque") {}
+	virtual const char* what() const throw() {
+		return "Error PosicionInvalida";
+	}
 };
 
 

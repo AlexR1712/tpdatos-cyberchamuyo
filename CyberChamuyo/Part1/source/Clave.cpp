@@ -5,7 +5,7 @@
  *      Author: Shazgath
  */
 
-#include "Clave.h"
+#include "../include/Clave.h"
 
 Clave::Clave() {
 	// TODO Auto-generated constructor stub

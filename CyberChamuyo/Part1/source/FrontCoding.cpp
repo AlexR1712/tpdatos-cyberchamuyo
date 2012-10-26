@@ -5,7 +5,7 @@
  *      Author: sebastian
  */
 
-#include "FrontCoding.h"
+#include "../include/FrontCoding.h"
 #include <sstream>
 
 FrontCoding::FrontCoding() {

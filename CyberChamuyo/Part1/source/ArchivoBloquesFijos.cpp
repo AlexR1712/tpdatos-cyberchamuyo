@@ -5,29 +5,18 @@
  * Created on 7 de abril de 2012, 20:30
  */
 
-
-
 #include <iostream>
 #include <fstream>
-#include "ArchivoBloquesFijos.h"
+#include "../include/ArchivoBloquesFijos.h"
 
-#define LINUX
-
-#ifdef LINUX
-#include <sys/stat.h>
-#endif
-#ifdef WINDOWS
-#include "windows.h"
-#endif
-
+// FUNCIONAMIENTO Constructor de ArchivoBloquesFijos:
+// Construye el objeto seteando sus valores en default o
+// lee y carga del archivo en caso de existir.
 
 ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque){
-
     int it = 0;
     int bloqueLibre;
     path.open(filename, std::fstream::in|std::fstream::out|std::fstream::binary);
-    std::string ps(filename);
-    pathString = ps;
     if (!path){
         std:: fstream archivo (filename, std::fstream::out|std::fstream::binary);
         archivo.close();
@@ -36,56 +25,64 @@ ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque
         this->cantidadBloques=0;
         this->cantidadBloquesLibres=0;
     }else{ //probar
-        path.seekg(0);
+        path.seekg(0, std::ios::beg);
         path.read((char*)&(this->tamanoBloque),sizeof(long));
         path.read((char*)&cantidadBloques,sizeof(int));
         path.read((char*)&cantidadBloquesLibres,sizeof(int));
         while(it<cantidadBloquesLibres){
-            path.read((char*)&bloqueLibre,sizeof(int));
+           path.read((char*)&bloqueLibre,sizeof(int));
             bloquesLibres.push_back(bloqueLibre);
             it++;
         }
     }
+    this->dir = filename;
+}
+
+// FUNCIONAMIENTO CLEAR:
+// Destruye el archivo de bloques fijos.
+
+void ArchivoBloquesFijos::clear(void) {
+	if(remove(this->dir.c_str()) != 0)
+		throw ExcepcionDelete();
 }
 
 long ArchivoBloquesFijos::getTamanoBloque(){
-
     return (this->tamanoBloque);
 }
 
 int ArchivoBloquesFijos::getCantidadBloques(){
-
     return (this->cantidadBloques);
 }
 
 void ArchivoBloquesFijos::setCantidadBloques(int cantidadBloques){
-
-    this->cantidadBloques=cantidadBloques;
+    this->cantidadBloques = cantidadBloques;
 }
 
 int ArchivoBloquesFijos::getCantidadBloquesLibres(){
-
     return (this->cantidadBloquesLibres);
 }
 
 void ArchivoBloquesFijos::setCantidadBloquesLibres(int cantidad){
-
-    this->cantidadBloquesLibres=cantidad;
+    this->cantidadBloquesLibres = cantidad;
 }
 
-int ArchivoBloquesFijos::ObtenerBloqueLibre(){
+// FUNCIONAMIENTO OBTENER BLOQUE LIBRE:
+// Devuelve el primer bloque libre del vector de bloques libres.
+// En caso de no existir devuelve ERR_BLOQUE_INEXISTENTE.
 
-    int bloqueLibre;
+unsigned int ArchivoBloquesFijos::ObtenerBloqueLibre(){
+    unsigned int bloqueLibre;
     if (cantidadBloquesLibres>0){
         bloqueLibre =bloquesLibres.at(0);
         return (bloqueLibre);
-    }else{
-        return -1;
-    }
+    }else return ERR_BLOQUE_INEXISTENTE;
 }
 
-int ArchivoBloquesFijos::VerificarBloqueLibre(int bloque){
+// FUNCIONAMIENTO VERIFICAR BLOQUE LIBRE:
+// Verifica su el número de bloque pasado por parámetro es un
+// bloque libre..
 
+int ArchivoBloquesFijos::VerificarBloqueLibre(unsigned int bloque){
     int it = 0;
     int resultado = 0;
     while (it<cantidadBloquesLibres){
@@ -98,116 +95,105 @@ int ArchivoBloquesFijos::VerificarBloqueLibre(int bloque){
     return resultado;
 }
 
-void ArchivoBloquesFijos::SetearBloqueLibre(int bloque){
+// FUNCIONAMIENTO SETEAR BLOQUE LIBRE:
+// Borra un bloque libre pasado por parámetro.
 
+void ArchivoBloquesFijos::SetearBloqueLibre(unsigned int bloque){
     int it = 0;
-    std::vector<int>::iterator iterador = bloquesLibres.begin();
+    std::vector<unsigned int>::iterator iterador = bloquesLibres.begin();
     while (it<cantidadBloquesLibres){
-        if (bloquesLibres.at(it)==bloque){
-            bloquesLibres.erase(iterador);
-            break;
-        }
-        it++;
-        iterador++;
+    	if (bloquesLibres.at(it)==bloque){
+    		bloquesLibres.erase(iterador);
+    		cantidadBloquesLibres--;
+    		break;
+    	}
+    	it++;
+    	iterador++;
     }
 }
 
-void ArchivoBloquesFijos::Escribir(Bloque* elemento, long posicion){
+// FUNCIONAMIENTO ESCRIBIR:
+// Escribe un bloque en el archivo. Cada clase sabe como persistirse.
 
-    int cantRegistros = (*elemento).getCantRegistros();
-    int it = 0;
-    RegistroVariable* regInsertar;
-    long tamanoDato;
-    string* datoInsertar;
+int ArchivoBloquesFijos::Escribir(Bloque* elemento, long posicion){
     if (posicion > (cantidadBloques)){
-        throw ExcepcionBloqueInexistente();
+        return ERR_BLOQUE_INEXISTENTE;
+    } else {
+    	if (VerificarBloqueLibre(posicion))
+    		SetearBloqueLibre(posicion);
+    	if (posicion==cantidadBloques)
+    		cantidadBloques++;
+    	int corrimiento = (posicion + 1) * tamanoBloque * metadatasize;
+    	path.seekp(corrimiento, std::ios::beg);
+    	path << *elemento;
     }
-    if (VerificarBloqueLibre(posicion)){
-        SetearBloqueLibre(posicion);
-    }
-    if (posicion==cantidadBloques){
-        cantidadBloques++;
-    }
-    int corrimiento = (posicion+1)*tamanoBloque*metadatasize;
-    path.seekp(corrimiento);
-    path.write((char*)&cantRegistros,sizeof(int));
-    while (it<cantRegistros){
-        regInsertar = (*elemento).getRegistro(it);
-        tamanoDato = (*regInsertar).getTamanoDato();
-        path.write((char*)&tamanoDato,sizeof(long));
-        datoInsertar=(*regInsertar).getDato();
-        path.write((*datoInsertar).data(),tamanoDato);
-        it++;
-    }
+   return RES_OK;
 }
 
+// FUNCIONAMIENTO LEER:
+// Lee un bloque en el archivo. Cada clase sabe como leerse.
 
-void ArchivoBloquesFijos::Leer(long posicion, Bloque* elemento){
-
-    int cantRegistros;
-    int it = 0;
-    long tamanoDato;
-    char* dato;
-    string* nuevoDato;
-    RegistroVariable* nuevoRegistro;
+int ArchivoBloquesFijos::Leer(long posicion, Bloque* elemento){
     if (posicion >= cantidadBloques){
-    	std::cout << cantidadBloques << std::endl;
-        throw ExcepcionBloqueInexistente();
+        return ERR_BLOQUE_INEXISTENTE;
+    } else if (VerificarBloqueLibre(posicion)){
+        return ERR_BLOQUE_LIBRE;
+    } else {
+    	long int corrimiento = (posicion + 1) * tamanoBloque * metadatasize;
+    	path.seekg(corrimiento, std::ios::beg);
+    	path >> *elemento;
     }
-    if (VerificarBloqueLibre(posicion)){
-        throw ExcepcionBloqueLibre();
-    }
-    int corrimiento = (posicion+1)*tamanoBloque*metadatasize;
-    path.seekg(corrimiento);
-    path.read((char*)&cantRegistros,sizeof(int));
-    while (it<cantRegistros){
-        path.read((char*)&tamanoDato,sizeof(long));
-        dato = new char[tamanoDato+1];
-        path.read(dato,tamanoDato);
-        dato[tamanoDato] = 0;
-        nuevoDato = new std::string;
-        for(int i = 0; i < tamanoDato; ++i) {
-        	nuevoDato->push_back(dato[i]);
-        }
-        nuevoRegistro = new RegistroVariable(nuevoDato,tamanoDato);
-        //RegistroVariable nuevoRegistro(nuevoDato, tamanoDato);
-        (*elemento).addRegistro(nuevoRegistro);
-        it++;
-        delete[] dato;
-    }
+    return RES_OK;
 }
+
+// FUNCIONAMIENTO BORRAR:
+// Borra un bloque convirtiéndolo en bloque libre.
 
 void ArchivoBloquesFijos::Borrar(long posicion){
-
     if (posicion<cantidadBloques){
-         if (VerificarBloqueLibre(posicion)){
-                throw ExcepcionBloqueLibre();
+    	if (VerificarBloqueLibre(posicion)){
+    		throw ExcepcionBloqueLibre();
     }else{
-             bloquesLibres.push_back(posicion);
-             cantidadBloquesLibres ++;
+    	bloquesLibres.push_back(posicion);
+    	cantidadBloquesLibres ++;
     }          
     }else{
         throw ExcepcionBloqueInexistente();
     }
 }
 
+// FUNCIONAMIENTO DESTRUCTOR DE ARCHIVO BLOQUES FIJOS:
+// Escribe en el archivo la metadata para ser utilizada
+// en otra sesión.
+
 ArchivoBloquesFijos::~ArchivoBloquesFijos(){
-
-        int it = 0;
-        int bloqueLibre;
-        path.seekp(0);
-        path.write((char*)&(this->tamanoBloque),sizeof(long));
-        path.write((char*)&cantidadBloques,sizeof(int));
-        path.write((char*)&cantidadBloquesLibres,sizeof(int));
-        while(it<cantidadBloquesLibres){
-            bloqueLibre = bloquesLibres.at(it);
-            path.write((char*)&bloqueLibre,sizeof(int));
-            it++;
-        }
-        path.close();
-}
-
-void ArchivoBloquesFijos::Clear() {
+	int it = 0;
+	int bloqueLibre;
+	path.seekp(0, std::ios::beg);
+	path.write((char*)&(this->tamanoBloque),sizeof(long));
+	path.write((char*)&cantidadBloques,sizeof(int));
+	path.write((char*)&cantidadBloquesLibres,sizeof(int));
+	while(it<cantidadBloquesLibres){
+		bloqueLibre = bloquesLibres.at(it);
+		path.write((char*)&bloqueLibre,sizeof(int));
+		it++;
+	}
 	path.close();
-	unlink(pathString.c_str());
 }
+
+// FUNCIONAMIENTO OPERATOR<<:
+// Escribe en un archivo de texto la metadata de
+// el archivo de bloques fijos.
+
+std::ostream& operator<<(std::ostream& oss, ArchivoBloquesFijos &arch) {
+    oss << "***********************" << std::endl;
+	oss << "ARCHIVO BLOQUES FIJOS: " << std::endl;
+	oss << "***********************" << std::endl;
+	oss << "TAMAÑO BLOQUE:" << "\t" << arch.tamanoBloque << std::endl;
+	oss << "CANTIDAD DE BLOQUES:" << "\t" << arch.cantidadBloques << std::endl;
+	oss << "CANTIDAD DE BLOQUES LIBRES:" << "\t" << arch.cantidadBloquesLibres << std::endl;
+	return oss;
+}
+
+
+

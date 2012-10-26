@@ -5,8 +5,8 @@
  *      Author: Shazgath
  */
 
-#include "NodoInterno.h"
-#include "ArbolBp.h"
+#include "../include/NodoInterno.h"
+#include "../include/ArbolBp.h"
 
 NodoInterno::NodoInterno(int lvl, ArbolBp* arb) {
 	nivel = lvl;

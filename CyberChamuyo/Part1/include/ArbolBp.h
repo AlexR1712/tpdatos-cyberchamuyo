@@ -15,6 +15,9 @@
 #include <stdexcept>
 #include "binaryDictionaryRecord.h"
 #include "binaryOutputSequentialFile.h"
+#include "DatoNodo.h"
+#include "RegistroVariable.h"
+#include "BloqueNodo.h"
 
 #define N_SIZE 256
 #define OK 0

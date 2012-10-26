@@ -5,8 +5,8 @@
  *      Author: Shazgath
  */
 
-#include "NodoExterno.h"
-#include "ArbolBp.h"
+#include "../include/NodoExterno.h"
+#include "../include/ArbolBp.h"
 
 NodoExterno::NodoExterno() {
 

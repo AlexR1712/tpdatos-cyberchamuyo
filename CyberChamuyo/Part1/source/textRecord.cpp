@@ -1,9 +1,9 @@
-#include "textRecord.h"
+#include "../include/textRecord.h"
 
 #include <stdlib.h>
 #include <iostream>
 
-#include "stringUtilities.h"
+#include "../include/stringUtilities.h"
 
 TextRecord::TextRecord() {
 }
