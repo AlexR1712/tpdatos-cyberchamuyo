@@ -5,7 +5,7 @@
  *      Author: Shazgath
  */
 
-#include "Nodo.h"
+#include "../include/Nodo.h"
 
 Nodo::Nodo() {
 }

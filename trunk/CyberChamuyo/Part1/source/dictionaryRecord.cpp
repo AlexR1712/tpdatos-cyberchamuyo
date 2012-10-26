@@ -1,9 +1,9 @@
-#include "dictionaryRecord.h"
+#include "../include/dictionaryRecord.h"
 
 #include <stdlib.h>
 #include <iostream>
 
-#include "stringUtilities.h"
+#include "../include/stringUtilities.h"
 
 DictionaryRecord::DictionaryRecord(bool withId) {
 	this->id = 0;

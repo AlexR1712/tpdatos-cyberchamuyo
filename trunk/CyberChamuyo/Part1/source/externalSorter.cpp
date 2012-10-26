@@ -1,12 +1,12 @@
-#include "externalSorter.h"
+#include "../include/externalSorter.h"
 
 #include <time.h>
 
-#include "textInputSequentialFile.h"
-#include "binaryInputSequentialFile.h"
-#include "binaryOutputSequentialFile.h"
-#include "statisticsRecord.h"
-#include "stringUtilities.h"
+#include "../include/textInputSequentialFile.h"
+#include "../include/binaryInputSequentialFile.h"
+#include "../include/binaryOutputSequentialFile.h"
+#include "../include/statisticsRecord.h"
+#include "../include/stringUtilities.h"
 
 #define LINUX
 

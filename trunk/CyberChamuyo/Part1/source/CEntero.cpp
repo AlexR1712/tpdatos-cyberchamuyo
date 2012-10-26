@@ -5,8 +5,8 @@
  *      Author: Shazgath
  */
 
-#include "CEntero.h"
-#include "common.h"
+#include "../include/CEntero.h"
+#include "../include/common.h"
 #include <cstring>
 
 C_Entero::C_Entero() {

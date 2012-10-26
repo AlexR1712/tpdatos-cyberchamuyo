@@ -5,7 +5,7 @@
  *      Author: sebastian
  */
 
-#include "CAlfa.h"
+#include "../include/CAlfa.h"
 
 CAlfa::CAlfa() {
 

@@ -1,8 +1,8 @@
-#include "dictionaryNormalizer.h"
+#include "../include/dictionaryNormalizer.h"
 
-#include "textInputSequentialFile.h"
-#include "textOutputSequentialFile.h"
-#include "textRecord.h"
+#include "../include/textInputSequentialFile.h"
+#include "../include/textOutputSequentialFile.h"
+#include "../include/textRecord.h"
 
 DictionaryNormalizer::DictionaryNormalizer() {
 	loadCharmap();

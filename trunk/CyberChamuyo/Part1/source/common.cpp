@@ -5,7 +5,7 @@
  *      Author: Shazgath
  */
 
-#include "common.h"
+#include "../include/common.h"
 #include <iomanip>
 #include <cstring>
 

@@ -9,25 +9,35 @@
 #define	REGISTROVARIABLE_H
 
 #include <string>
-#include <vector>
+#include <iostream>
+#include <sstream>
 using std::string;
+
+// REGISTRO VARIABLE: Clase abstracta que representa un registro
+// variable.
 
 class RegistroVariable
 {
 public:
     RegistroVariable();
-    RegistroVariable(string* dato, long tamanoDato);
-    RegistroVariable(std::vector<char>* dato, long tamanoDato);
-    RegistroVariable& operator=(const RegistroVariable& reg);
-    string* getDato();
-    void setDato(string* dato, long tamanoDato);
-    long getTamanoDato();
     virtual ~RegistroVariable();
+    virtual void borrarDato() = 0;
+    virtual void serializar(std::ostream& oss) = 0;
+    virtual unsigned long int getClaveDato(void) = 0;
+    virtual int getTamanoDato(void) = 0;
+    virtual void ImprimirATexto(std::ostream& oss) = 0;
+    friend std::ostream& operator<<(std::ostream& oss,
+					  RegistroVariable &reg);
+	friend std::istream& operator>>(std::istream& oss,
+					  RegistroVariable &reg);
 private:
-    string* dato;
-    long tamanoDato;
+	virtual void print(std::ostream& oss) = 0;
+	virtual void read(std::istream& oss) = 0;
 };
 
+
+std::ostream& operator<<(std::ostream& oss, RegistroVariable &reg);
+std::istream& operator>>(std::istream& oss, RegistroVariable &reg);
 
 #endif	/* REGISTROVARIABLE_H */
 

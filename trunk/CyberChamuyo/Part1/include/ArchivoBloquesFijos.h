@@ -1,61 +1,89 @@
 /* 
  * File:   ArchivoBloquesFijos.h
- * Author: emperor
  *
- * Created on 6 de abril de 2012, 19:23
  */
 
 #ifndef ARCHIVOBLOQUESFIJOS_H
 #define	ARCHIVOBLOQUESFIJOS_H
 #include "Bloque.h"
-#include "fstream"
+#include "ArchivoDispErr.h"
+#include <fstream>
 #include <vector>
-#define metadatasize 1.5;
+#include <string>
+#include <iostream>
 
-class ArchivoBloquesFijos
-{
+// ARCHIVO BLOQUES FIJOS: Clase que administra el archivo binario
+// que posee bloques con registros variables. Determina la inserción
+// de un bloque como así los bloques libres que vayan quedando luego
+// de operaciones de borrado.
+
+// ATRIBUTOS ArchivoBloquesFijos:
+//
+// PATH: El file descriptor del archivo de bloques.
+//
+// CANTIDADBLOQUES: Cantidad de bloques del archivo.
+//
+// TAMANOBLOQUE: El tamaño del bloque.
+//
+// BLOQUESLIBRES: Vector que contiene el número de bloque libre.
+//
+// CANTIDADBLOQUESLIBRES: Cantidad de bloques Libres.
+//
+// DIR: Path del file descriptor.
+//
+
+class ArchivoBloquesFijos {
 private:
     std::fstream path;
     int cantidadBloques;
     long tamanoBloque;
-    std::vector <int> bloquesLibres;
+    std::vector <unsigned int> bloquesLibres;
     int cantidadBloquesLibres;
-    std::string pathString;
-
+    std::string dir;
     void setCantidadBloques(int cantidadBloques);
     void setCantidadBloquesLibres (int cantidad);
-    int VerificarBloqueLibre(int bloque);
-    void SetearBloqueLibre (int bloque);
+    void SetearBloqueLibre (unsigned int bloque);
 public:
     ArchivoBloquesFijos (const char* filename, long tamanoBloque);
     int getCantidadBloques();
     long getTamanoBloque();
     int getCantidadBloquesLibres();
-    int ObtenerBloqueLibre ();
-    void Escribir (Bloque* elemento, long posicion);
-    void Leer (long posicion, Bloque* elemento);
+    unsigned int ObtenerBloqueLibre ();
+    int Escribir (Bloque* elemento, long posicion);
+    int Leer (long posicion, Bloque* elemento);
     void Borrar (long posicion);
-    void Clear();
     virtual ~ArchivoBloquesFijos();
+    int VerificarBloqueLibre(unsigned int bloque);
+    void clear(void);
+    friend std::ostream& operator<<(std::ostream& oss,
+					  ArchivoBloquesFijos &arch);
 };
 
+std::ostream& operator<<(std::ostream& oss, ArchivoBloquesFijos &Arch);
 
-class ExcepcionBloqueInexistente : public runtime_error
+class ExcepcionBloqueInexistente : public std::exception
 {
 public:
-    ExcepcionBloqueInexistente()
-            : runtime_error("El bloque indicado no existe") {}
+    virtual const char* what() const throw() {
+		return "Error Bloque Inexistente";
+	}
 };
 
-
-class ExcepcionBloqueLibre : public runtime_error
+class ExcepcionBloqueLibre : public std::exception
 {
 public:
-    ExcepcionBloqueLibre()
-            : runtime_error("El bloque indicado esta libre") {}
+	virtual const char* what() const throw() {
+		return "Error Bloque Libre";
+	}
 };
 
-
+class ExcepcionDelete : public std::exception
+{
+public:
+	virtual const char* what() const throw() {
+		return "Error al Borrar Archivo";
+	}
+};
 
 #endif	/* ARCHIVOBLOQUESFIJOS_H */
 
