@@ -288,7 +288,6 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 			//this->getMemorableQuotes().clear();
 			clearStatistics();
 			this->setMemorableQuotesFilePath(commandParams[0]);
-			//this->getMemorableQuotes().createIndex(this->getMemorableQuotesFilePath());
 			this->loadMemorableQuotes(true);
 		}
 

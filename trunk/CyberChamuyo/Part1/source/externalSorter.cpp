@@ -163,6 +163,10 @@ void ExternalSorter::merge(std::string outputFilepath) {
 			statisticsRecord.getFilesStatistics().push_back(outputFileRegisterCounter);
 		}
 	}
+	if(( (readBuffers.size() == 1) && (inputFileFileCounter == 1) ) && !outputFileName.size()) {
+		outputDirectoryName = tempFolderName + "/";
+		outputFileName = outputDirectoryName + "orderedFile_" + StringUtilities::intToString(0) + "_" + StringUtilities::intToString(0);
+	}
 	statisticsFile << "Etapas: " << std::endl;
 	statisticsFile << statisticsRecord.serialize("Etapa") << std::endl;
 
