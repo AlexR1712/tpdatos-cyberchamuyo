@@ -1,10 +1,10 @@
-#include "tp1.h"
+#include "../include/tp1.h"
 
 #include <stdlib.h>
 #include <iostream>
 
-#include "stringUtilities.h"
-#include "statisticsManager.h"
+#include "../include/stringUtilities.h"
+#include "../include/statisticsManager.h"
 
 int main(int argc, char *argv[]){
 	std::string userInput;
