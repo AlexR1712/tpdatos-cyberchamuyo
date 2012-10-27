@@ -9,7 +9,7 @@
 #define FRASE_H_
 
 #include <iostream>
-#include "Aux.h"
+#include "_Aux.h"
 
 // FRASE: Clase que contiene los datos de una frase.
 

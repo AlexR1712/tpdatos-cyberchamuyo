@@ -10,7 +10,7 @@
 #include "../include/CAlfa.h"
 #include <cstring>
 #include "../include/RegistroArbol.h"
-#include "stringUtilities.h"
+#include "../include/stringUtilities.h"
 
 
 IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), 480) {
@@ -35,6 +35,7 @@ BinaryDictionaryRecord<true> IndiceArbol::next() {
 	Registro* reg = arbol.siguiente();
 	Clave* clave = reg->getClave();
 	record.setWord(clave->serializarDecimal());	//  cambiar por un getter de string polimorfico
+	delete reg;
 	return record;
 }
 
@@ -65,7 +66,7 @@ void IndiceArbol::createIndex(std::string in_path) {
 		Registro* reg = new RegistroArbol(c);
 		arbol.insertarRegistro(reg);
 		record = arch_sec.getRecord();
-		//delete reg;
+		delete reg;
 	}
 	//arbol.imprimirNodos();
 }
