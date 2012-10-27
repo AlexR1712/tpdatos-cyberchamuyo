@@ -11,13 +11,18 @@
 #include "../include/dictionaryNormalizer.h"
 #include "../include/dictionaryRandomizer.h"
 #include "../include/stringUtilities.h"
+#include "../include/DispersionEx.h"
 
-StatisticsManager::StatisticsManager() {
+#define DICTIONARY_NAME "dic.bin"
+#define NOTFOUND_NAME "notf.bin"
+#define MEMORABLE_QUOTES_NAME "memquotes.bin"
+
+StatisticsManager::StatisticsManager() : dictionary(DICTIONARY_NAME), notFoundWords(NOTFOUND_NAME), memorableQuotes(MEMORABLE_QUOTES_NAME) {
 	this->loadStatus();
 	this->loadStopWords();
 	this->createDictionary(false);
 	this->getDictionary().createIndex("outputFiles/dictionary_RANDOMIZED_ORDERED");
-	//this->getMemorableQuotes().createIndex(this->getMemorableQuotesFilePath());
+	this->getMemorableQuotes().createIndex(this->getMemorableQuotesFilePath());
 	if (this->getNumberOfWords() == 0)
 		this->loadMemorableQuotes(true);
 }
@@ -70,9 +75,9 @@ IndiceArbol& StatisticsManager::getDictionary() {
 	return this->dictionary;
 }
 
-//ObjetoDeLucas& StatisticsManager::getMemorableQuotes() {
-//	return this->memorableQuotes;
-//}
+Hash::DispersionEx& StatisticsManager::getMemorableQuotes() {
+	return this->memorableQuotes;
+}
 
 IndiceArbol& StatisticsManager::getNotFoundWords() {
 	return this->notFoundWords;
@@ -128,7 +133,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		totalQuotes++;
 		for (unsigned int i = 0; i < phraseWords.size(); i++) {
 			//chequeo que no sea stopWord.
-			if(this->getStopWords().find(phraseWords[i]) != this->getStopWords().end()) {
+			if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 				totalWords++;
 				//si no est� en el �ndice de fallos ni en el diccionario, se inserta en el �ndice de fallos y se
 				//contabiliza.
@@ -143,7 +148,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 			}
 		}
 		if (insertInHash) {
-			//this->getMemorableQuotes().insert(phrase);
+			this->getMemorableQuotes().insert(phrase);
 		}
 	}
 
@@ -179,6 +184,7 @@ void StatisticsManager::printNotFoundWords() {
 	BinaryDictionaryRecord<true> record;
 
 	std::cout << TEXT_NOT_FOUND_WORDS << std::endl;
+	getDictionary().rewind();
 	while (getDictionary().hasNext()) {
 		record = this->getDictionary().next();
 		std::cout << record.getWord() << std::endl;
@@ -285,7 +291,7 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 		}
 
 		if (command == COMMAND_LOAD_MEMORABLE_QUOTES) {
-			//this->getMemorableQuotes().clear();
+			this->getMemorableQuotes().clear();
 			clearStatistics();
 			this->setMemorableQuotesFilePath(commandParams[0]);
 			this->loadMemorableQuotes(true);

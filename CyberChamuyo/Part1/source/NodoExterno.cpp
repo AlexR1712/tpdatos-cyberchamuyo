@@ -269,7 +269,8 @@ std::list<Registro*> NodoExterno::getRegistrosDerecha() {
 
 int NodoExterno::buscar(Clave* c, Registro* reg) {
 	std::list<Registro*>::iterator it;
-	int pos, nReg = 0;
+	int pos = 0;
+	int nReg = 0;
 	for(it = registros.begin(); it != registros.end() && *c > *((*it)->getClave()); ++it)
 		++nReg;
 	if(it == registros.end()) {

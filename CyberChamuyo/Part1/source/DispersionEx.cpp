@@ -9,13 +9,14 @@
 
 namespace Hash {
 
+
 // FUNCIONAMIENTO CONSTRUCTOR DE DISPERSION EX:
 // Crea el archivo de bloques fijos y la tabla. Si el objeto
 // fué creado por primera vez crea un bloque tabla nuevo y un bloque
 // dato vacio.
 
-DispersionEx::DispersionEx(const char* archDir) :
-		arch_disp(archDir, TAM_BLOQUE),tabla(arch_disp) {
+DispersionEx::DispersionEx(std::string archDir) :
+		arch_disp(archDir.c_str(), TAM_BLOQUE),tabla(arch_disp) {
 	if (this->arch_disp.getCantidadBloques() == 0)
 		this->tabla.GuardarTablaInicial();
 	BloqueDato bl(this->arch_disp.getTamanoBloque());
@@ -309,6 +310,10 @@ std::ostream& operator<<(std::ostream& oss, DispersionEx &disp) {
 		}
 	}
 	return oss;
+
+}
+
+void DispersionEx::createIndex(std::string path) {
 
 }
 

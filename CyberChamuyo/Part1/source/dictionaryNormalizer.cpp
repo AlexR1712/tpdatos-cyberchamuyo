@@ -3,40 +3,38 @@
 #include "../include/textInputSequentialFile.h"
 #include "../include/textOutputSequentialFile.h"
 #include "../include/textRecord.h"
+#include "../include/stringUtilities.h"
 
 DictionaryNormalizer::DictionaryNormalizer() {
 	loadCharmap();
 }
 
-std::map<char,char>& DictionaryNormalizer::getCharMap() {
+std::map<std::wstring,std::string>& DictionaryNormalizer::getCharMap() {
 	return this->charMap;
 }
 
 void DictionaryNormalizer::loadCharmap() {
 	TextInputSequentialFile<TextRecord> charMapFile(CHAR_MAP_FILE_PATH,FILE_BUFFER_SIZE);
-	std::string charMapLine;
+	std::vector<std::string> charMapParams;
 
 	while (!charMapFile.endOfFile()) {
-		charMapLine = charMapFile.getRecord().getData();
-		this->getCharMap().insert(std::pair<char,char>(charMapLine[0],charMapLine[2]));
+		StringUtilities::splitString(charMapFile.getRecord().getData(),charMapParams,'=');
+		this->getCharMap().insert(std::pair<std::wstring,std::string>(charMapParams[0],charMapParams[1]));
 	}
 }
 
 std::string DictionaryNormalizer::normalizeWord(const std::string string) {
 	std::string normalizedWord;
-	char c;
-	std::map<char,char>::iterator it;
-
-	for (unsigned int i = 0; i < string.length(); ++i) {
-		c = string[i];
-
+	wchar_t c;
+	std::wstring s;
+	std::map<std::wstring,std::string>::iterator it;
+	for(unsigned int i = 0; i < s.size(); ++i) {
+		c = s[i];
 		it = this->getCharMap().find(c);
 		if (it != this->getCharMap().end())
 			c = it->second;
-
-		if (c >= 'A' && c <= 'Z')
-			c = c + 32;
-
+		/*if (c >= "A" && c <= "Z")
+			c = c + 32;*/
 		normalizedWord += c;
 	};
 

@@ -7,6 +7,7 @@
 
 #include "outputTexts.h"
 #include "IndiceArbol.h"
+#include "DispersionEx.h"
 
 #ifndef STATUS_FILE_PATH
 #define STATUS_FILE_PATH "config/statisticsManager/statisticsManagerStatus"
@@ -56,7 +57,7 @@ private:
 	IndiceArbol dictionary;
 
 	//A falta de mejores nombres por ahora
-	//ObjetoDeLucas memorableQuotes;
+	Hash::DispersionEx memorableQuotes;
 
 	IndiceArbol notFoundWords;
 
@@ -84,7 +85,7 @@ private:
 
 	IndiceArbol& getDictionary();
 
-	//ObjetoDeLucas& getMemorableQuotes();
+	Hash::DispersionEx& getMemorableQuotes();
 
 	IndiceArbol& getNotFoundWords();
 

@@ -18,7 +18,7 @@
 
 class IndiceArbol {
 public:
-	IndiceArbol();
+	IndiceArbol(std::string file_name);
 	//IndiceArbol(BinaryInputSequentialFile<BinaryDictionaryRecord<false> >& f, const char* nombre_arch_arbol, int b_size);
 	void createIndex(std::string path);
 	bool find(const std::string& word);
@@ -28,6 +28,7 @@ public:
 	void exportar(const char* path);
 	virtual ~IndiceArbol();
 	void clear();
+	void rewind();
 private:
 	void crearIndice(std::ifstream& arch);
 	ArbolBp arbol;
