@@ -52,7 +52,9 @@ private:
 	int buscarRegistro(unsigned int clave, BloqueDato& bl);
 	void modificarTdBloques(void);
 public:
-	DispersionEx(const char* archDir);
+	//DispersionEx();
+	DispersionEx(std::string archDir);
+	void createIndex(std::string path);
 	void insertarRegistro(RegistroVariable* r, unsigned int clave);
 	void modificarRegistro(RegistroVariable* r, unsigned int clave);
 	void borrarRegistro(unsigned int clave);

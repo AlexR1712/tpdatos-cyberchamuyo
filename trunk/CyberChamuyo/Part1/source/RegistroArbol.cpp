@@ -16,7 +16,7 @@ RegistroArbol::RegistroArbol() {
 }
 
 
-RegistroArbol::RegistroArbol(Clave* c) {
+RegistroArbol::RegistroArbol(Clave* c) : Registro(c) {
 	tipo = c->getTipo();
 	clave = c;
 	tam = 0;
@@ -62,7 +62,7 @@ RegistroArbol::RegistroArbol(RegistroArbol& reg) {
 
 
 RegistroArbol::~RegistroArbol() {
-	delete clave;
+	//delete clave;
 }
 
 std::vector<char>* RegistroArbol::serializar(FrontCoding& encoder) {

@@ -157,7 +157,7 @@ void ArbolBp::imprimirNodos() {
 				cout << "	";
 			}
 			std::cout << nI->serializarDecimal() << std::endl;
-			delete nI;
+			//delete nI;
 		} else {
 			pos = 0;
 			NodoExterno* nE;
@@ -168,9 +168,9 @@ void ArbolBp::imprimirNodos() {
 				cout << "	";
 			}
 			std::cout << *nE << std::endl;
-			delete nE;
+			//delete nE;
 		}
-		delete nodo;
+		//delete nodo;
 	}
 }
 
@@ -299,7 +299,21 @@ void ArbolBp::exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >
 }
 
 bool ArbolBp::hasNext() {
-	if((ultimoNodoLeido->cantRegistros() == (ultimoRegistroLeido - 1)) && !(ultimoNodoLeido->getSiguiente()))
+	if(ultimoNodoLeido == NULL)
+		return false;
+	if((ultimoNodoLeido->cantRegistros() == (ultimoRegistroLeido + 1)) && !(ultimoNodoLeido->getSiguiente()))
 		return false;
 	return true;
+}
+
+void ArbolBp::rewind() {
+	int primero = encontrarPrimero();
+	NodoExterno* nE = new NodoExterno(0, this);
+	std::vector<char>* data = leerNodo2(primero);
+	int pos = 0;
+	nE->hidratar(data, pos);
+	if(ultimoNodoLeido != NULL)
+		delete ultimoNodoLeido;
+	ultimoNodoLeido = nE;
+	ultimoRegistroLeido = 0;
 }

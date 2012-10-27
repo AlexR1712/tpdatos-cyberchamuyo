@@ -20,6 +20,7 @@ Registro::Registro() {
 	case 1:
 		clave = new CAlfa();
 	}*/
+	tam = 0;
 }
 
 Registro::Registro(Clave* c) {

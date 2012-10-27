@@ -11,27 +11,17 @@
 #include <cstring>
 #include "../include/RegistroArbol.h"
 
-IndiceArbol::IndiceArbol() : arbol("arch_arbol.bin", 512) {
+void sacarR(std::string& s) {
+	if(s.find('\r') != std::string::npos)
+		s.erase(s.find('\r'));
+}
 
+IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), 480) {
 }
-/*
-IndiceArbol::IndiceArbol(TextInputSequentialFile<TextDictionaryRecord<false> >& arch_sec, const char* n_arch_arbol, int b_size) : arbol(n_arch_arbol, b_size) {
-	TextDictionaryRecord<false> record;
-	record = arch_sec.getRecord();
-	record = arch_sec.getRecord();
-	while(!arch_sec.endOfFile()) {
-		std::string s = record.getWord();
-		s.erase(s.size() - 1);
-		CAlfa* c = new CAlfa(s);
-		Registro* reg = new Registro(c);
-		arbol.insertarRegistro(reg);
-		record = arch_sec.getRecord();
-		delete reg;
-	}
-	arbol.imprimirNodos();
-}
-*/
+
 bool IndiceArbol::find(const std::string& word) {
+	if(!hasNext())
+		return false;
 	CAlfa* clave = new CAlfa(word);
 	Registro* ret_reg = new RegistroArbol();
 	bool resultado = arbol.buscar(clave, ret_reg);
@@ -57,9 +47,9 @@ bool IndiceArbol::hasNext() {
 
 void IndiceArbol::insert(std::string& word) {
 	CAlfa* clave = new CAlfa(word);
-	Registro* reg = new Registro(clave);
+	Registro* reg = new RegistroArbol(clave);
 	arbol.insertarRegistro(reg);
-	delete reg;
+	//delete reg;
 }
 
 void IndiceArbol::exportar(const char* path) {
@@ -71,15 +61,20 @@ void IndiceArbol::createIndex(std::string in_path) {
 	BinaryDictionaryRecord<true> record;
 	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > arch_sec(in_path);
 	record = arch_sec.getRecord();
-	record = arch_sec.getRecord();
 	while(!arch_sec.endOfFile()) {
 		std::string s = record.getWord();
+		sacarR(s);
 		CAlfa* c = new CAlfa(s);
-		Registro* reg = new Registro(c);
+		Registro* reg = new RegistroArbol(c);
 		arbol.insertarRegistro(reg);
 		record = arch_sec.getRecord();
-		delete reg;
+		//delete reg;
 	}
+	arbol.imprimirNodos();
+}
+
+void IndiceArbol::rewind() {
+	arbol.rewind();
 }
 
 IndiceArbol::~IndiceArbol() {

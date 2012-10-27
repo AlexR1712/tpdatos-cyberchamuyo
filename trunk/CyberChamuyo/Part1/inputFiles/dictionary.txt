@@ -1,15 +1,15 @@
-ABCDÁáÉéÍíÓóÚúÜü
-Alcántara
-Alcázar
-Almácigo
-América
-Antártica
-Antártida
+ABCDÃÃ¡Ã‰Ã©ÃÃ­Ã“Ã³ÃšÃºÃœÃ¼
+AlcÃ¡ntara
+AlcÃ¡zar
+AlmÃ¡cigo
+AmÃ©rica
+AntÃ¡rtica
+AntÃ¡rtida
 Arbelas
 Arbil
-Archipiélago
+ArchipiÃ©lago
 Arcila
-Arcángel
+ArcÃ¡ngel
 Ardabil
 Arecibo
 Arequipa
@@ -45,14 +45,14 @@ Asmara
 Aspadana
 Aspasia
 Astana
-Astaná
+AstanÃ¡
 Astorga
-Astracán
-Astúrica
-Asunción
-Asuán
+AstracÃ¡n
+AstÃºrica
+AsunciÃ³n
+AsuÃ¡n
 Asyut
-Asís
+AsÃ­s
 At Taif
 Atenas
 Atlanta
@@ -64,23 +64,23 @@ Ausa
 Austin
 Australia
 Austria
-Austria-Hungría
+Austria-HungrÃ­a
 Avarua
-Ave Fénix
-Ave del Paraíso
-Avilés
-Aviñón
+Ave FÃ©nix
+Ave del ParaÃ­so
+AvilÃ©s
+AviÃ±Ã³n
 Ayamonte
 Aaronita
-Aarónico
+AarÃ³nico
 Aba
 Abab
 Ababa
 Ababillarse
 Ababol
 Ababuy
-Ababán
-Ababúnculo
+AbabÃ¡n
+AbabÃºnculo
 Abacal
 Abacalera
 Abacalero
@@ -89,12 +89,12 @@ Abacanto
 Abacaro
 Abacaros
 Abacero
-Abacería
+AbacerÃ­a
 Abachar
 Abacial
 Abacio
 Abacora
 Abacorar
-Abacá
+AbacÃ¡
 Abad
 Abada

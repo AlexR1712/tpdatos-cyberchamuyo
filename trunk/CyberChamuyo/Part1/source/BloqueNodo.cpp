@@ -10,6 +10,8 @@
 BloqueNodo::BloqueNodo(long tamanoBloque):Bloque(tamanoBloque) {
 }
 
+
+
 BloqueNodo::~BloqueNodo() {
 
 }

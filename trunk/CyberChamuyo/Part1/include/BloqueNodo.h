@@ -18,7 +18,7 @@ private:
 	  virtual void LlenarRegistros(std::istream& oss, int cantReg);
 public:
 	BloqueNodo(long tamanoBloque);
-	 virtual void ImprimirATexto(std::ostream& oss);
+	virtual void ImprimirATexto(std::ostream& oss);
 	virtual ~BloqueNodo();
 };
 

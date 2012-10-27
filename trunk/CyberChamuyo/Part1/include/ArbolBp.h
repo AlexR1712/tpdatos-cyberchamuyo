@@ -45,7 +45,7 @@ public:
 	Registro* siguiente();
 	void clear();
 	bool hasNext();
-
+	void rewind();
 	void setUltimoRegistroLeido(int nReg);
 	void aumentarUltimoRegistroLeido();
 	void exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& os);
