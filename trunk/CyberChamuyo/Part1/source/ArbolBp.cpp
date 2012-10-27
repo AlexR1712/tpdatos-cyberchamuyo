@@ -41,7 +41,9 @@ ArbolBp::~ArbolBp() {
 int ArbolBp::buscar(Clave* c, Registro*& reg) {
 	NodoExterno* anteriorUltimoLeido = ultimoNodoLeido;
 	int res = raiz->buscar(c, reg);
-	if((ultimoNodoLeido != anteriorUltimoLeido) && (anteriorUltimoLeido != NULL))
+	if((this->max == 0) && res)
+		guardarNodo(raiz, 0);
+	if((ultimoNodoLeido != anteriorUltimoLeido) && (anteriorUltimoLeido != NULL) && anteriorUltimoLeido != raiz)
 		delete anteriorUltimoLeido;
 	return res;
 }
@@ -91,9 +93,11 @@ int ArbolBp::insertarRegistro(Registro* r) {
 			guardarNodo(nh2, ni1_id);
 			guardarNodo(nueva_raiz, 0);
 			guardarNodo(raiz, ne2_id);
-			delete raiz;
+			if(raiz != ultimoNodoLeido)
+				delete raiz;
 			raiz = nueva_raiz;
-			delete nh2;
+			if(nh2 != ultimoNodoLeido)
+				delete nh2;
 			return 0;
 		} else {
 			if(res == GUARDAR)
@@ -194,6 +198,11 @@ int ArbolBp::crearNodoExterno(NodoExterno* nE, int nivel) {
 		}
 }
 */
+
+NodoExterno* ArbolBp::getUltimoNodoLeido() {
+	return ultimoNodoLeido;
+}
+
 int ArbolBp::crearNodo() {
 	int libre = arch_arbol.ObtenerBloqueLibre();
 	if(libre == -1) {
@@ -237,10 +246,6 @@ std::vector<char>* ArbolBp::leerNodo2(int id) {
 	return data;
 }
 
-bool ArbolBp::isEmpty() {
-	return (this->raiz == NULL);
-}
-
 Registro* ArbolBp::siguiente() {
 	if(ultimoNodoLeido == NULL) {
 		int pos = 0;
@@ -275,6 +280,7 @@ int ArbolBp::encontrarPrimero() {
 }
 
 void ArbolBp::exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& os) {
+	//imprimirNodos();
 	BinaryDictionaryRecord<true> record;
 	int primero = encontrarPrimero();
 	NodoExterno* nE = new NodoExterno(0, this);
@@ -285,7 +291,7 @@ void ArbolBp::exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >
 	Registro* reg = new RegistroArbol();
 	reg = nE->getRegistro(0, reg);
 	while(reg != NULL) {
-		record.setId(dynamic_cast<RegistroArbol*>(reg)->timesSearched());
+		record.setId(reinterpret_cast<RegistroArbol*>(reg)->timesSearched());
 		record.setWord(reinterpret_cast<CAlfa*>(reg->getClave())->getWord());
 		os.putRecord(record);
 		reg = siguiente();
@@ -316,4 +322,12 @@ void ArbolBp::rewind() {
 		delete ultimoNodoLeido;
 	ultimoNodoLeido = nE;
 	ultimoRegistroLeido = 0;
+}
+
+bool ArbolBp::isEmpty() {
+	if(this->raiz == NULL)
+		return true;
+	if(this->raiz->getCantElem() == 0)
+		return true;
+	return false;
 }

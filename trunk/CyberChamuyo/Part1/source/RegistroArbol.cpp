@@ -8,101 +8,53 @@
 #include "../include/RegistroArbol.h"
 #include "../include/ArbolBp.h"
 
-RegistroArbol::RegistroArbol() {
-	tipo = TIPO_ARBOL;
+RegistroArbol::RegistroArbol() : Registro() {
 	n = 0;
 	s = 0;
-	clave = NULL;
 }
-
 
 RegistroArbol::RegistroArbol(Clave* c) : Registro(c) {
-	tipo = c->getTipo();
-	clave = c;
-	tam = 0;
 	n = 0;
 	s = 0;
 }
 
-RegistroArbol::RegistroArbol(Clave* c, long ne, short se) {
-	tipo = c->getTipo();
-	clave = c;
-	tam = 0;
+RegistroArbol::RegistroArbol(Clave* c, long ne, short se) : Registro(c) {
 	n = ne;
 	s = se;
 }
 
 
-RegistroArbol::RegistroArbol(Clave* c, std::string dat) {
-	tipo = c->getTipo();
-	clave = c;
-	tam = dat.size() * sizeof(char);
-	dato = dat;
+RegistroArbol::RegistroArbol(Clave* c, std::string dat) : Registro(c, dat) {
 	n = 0;
 	s = 0;
 }
 
-RegistroArbol::RegistroArbol(Clave* c, std::string dat, long ne, short se) {
-	tipo = c->getTipo();
-	clave = c;
-	tam = dat.size() * sizeof(char);
-	dato = dat;
+RegistroArbol::RegistroArbol(Clave* c, std::string dat, long ne, short se) : Registro(c, dat) {
 	n = ne;
 	s = se;
 }
 
-RegistroArbol::RegistroArbol(RegistroArbol& reg) {
-	tipo = reg.tipo;
-	clave = reg.clave;
-	tam = reg.tam;
-	dato = reg.dato;
+RegistroArbol::RegistroArbol(RegistroArbol& reg) : Registro(reg) {
 	n = reg.n;
 	s = reg.s;
 }
 
 
 RegistroArbol::~RegistroArbol() {
-	//delete clave;
 }
 
 std::vector<char>* RegistroArbol::serializar(FrontCoding& encoder) {
-	std::vector<char>* s = new std::vector<char>;
-	s = Auxiliar::insertarEntero(s, tipo);
-	std::vector<char>* s_clave = new std::vector<char>;
-	s_clave = clave->serializar(s_clave);
-	std::vector<char>* s_clave_coded = new std::vector<char>;
-	encoder.encode(s_clave, s_clave_coded);
-	s->push_back(s_clave_coded->size());
-	s->insert(s->end(), s_clave_coded->begin(), s_clave_coded->end());
-	s = Auxiliar::insertarEntero(s, tam);
-	s = Auxiliar::insertarString(s, dato);
-	delete s_clave;
-	return s;
+	std::vector<char>* ret = Registro::serializar(encoder);
+	ret = Auxiliar::insertarEntero(ret, n);
+	ret = Auxiliar::insertarEntero(ret, s);
+	return ret;
 }
 
 
 void RegistroArbol::hidratar(const std::vector<char>* vec, FrontCoding& decoder,int& pos) {
-	int p = 0;
-	tipo = Auxiliar::leerEntero(vec, pos);
-	switch(tipo) {
-	case 0:
-		std::cout << "entre a 0 en registro hidratar" << std::endl;
-		clave = new C_Entero();
-	case 1:
-		clave = new CAlfa();
-	}
-	char c_size = (*vec)[pos++];
-	std::string clave_raw, clave_deco;
-	for(int i = pos; i < pos + c_size; ++i)
-		clave_raw.push_back((*vec)[i]);
-	decoder.decode(clave_raw, clave_deco);
-	std::vector<char> vecAux;
-	vecAux.insert(vecAux.begin(), clave_deco.begin(), clave_deco.end());
-	clave->setSize(vecAux.size());
-	clave->hidratar(&vecAux,pos); // sacar possss
-	pos += c_size;	//  por el byte de cant de front coding
-	tam = Auxiliar::leerEntero(vec, pos);
-	Auxiliar::leerString(vec, dato, pos, tam);
+	Registro::hidratar(vec, decoder, pos);
+	n = Auxiliar::leerEntero(vec, pos);
+	s = Auxiliar::leerEntero(vec, pos);
 }
 
 Registro* RegistroArbol::find() {
@@ -112,4 +64,53 @@ Registro* RegistroArbol::find() {
 
 long RegistroArbol::timesSearched() {
 	return n;
+}
+
+Registro& RegistroArbol::operator=(const Registro& r) {
+	Registro::setSize(r.size());
+	Registro::setTipo(r.getTipo());
+	int tipo = r.getClave()->getTipo();
+	Clave* clave;
+	if(Registro::getClave() == NULL) {
+		switch(tipo) {
+		case 0:
+			clave = new C_Entero();
+		case 1:
+			clave = new CAlfa();
+		}
+	}
+	*clave = *(r.getClave());
+	Registro::setClave(clave);
+	Registro::setDato(r.getDato());
+}
+
+Registro& RegistroArbol::operator=(const RegistroArbol& r) {
+	Registro::setSize(r.size());
+	Registro::setTipo(r.getTipo());
+	int tipo = r.getClave()->getTipo();
+	Clave* clave;
+	if(Registro::getClave() == NULL) {
+		switch(tipo) {
+		case 0:
+			clave = new C_Entero();
+		case 1:
+			clave = new CAlfa();
+		}
+	}
+	*clave = *(r.getClave());
+	Registro::setClave(clave);
+	Registro::setDato(r.getDato());
+	n = r.n;
+	s = r.s;
+}
+
+std::ostream& operator<<(std::ostream& os, const RegistroArbol& r) {
+	if(&r != NULL)
+		os << "Registro = "<< (r.getClave())->print() << "  |  Datos = " << r.getDato() << "| n = " << r.n << std::endl;
+	return os;
+}
+
+void RegistroArbol::setReg(Registro& reg) {
+	n = dynamic_cast<RegistroArbol&>(reg).n;
+	s = dynamic_cast<RegistroArbol&>(reg).s;
 }

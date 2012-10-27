@@ -118,12 +118,13 @@ void StatisticsManager::createDictionary(bool force) {
 void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	TextInputSequentialFile<TextRecord> memorableQuotesFile(this->getMemorableQuotesFilePath(),FILES_BUFFER_SIZE);
 	std::string phrase;
+	DictionaryNormalizer normalizer;
 	std::vector<std::string> phraseWords;
 	unsigned int totalQuotes = 0;
 	unsigned int totalWords = 0;
 	unsigned int totalFailures = 0;
 	ExternalSorter externalSorter(FILES_BUFFER_SIZE,true);
-
+	this->getDictionary().rewind();
 	while (!memorableQuotesFile.endOfFile()) {
 		phrase = memorableQuotesFile.getRecord().getData();
 		//separo el autor de la frase
@@ -131,8 +132,11 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		//separo la frase en palabras
 		StringUtilities::splitString(phraseWords[phraseWords.size() - 1],phraseWords,QUOTES_WORDS_SEPARATOR);
 		totalQuotes++;
-		for (unsigned int i = 0; i < phraseWords.size(); i++) {
+		// SEBA: Lo cambie a 2 porque los 2 primeros son el autor y la frase entera
+		for (unsigned int i = 2; i < phraseWords.size(); i++) {
 			//chequeo que no sea stopWord.
+			normalizer.normalize(phraseWords[i]);
+			StringUtilities::sacarR(phraseWords[i]);
 			if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 				totalWords++;
 				//si no est� en el �ndice de fallos ni en el diccionario, se inserta en el �ndice de fallos y se
@@ -147,9 +151,11 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 				}
 			}
 		}
+		phraseWords.erase(phraseWords.begin(), phraseWords.end());
 		if (insertInHash) {
 			this->getMemorableQuotes().insert(phrase);
 		}
+		//phrase.erase(phrase.begin(), phrase.end());
 	}
 
 	//Se guardan las estad�sticas.

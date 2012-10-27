@@ -239,6 +239,8 @@ int NodoInterno::buscar(Clave* c, Registro* reg) {
 		NodoExterno* nodo_Externo = new NodoExterno(0, arbol);
 		nodo_Externo->hidratar(nodo_data, pos);
 		res = nodo_Externo->buscar(c, reg);
+		if(res)
+			arbol->guardarNodo(nodo_Externo, hijo);
 		delete nodo_data;
 		//delete nodo_Externo;
 		//nodo_Externo = NULL;
@@ -360,4 +362,8 @@ int NodoInterno::encontrarPrimero() {
 		delete nI;
 		return prim;
 	}
+}
+
+int NodoInterno::getCantElem() {
+	return claves.size();
 }

@@ -3,6 +3,11 @@
 
 namespace StringUtilities {
 
+void sacarR(std::string& s) {
+	if(s.find('\r') != std::string::npos)
+		s.erase(s.find('\r'));
+}
+
 void splitString(std::string string, std::vector<std::string>& splittedString, char delimiter) {
 	unsigned int from = 0;
 	unsigned int to = 0;

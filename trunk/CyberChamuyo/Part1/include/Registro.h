@@ -32,10 +32,12 @@ public:
 	Registro(Clave* c, std::string dat);
 	Registro(const Registro& r);
 	virtual ~Registro();
-	Clave* getClave();
+	Clave* getClave() const;
 	Clave* getClaveCopia();
-	int size();
+	int size() const;
+	void setSize(int size);
 	int byte_size();
+	void setClave(Clave* c);
 	unsigned int sizeClave();	// suma del tamaño de todas las claves
 	bool operator==(const Clave* c) const {
 		return clave == c;
@@ -55,16 +57,20 @@ public:
 	bool operator==(const Registro& r) const {
 		return ((*clave) == (*r.clave));
 	}
-	Registro& operator=(const Registro& r);
+	virtual Registro& operator=(const Registro& r);
 	void hidratar(const string& s);
 	int totalSize();		// tamaño total del regisytro serializado
 	void insertarClave(Clave* c, int pos);
 	void setTipo(int t);
+	int getTipo() const;
 	void setDato(char* dato);
+	void setDato(std::string dato);
+	std::string getDato() const;
 	virtual std::vector<char>* serializar(FrontCoding& encoder);
 	virtual void hidratar(const std::vector<char>* vec, FrontCoding& decoder, int& pos);
 	friend std::ostream& operator<<(std::ostream& os, const Registro& r);
 	virtual Registro* find();
+	virtual void setReg(Registro& r){};
 private:
 	Clave* clave;
 	string dato;

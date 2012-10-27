@@ -29,6 +29,7 @@ public:
 	virtual ~IndiceArbol();
 	void clear();
 	void rewind();
+	bool isEmpty();
 private:
 	void crearIndice(std::ifstream& arch);
 	ArbolBp arbol;

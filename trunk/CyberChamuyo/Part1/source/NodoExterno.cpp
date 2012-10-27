@@ -7,6 +7,7 @@
 
 #include "../include/NodoExterno.h"
 #include "../include/ArbolBp.h"
+#include "../include/RegistroArbol.h"
 
 NodoExterno::NodoExterno() {
 
@@ -55,7 +56,11 @@ int NodoExterno::insertarRegistro(Registro* r) {
 	if((it != registros.end()) && (*r == **it))
 		throw REGISTRO_YA_EXISTENTE;
 	else {
-		Registro* reg = new Registro();
+		Registro* reg;
+		switch(tipo){
+		case 1:
+			reg = new RegistroArbol();
+		}
 		*reg = *r;
 		registros.insert(it, reg);
 		libre -= r->totalSize();
@@ -151,7 +156,10 @@ void NodoExterno::hidratar(const std::vector<char>* data, int& pos) {
 	int cont = 0;
 	FrontCoding coder;
 	while(cont < cant) {
-		Registro* reg = new Registro();
+		Registro* reg;
+		if(tipo == 1) {
+			reg = new RegistroArbol();
+		}
 		reg->hidratar(data, coder,pos);
 		registros.push_back(reg);
 		++cont;
@@ -195,12 +203,20 @@ NodoExterno& NodoExterno::operator+(NodoExterno& n) {
 		for(; it2 != registros.end() && (*(*it2) < *reg_der); ++it2) {
 		}
 		if(it2 == registros.end() && !(*(registros.back()) == *reg_der)) {
-			Registro* newReg = new Registro();
+			Registro* newReg;
+			switch(tipo) {
+			case 1:
+				newReg = new RegistroArbol();
+			}
 			*newReg = *reg_der;
 			registros.push_back(newReg);
 		} else {
 			if(!(*(*it2) < *reg_der)) {
-				Registro* newReg = new Registro();
+				Registro* newReg;
+				switch(tipo) {
+				case 1:
+					newReg = new RegistroArbol();
+				}
 				*newReg = *reg_der;
 				registros.insert(it2,newReg);
 			}
@@ -244,7 +260,7 @@ std::ostream& operator<<(std::ostream& os, NodoExterno& ns) {
 	os << Auxiliar::int_to_dec(ns.registros.size());
 	os << " [";
 	for(it = p_list->begin(); it != p_list->end(); ++it) {
-		Registro* reg = *it;
+		RegistroArbol* reg = reinterpret_cast<RegistroArbol*>(*it);
 		os << " - ";
 		os << (*reg);
 	}
@@ -274,12 +290,16 @@ int NodoExterno::buscar(Clave* c, Registro* reg) {
 	for(it = registros.begin(); it != registros.end() && *c > *((*it)->getClave()); ++it)
 		++nReg;
 	if(it == registros.end()) {
+		if(!siguiente) {
+			return 0;
+		}
 		std::vector<char>* nodo_data = arbol->leerNodo2(siguiente);
 		NodoExterno* nE = new NodoExterno(0, arbol);
 		nE->hidratar(nodo_data, pos);
 		*reg = *(nE->registros.front()->find());
 		arbol->setUltimoLeido(nE);
 		arbol->setUltimoRegistroLeido(0);
+		arbol->guardarNodo(nE, siguiente);
 		//delete nE;
 		delete nodo_data;
 		return 0;
@@ -314,5 +334,10 @@ Registro* NodoExterno::getRegistro(int pos, Registro* reg) {
 		return reg;
 	}
 	*reg = **it;
+	(*reg).setReg(**it);
 	return reg;
+}
+
+int NodoExterno::getCantElem() {
+	return registros.size();
 }
