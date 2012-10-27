@@ -6,6 +6,8 @@
 
 namespace StringUtilities {
 
+void sacarR(std::string& s);
+
 void splitString(std::string string, std::vector<std::string>& splittedString, char delimiter);
 
 bool isNumeric(std::string string);

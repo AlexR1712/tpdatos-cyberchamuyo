@@ -30,6 +30,7 @@
 
 class ArbolBp {
 	friend class NodoInterno;
+	friend class NodoExterno;
 public:
 	ArbolBp(const char* filename, int block_size);
 	virtual ~ArbolBp();
@@ -50,6 +51,7 @@ public:
 	void aumentarUltimoRegistroLeido();
 	void exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& os);
 	int encontrarPrimero();
+	NodoExterno* getUltimoNodoLeido();
 private:
 	Nodo* raiz;											//  nodo raiz del arbol
 	ArchivoBloquesFijos arch_arbol;						//  archivo de bloques donde se guardan los nodos

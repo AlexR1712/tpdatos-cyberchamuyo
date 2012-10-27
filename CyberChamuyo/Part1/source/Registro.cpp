@@ -57,7 +57,6 @@ Registro::~Registro() {
 std::vector<char>* Registro::serializar(FrontCoding& encoder) {
 	std::vector<char>* s = new std::vector<char>;
 	s = Auxiliar::insertarEntero(s, tipo);
-	//s = Auxiliar::insertarEntero(s, clave->size() + 1);
 	std::vector<char>* s_clave = new std::vector<char>;
 	s_clave = clave->serializar(s_clave);
 	std::vector<char>* s_clave_coded = new std::vector<char>;
@@ -121,6 +120,9 @@ int Registro::totalSize() {
 	return tam + clave->size() + 3*sizeof(long);
 }
 
+void Registro::setSize(int size) {
+	tam = size;
+}
 
 void Registro::setTipo(int t) {
 	tipo = t;
@@ -130,11 +132,15 @@ void Registro::setDato(char* d) {
 	dato = d;
 }
 
-int Registro::size() {
+void Registro::setDato(std::string d) {
+	dato = d;
+}
+
+int Registro::size() const {
 	return tam;
 }
 
-Clave* Registro::getClave() {
+Clave* Registro::getClave() const {
 	return clave;
 }
 
@@ -155,9 +161,17 @@ Clave* Registro::getClaveCopia() {
 	return c;
 }
 
+int Registro::getTipo() const {
+	return tipo;
+}
+
+std::string Registro::getDato() const {
+	return dato;
+}
+
 Registro& Registro::operator=(const Registro& r) {
 	tam = r.tam;
-	tipo = r.tipo;
+	tipo = r.getTipo();
 	int tipo = r.clave->getTipo();
 	if(clave == NULL) {
 		switch(tipo) {
@@ -167,8 +181,8 @@ Registro& Registro::operator=(const Registro& r) {
 			clave = new CAlfa();
 		}
 	}
-	*clave = *(r.clave);
-	dato = r.dato;
+	*clave = *(r.getClave());
+	dato = r.getDato();
 }
 
 std::ostream& operator<<(std::ostream& os, const Registro& r) {
@@ -179,4 +193,8 @@ std::ostream& operator<<(std::ostream& os, const Registro& r) {
 
 Registro* Registro::find() {
 	return this;
+}
+
+void Registro::setClave(Clave* c) {
+	clave = c;
 }

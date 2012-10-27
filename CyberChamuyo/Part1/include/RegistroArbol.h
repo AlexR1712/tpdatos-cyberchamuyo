@@ -24,13 +24,15 @@ public:
 	virtual ~RegistroArbol();
 	virtual Registro* find();
 	long timesSearched();
+	virtual Registro& operator=(const Registro& r);
+	virtual Registro& operator=(const RegistroArbol& r);
+	friend std::ostream& operator<<(std::ostream& os, const RegistroArbol& r);
+	virtual void setReg(Registro& r);
 private:
-	Clave* clave;
-	string dato;
 	long n;
 	short s;
-	long tam;		// tamanio solo de dato
-	long tipo;
 };
+
+
 
 #endif /* REGISTROARBOL_H_ */

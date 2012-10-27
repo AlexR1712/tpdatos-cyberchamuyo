@@ -43,6 +43,7 @@ public:
 	virtual int getNivel();
 	virtual int buscar(Clave* c, Registro* reg);
 	Registro* getRegistro(int pos, Registro* reg);
+	virtual int getCantElem();
 private:
 	list<Registro*> registros;
 	long nivel;

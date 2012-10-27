@@ -34,6 +34,7 @@ public:
 	void aumentarNivel();
 	virtual int buscar(Clave* c, Registro* reg);
 	int encontrarPrimero();
+	virtual int getCantElem();
 private:
 	list<Clave*> claves;
 	vector<int> nodos;  //  el lugar 0 corresponde a hijo izquierda, el resto corresponden 1 a 1 con las claves

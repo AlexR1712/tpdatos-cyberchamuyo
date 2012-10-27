@@ -18,9 +18,9 @@
 
 class DictionaryNormalizer {
 private:
-	std::map<std::wstring,std::string> charMap;
+	std::map<std::wstring,char> charMap;
 
-	std::map<std::wstring,std::string>& getCharMap();
+	std::map<std::wstring,char>& getCharMap();
 
 	void loadCharmap();
 
