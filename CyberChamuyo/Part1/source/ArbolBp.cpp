@@ -64,7 +64,7 @@ int ArbolBp::insertarRegistro(Registro* r) {
 		std::cout << "Error registro ya existente" << std::endl;
 		return -1;
 	}
-	delete r;
+	//delete r;
 	if(max == 0) {
 		if(res == OVERFLOW) {
 			NodoExterno* nh2 = new NodoExterno(0, this);
@@ -322,6 +322,7 @@ void ArbolBp::rewind() {
 		delete ultimoNodoLeido;
 	ultimoNodoLeido = nE;
 	ultimoRegistroLeido = 0;
+	delete data;
 }
 
 bool ArbolBp::isEmpty() {

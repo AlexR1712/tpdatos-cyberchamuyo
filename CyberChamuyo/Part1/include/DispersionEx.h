@@ -12,7 +12,7 @@
 #include "DispersionExCtes.h"
 #include "BloqueDato.h"
 #include "BloqueTabla.h"
-#include "Aux.h"
+#include "_Aux.h"
 #include "Tabla.h"
 #include <iostream>
 

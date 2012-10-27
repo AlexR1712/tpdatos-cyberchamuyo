@@ -12,7 +12,7 @@
 #include "ArchivoBloquesFijos.h"
 #include "TablaCtes.h"
 #include "BloqueTabla.h"
-#include "Aux.h"
+#include "_Aux.h"
 
 typedef std::list<unsigned int>::iterator itListaTabla;
 typedef std::list<unsigned int> listaTabla;

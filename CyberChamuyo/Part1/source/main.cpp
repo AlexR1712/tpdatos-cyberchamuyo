@@ -4,15 +4,15 @@
  *  Created on: 06/09/2012
  *      Author: sebastian
  */
-#include "CEntero.h"
-#include "Registro.h"
-#include "NodoExterno.h"
-#include "ArbolBp.h"
-#include "NodoInterno.h"
+#include "../include/CEntero.h"
+#include "../include/Registro.h"
+#include "../include/NodoExterno.h"
+#include "../include/ArbolBp.h"
+#include "../include/NodoInterno.h"
 #include <sstream>
-#include "CAlfa.h"
-#include "FrontCoding.h"
-#include "IndiceArbol.h"
+#include "../include/CAlfa.h"
+#include "../include/FrontCoding.h"
+#include "../include/IndiceArbol.h"
 /*
 int main(int argc, char** argv) {
 /*

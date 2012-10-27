@@ -5,7 +5,7 @@
  *      Author: Shazgath
  */
 
-#include "../include/Aux.h"
+#include "../include/_Aux.h"
 
 unsigned int stoi(std::string& s) {
 	std::stringstream ss(s.c_str());
