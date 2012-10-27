@@ -18,13 +18,13 @@
 
 class DictionaryNormalizer {
 private:
-	std::map<std::wstring,char> charMap;
+	std::map<wchar_t,char> charMap;
 
-	std::map<std::wstring,char>& getCharMap();
+	std::map<wchar_t,char>& getCharMap();
 
 	void loadCharmap();
 
-	std::string normalizeWord(const std::string string);
+	std::string normalizeWord(const std::wstring string);
 
 public:
 	DictionaryNormalizer();

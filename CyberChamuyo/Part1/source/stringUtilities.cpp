@@ -76,6 +76,13 @@ std::string floatToString(float f) {
 	return stringstream.str();
 }
 
+std::wstring stringToWstring(std::string string) {
+	std::wstring wString;
+
+	std::copy(string.begin(),string.end(),std::back_inserter(wString));
+	return wString;
+}
+
 std::string trim(std::string string) {
 	unsigned int from = 0;
 	unsigned int to = string.size();

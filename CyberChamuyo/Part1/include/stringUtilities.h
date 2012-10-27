@@ -22,6 +22,8 @@ std::string intToString(int i);
 
 std::string floatToString(float f);
 
+std::wstring stringToWstring(std::string string);
+
 std::string trim(std::string string);
 
 }
