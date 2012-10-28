@@ -24,12 +24,12 @@ private:
 
 	void loadCharmap();
 
-	std::string normalizeWord(const std::string string);
-
 public:
 	DictionaryNormalizer();
 
 	void normalize(std::string dictionaryPath);
+
+	std::string normalizeWord(const std::string string);
 
 	~DictionaryNormalizer();
 };

@@ -6,6 +6,7 @@
  */
 
 #include "../include/Tabla.h"
+#include <cstdlib>
 
 namespace Hash {
 
