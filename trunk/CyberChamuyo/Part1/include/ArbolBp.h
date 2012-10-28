@@ -19,38 +19,71 @@
 #include "RegistroVariable.h"
 #include "BloqueNodo.h"
 
-#define N_SIZE 256
-#define OK 0
-#define OVERFLOW 1
-#define GUARDAR 2
-#define N_MIN (256 * 0.2)
-#define REGISTRO_YA_EXISTENTE 3
+#define N_SIZE 480		//  tamaño de los nodos
+#define OK 0			//  si insercion OK
+#define OVERFLOW 1		//  si hubo overflow
+#define GUARDAR 2		//  indicador de cambio
+#define N_MIN (N_SIZE * 0.2)	//  colchon de bytes
+#define REGISTRO_YA_EXISTENTE 3		//  registro ya se encuentra en el arbol
 
-#define TIPO_ARBOL 1
+#define TIPO_ARBOL 1	//  se debe crear un tipo nuevo para cada tipo de clave
+						//  y construir el arbol con ese tipo
 
 class ArbolBp {
 	friend class NodoInterno;
 	friend class NodoExterno;
 public:
+	// Constructor que recibe nombre de archivo y tamaño de bloque
 	ArbolBp(const char* filename, int block_size);
+
 	virtual ~ArbolBp();
+
 	//  permite visualizar el arbol en un formato entendible a simple vista.
 	void imprimirNodos();
+
 	//  Inserta un registro en el arbol. Recibe un registro creado
 	int insertarRegistro(Registro* r);
+
+	//  Busca el registro correspondiente a Clave c, lo coloca en reg y devuelve
+	//  1, o si no lo encuentra coloca en reg el primero encontrado mayor al buscado
+	//  y devuelve 0
 	int buscar(Clave* c, Registro*& reg);
+
+	//  1 si esta vacio, 0 sino
 	bool isEmpty();
-	std::string leerNodo(int id);	// metodo para obtener un bloque del arch de bloques
+
+	//  devuelve el nodo correspondiente a id, serializado
 	std::vector<char>* leerNodo2(int id);
+
+	//  registra como ultimo nodo leido a nE
 	void setUltimoLeido(NodoExterno* nE);
+
+	//  en caso de haberse realizado una busqueda antes, devuelve el registro siguiente
+	//  al ultimo que fue devuelto, sino devuelve el primer registro
 	Registro* siguiente();
+
+	//  borra el arbol
 	void clear();
+
+	//  1 si hay siguiente registro, 0 sino
 	bool hasNext();
+
+	//  coloca el primer registro del arbol como ultimo leido
 	void rewind();
+
+	//  setea la posicion relativa en el nodo del ultimo registro leido
 	void setUltimoRegistroLeido(int nReg);
+
+	//  ultimoRegistroLeido++
 	void aumentarUltimoRegistroLeido();
+
+	//  devuelve un archivo secuencial os con todos los registros(datos) del arbol
 	void exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& os);
+
+	//  devuelve el numero de nodo del primer nodo externo
 	int encontrarPrimero();
+
+	//  devuelve el ultimo nodo leido en memoria
 	NodoExterno* getUltimoNodoLeido();
 private:
 	Nodo* raiz;											//  nodo raiz del arbol

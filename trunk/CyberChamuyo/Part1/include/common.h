@@ -13,6 +13,8 @@
 #include <sstream>
 #include <vector>
 
+//  UTILIDADES PARA HACER CONVERSIONES ENTRE NUMEROS, CADENAS Y BYTES
+
 namespace Auxiliar {
 int stoi(char* s);
 int stoi(const std::string s);

@@ -35,9 +35,9 @@ public:
 	int getSiguiente();
 	virtual int insertarRecursivo(Registro* r);
 	void aumentarNivel();		// ++nivel
-	list<Registro*> getRegistrosDerecha();			// devuelve registros mayores que el central
-	NodoExterno& operator+(NodoExterno& n);  //  agrega los registros de n, alocando nuevos recursos
-	NodoExterno& operator-(NodoExterno& n);  //  quita de este nodo los registros que coincidan con registros de n
+	list<Registro*> getRegistrosDerecha();	// devuelve registros mayores que el central
+	NodoExterno& operator+(NodoExterno& n); //  agrega los registros de n, alocando nuevos recursos
+	NodoExterno& operator-(NodoExterno& n); //  quita de este nodo los registros que coincidan con registros de n
 	NodoExterno& operator=(NodoExterno& n);
 	friend std::ostream& operator<<(std::ostream& os, NodoExterno& ne);
 	virtual int getNivel();

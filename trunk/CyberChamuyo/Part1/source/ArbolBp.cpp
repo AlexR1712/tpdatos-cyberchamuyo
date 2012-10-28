@@ -35,7 +35,7 @@ ArbolBp::ArbolBp(const char* n_arch, int block_size) : arch_arbol(n_arch, N_SIZE
 
 ArbolBp::~ArbolBp() {
 	delete raiz;
-	delete ultimoNodoLeido;
+	//delete ultimoNodoLeido;
 }
 
 int ArbolBp::buscar(Clave* c, Registro*& reg) {
@@ -218,10 +218,11 @@ void ArbolBp::clear() {
 	delete raiz;
 	delete ultimoNodoLeido;
 	ultimoRegistroLeido = 0;
+	ultimoNodoLeido = NULL;
 	arch_arbol.clear();
 }
 
-
+/*
 std::string ArbolBp::leerNodo(int id) {
 	BloqueNodo b(N_SIZE);
 	arch_arbol.Leer(id, &b);
@@ -230,7 +231,7 @@ std::string ArbolBp::leerNodo(int id) {
 	reg->serializar(oss);
 	return oss.str();
 }
-
+*/
 std::vector<char>* ArbolBp::leerNodo2(int id) {
 	BloqueNodo b(N_SIZE);
 	arch_arbol.Leer(id, &b);

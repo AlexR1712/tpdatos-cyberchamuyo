@@ -8,6 +8,9 @@
 #ifndef CENTERO_H_
 #define CENTERO_H_
 
+/* CEntero: Clase para una clave del tipo entero*/
+//  NO SE UTILIZA EN ESTA PARTE DEL TP
+
 #include "Clave.h"
 #include <vector>
 

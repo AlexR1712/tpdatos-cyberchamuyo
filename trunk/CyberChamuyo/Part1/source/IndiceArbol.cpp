@@ -13,7 +13,7 @@
 #include "../include/stringUtilities.h"
 
 
-IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), 480) {
+IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), N_SIZE) {
 }
 
 bool IndiceArbol::find(const std::string& word) {
