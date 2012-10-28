@@ -68,7 +68,6 @@ void IndiceArbol::createIndex(std::string in_path) {
 		record = arch_sec.getRecord();
 		delete reg;
 	}
-	//arbol.imprimirNodos();
 }
 
 void IndiceArbol::rewind() {

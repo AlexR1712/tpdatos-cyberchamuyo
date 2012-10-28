@@ -1,4 +1,4 @@
-#ifndef STATISTICSMANAGER_H_
+﻿#ifndef STATISTICSMANAGER_H_
 #define STATISTICSMANAGER_H_
 
 #include <string>

@@ -135,8 +135,8 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		// SEBA: Lo cambie a 2 porque los 2 primeros son el autor y la frase entera
 		for (unsigned int i = 2; i < phraseWords.size(); i++) {
 			//chequeo que no sea stopWord.
-			normalizer.normalize(phraseWords[i]);
 			StringUtilities::sacarR(phraseWords[i]);
+			normalizer.normalizeWord(phraseWords[i]);
 			if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 				totalWords++;
 				//si no est� en el �ndice de fallos ni en el diccionario, se inserta en el �ndice de fallos y se
@@ -181,8 +181,11 @@ void StatisticsManager::printAverageWordsPerPhrase() {
 }
 
 void StatisticsManager::printAverageFailures() {
+	float failures = this->getNumberOfFailures();
+	float words = this->getNumberOfWords();
+	float res =  failures / words;
 	std::cout << TEXT_AVG_FAILURES
-			  << StringUtilities::floatToString(this->getNumberOfFailures() / this->getNumberOfWords())
+			  << StringUtilities::floatToString(res)
 			  << std::endl;
 }
 
@@ -190,9 +193,9 @@ void StatisticsManager::printNotFoundWords() {
 	BinaryDictionaryRecord<true> record;
 
 	std::cout << TEXT_NOT_FOUND_WORDS << std::endl;
-	getDictionary().rewind();
-	while (getDictionary().hasNext()) {
-		record = this->getDictionary().next();
+	getNotFoundWords().rewind();
+	while (getNotFoundWords().hasNext()) {
+		record = this->getNotFoundWords().next();
 		std::cout << record.getWord() << std::endl;
 	}
 }
