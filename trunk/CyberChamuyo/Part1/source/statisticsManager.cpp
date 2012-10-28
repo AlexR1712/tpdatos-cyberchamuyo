@@ -1,6 +1,7 @@
 #include "../include/statisticsManager.h"
 
 #include <iostream>
+#include <list>
 
 #include "../include/textInputSequentialFile.h"
 #include "../include/textOutputSequentialFile.h"
@@ -198,12 +199,22 @@ void StatisticsManager::printNotFoundWords() {
 void StatisticsManager::printWordRanking(unsigned int rankingSize) {
 	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > wordRankingFile(RANKINGS_FILE_PATH_ORDERED,FILES_BUFFER_SIZE);
 	BinaryDictionaryRecord<true> record;
+	std::list<BinaryDictionaryRecord<true> > ranking;
+	unsigned int i = 0;
 
 	if (rankingSize > 0) {
-		std::cout << TEXT_MOST_SEARCHED_WORDS_TITLE(StringUtilities::intToString(rankingSize)) << std::endl;
-		for (unsigned int i = 0; ( (i < rankingSize) && (!wordRankingFile.endOfFile()) ); i++) {
+		while(!wordRankingFile.endOfFile()) {
 			record = wordRankingFile.getRecord();
-			std::cout << TEXT_MOST_SEARCHED_WORDS_ITEM(StringUtilities::intToString(i + 1),record.getWord(),StringUtilities::intToString(record.getId())) << std::endl;
+			ranking.push_back(record);
+			if (ranking.size() > rankingSize)
+				ranking.pop_front();
+		}
+		ranking.reverse();
+
+		std::cout << TEXT_MOST_SEARCHED_WORDS_TITLE(StringUtilities::intToString(rankingSize)) << std::endl;
+		for (std::list<BinaryDictionaryRecord<true> >::iterator it = ranking.begin(); it != ranking.end(); it++ ) {
+			i++;
+			std::cout << TEXT_MOST_SEARCHED_WORDS_ITEM(StringUtilities::intToString(i + 1),it->getWord(),StringUtilities::intToString(it->getId())) << std::endl;
 		}
 	} else {
 		std::cout << ERROR_TEXT_INVALID_RANKING_SIZE << std::endl;
