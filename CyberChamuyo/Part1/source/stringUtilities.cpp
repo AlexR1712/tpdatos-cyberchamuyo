@@ -12,6 +12,7 @@ void splitString(std::string string, std::vector<std::string>& splittedString, c
 	unsigned int from = 0;
 	unsigned int to = 0;
 
+	splittedString.clear();
 	while (to != string.npos) {
 		to = string.find(delimiter,from);
 		splittedString.push_back(string.substr(from,(to-from)));

@@ -13,10 +13,6 @@
 #include "../include/stringUtilities.h"
 #include "../include/DispersionEx.h"
 
-#define DICTIONARY_NAME "dic.bin"
-#define NOTFOUND_NAME "notf.bin"
-#define MEMORABLE_QUOTES_NAME "memquotes.bin"
-
 StatisticsManager::StatisticsManager() : dictionary(DICTIONARY_NAME), notFoundWords(NOTFOUND_NAME), memorableQuotes(MEMORABLE_QUOTES_NAME) {
 	this->loadStatus();
 	this->loadStopWords();
@@ -105,13 +101,13 @@ void StatisticsManager::loadStopWords() {
 }
 
 void StatisticsManager::createDictionary(bool force) {
-	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > dictionaryFile("outputFiles/dictionary_RANDOMIZED_ORDERED");
+	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > dictionaryFile(DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH);
 	if (dictionaryFile.fail() || force) {
 		DictionaryNormalizer dictionaryNormalizer;
 		DictionayRandomizer dictionayRandomizer;
 
 		dictionaryNormalizer.normalize(this->getDictionaryFilePath());
-		dictionayRandomizer.randomizeDictionary("outputFiles/dictionary_NORMALIZED.txt",false);
+		dictionayRandomizer.randomizeDictionary(DICTIONARY_NORMALIZED_FILE_PATH,false);
 	}
 }
 
@@ -132,8 +128,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		//separo la frase en palabras
 		StringUtilities::splitString(phraseWords[phraseWords.size() - 1],phraseWords,QUOTES_WORDS_SEPARATOR);
 		totalQuotes++;
-		// SEBA: Lo cambie a 2 porque los 2 primeros son el autor y la frase entera
-		for (unsigned int i = 2; i < phraseWords.size(); i++) {
+		for (unsigned int i = 0; i < phraseWords.size(); i++) {
 			//chequeo que no sea stopWord.
 			StringUtilities::sacarR(phraseWords[i]);
 			normalizer.normalizeWord(phraseWords[i]);
@@ -295,7 +290,7 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 			this->clearStatistics();
 			this->setDictionaryFilePath(commandParams[0]);
 			this->createDictionary(true);
-			this->getDictionary().createIndex("outputFiles/dictionary_RANDOMIZED_ORDERED");
+			this->getDictionary().createIndex(DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH);
 			this->loadMemorableQuotes(false);
 		}
 

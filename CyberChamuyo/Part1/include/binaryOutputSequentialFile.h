@@ -15,7 +15,7 @@ public:
 
 	BinaryOutputSequentialFile(std::string filePath, unsigned int bufferMaxSize = 1);
 
-	void open(std::string filePath, unsigned int bufferMaxSize);
+	void open(std::string filePath, unsigned int bufferMaxSize = 1);
 
 	~BinaryOutputSequentialFile();
 };

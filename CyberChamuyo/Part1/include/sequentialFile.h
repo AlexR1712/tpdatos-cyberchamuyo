@@ -26,7 +26,7 @@ protected:
 public:
 	SequentialFile();
 
-	virtual void open(std::string filePath, unsigned int maxSize) = 0;
+	virtual void open(std::string filePath, unsigned int bufferMaxSize = 1) = 0;
 
 	virtual void close() = 0;
 
