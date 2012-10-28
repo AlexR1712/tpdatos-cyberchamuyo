@@ -12,6 +12,8 @@
 #include <iostream>
 #include <vector>
 
+//  INTERFAZ PARA CLAVES
+
 class Clave {
 public:
 	Clave();

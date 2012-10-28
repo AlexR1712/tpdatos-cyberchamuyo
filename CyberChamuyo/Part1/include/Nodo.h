@@ -16,11 +16,12 @@
 
 using namespace std;
 
+//  Nodo: Interfaz para nodos
+
 class Nodo {
 public:
 	Nodo();
 	virtual ~Nodo();
-	//virtual std::string serializar() = 0;
 	virtual std::vector<char>* serializar() = 0;
 	virtual void hidratar(string& s) = 0;
 	virtual void hidratar(const std::vector<char>* data, int& pos) = 0;
