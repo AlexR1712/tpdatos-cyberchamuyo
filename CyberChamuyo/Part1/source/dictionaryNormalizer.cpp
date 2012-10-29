@@ -36,9 +36,12 @@ std::string DictionaryNormalizer::normalizeWord(const std::string string) {
 		if (it != this->getCharMap().end()) {
 			c = it->second;
 		}
-		if (c >= 'A' && c <= 'Z')
-			c = c + 32;
-		normalizedWord += c;
+		if (c != '\0') {
+			if (c >= 'A' && c <= 'Z')
+				c = c + 32;
+
+			normalizedWord += c;
+		}
 	};
 	StringUtilities::sacarR(normalizedWord);
 	return normalizedWord;
