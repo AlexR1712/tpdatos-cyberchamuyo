@@ -7,16 +7,22 @@
 
 #include "record.h"
 
+//Clase que representa un archivo secuencial para escritura de registro de texto.
 template<class T> class TextOutputSequentialFile : public OutputSequentialFile<T> {
 private:
+	//Metodo para escribir en el archivo el contenido del buffer del mismo.
 	void flush();
 public:
+	//Constructor.
 	TextOutputSequentialFile();
 
+	//Constructor.
 	TextOutputSequentialFile(std::string filePath, unsigned int bufferMaxSize = 1);
 
+	//Metodo para abrir el archivo.
 	void open(std::string filePath, unsigned int bufferMaxSize = 1);
 
+	//Destructor.
 	~TextOutputSequentialFile();
 };
 

@@ -33,16 +33,22 @@
 #define LOG_FILE_NAME "estadisticas.txt"
 #endif /*LOG_FILE_NAME*/
 
+//Clase para realizar ordenamiento externo de archivos con registros de diccionario.
 class ExternalSorter {
 private:
+	//Monticulo para realizar el ordenamiento
 	Heap<BinaryDictionaryRecord<true> > sortBuffer;
 
+	//Indica si se debe guardar el ID en el archivo final ordenado.
 	bool showId;
 
+	//Tamaño del buffer de los archivos.
 	unsigned int filesBufferSize;
 
+	//Nombre de la carpeta temporal en la que se guardarán los archivos de trabajo.
 	std::string tempFolderName;
 
+	//Log donde se guardaran los datos del ordenamiento.
 	TextOutputSequentialFile<LogRecord> log;
 
 	Heap<BinaryDictionaryRecord<true> >& getSortBuffer();
@@ -55,29 +61,41 @@ private:
 
 	TextOutputSequentialFile<LogRecord>& getLog();
 
+	//Metodo para llenar el monticulo desde un archivo
 	void createSortBuffer(BinaryInputSequentialFile<BinaryDictionaryRecord<true> >& inputFile);
 
+	//Metodo para escribir en un archivo el monticulo
 	void flushSortBuffer(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& outputFile);
 
+	//Metodo para armar el monticulo con los registros congelados.
 	void unfreeze(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& freezeFile);
 
+	//Metodo para cargar los archivos de trabajo a unir.
 	void loadMergeBuffer(std::vector<BinaryInputSequentialFile<BinaryDictionaryRecord<true> >*>& inputFiles, std::string folderName, unsigned int inputFileLevelCounter, unsigned int& inputFileFileCounter);
 
+	//Metodo para generar el nombre de la carpeta temporal segun la fecha y hora actual
 	std::string generateTempFolderName();
 
+	//Metodo para borrar los archivos de trabajo creados en las sucesivas etapas de ordenamiento.
 	void clearPhase(std::string parentFolderName, unsigned int level);
 
+	//Metodo para borrar la carpeta temporal de archivos de trabajo.
 	void clearTemp();
 
+	//Metodo para crear las particiones ordenadas.
 	void createOrderedParts(std::string inputFilepath);
 
+	//Metodo para unir las particiones ordenadas.
 	void merge(std::string outputFilepath);
 
 public:
+	//Constructor
 	ExternalSorter(unsigned int filesBufferSize, bool showId);
 
+	//Metodo para ordenar un archivo desordenado.
 	void sort(std::string inputFilepath, std::string outputFilepath, bool leaveTraces);
 
+	//Destructor
 	~ExternalSorter();
 };
 

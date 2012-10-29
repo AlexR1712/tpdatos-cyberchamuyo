@@ -4,12 +4,16 @@
 #include <fstream>
 #include <queue>
 
+//Clase que representa un archivo secuencial.
 template<class T> class SequentialFile {
 private:
+	//File handler
 	std::fstream file;
 
+	//Buffer
 	std::queue<T> buffer;
 
+	//Tamaño máximo para el buffer
 	unsigned int bufferMaxSize;
 
 protected:
@@ -21,19 +25,26 @@ protected:
 
 	void setBufferMaxSize(unsigned int bufferMaxSize);
 
+	//Indica si el buffer está vacío.
 	const bool isBufferEmpty();
 
 public:
+	//Constructor.
 	SequentialFile();
 
+	//Metodo para abir el archivo.
 	virtual void open(std::string filePath, unsigned int bufferMaxSize = 1) = 0;
 
+	//Metodo para cerrar el archivo.
 	virtual void close() = 0;
 
+	//Indica si se llegó al final del archivo.
 	const bool endOfFile();
 
+	//Indica si no se pudo abrir el archivo.
 	const bool fail();
 
+	//Destructor.
 	virtual ~SequentialFile() = 0;
 };
 
