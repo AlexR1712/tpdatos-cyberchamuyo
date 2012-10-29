@@ -10,6 +10,7 @@
 
 #include <string>
 #include "CEntero.h"
+#include "CAlfa.h"
 #include <vector>
 #include "FrontCoding.h"
 
@@ -57,9 +58,9 @@ public:
 	bool operator==(const Registro& r) const {
 		return ((*clave) == (*r.clave));
 	}
-	virtual Registro& operator=(const Registro& r);
+	virtual Registro& operator=(Registro& r);
 	void hidratar(const string& s);
-	int totalSize();		// tamaño total del regisytro serializado
+	virtual int totalSize();		// tamaño total del regisytro serializado
 	void insertarClave(Clave* c, int pos);
 	void setTipo(int t);
 	int getTipo() const;

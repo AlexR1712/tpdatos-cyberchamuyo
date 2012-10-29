@@ -10,7 +10,7 @@
 
 #include "Nodo.h"
 
-#define E_CONTROL_SIZE (3 * sizeof(int) + 1 * sizeof(char))
+#define E_CONTROL_SIZE (4 * sizeof(int) + 1 * sizeof(char))
 
 class ArbolBp;
 

@@ -24,10 +24,11 @@ public:
 	virtual ~RegistroArbol();
 	virtual Registro* find();
 	long timesSearched();
-	virtual Registro& operator=(const Registro& r);
-	virtual Registro& operator=(const RegistroArbol& r);
+	virtual Registro& operator=(Registro& r);
+	virtual Registro& operator=(RegistroArbol& r);
 	friend std::ostream& operator<<(std::ostream& os, const RegistroArbol& r);
 	virtual void setReg(Registro& r);
+	virtual int totalSize();
 private:
 	long n;
 	short s;

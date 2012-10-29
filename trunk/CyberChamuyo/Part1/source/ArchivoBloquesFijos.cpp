@@ -127,6 +127,7 @@ int ArchivoBloquesFijos::Escribir(Bloque* elemento, long posicion){
     	int corrimiento = (posicion + 1) * tamanoBloque * metadatasize;
     	path.seekp(corrimiento, std::ios::beg);
     	path << *elemento;
+    	path.flush();
     }
    return RES_OK;
 }

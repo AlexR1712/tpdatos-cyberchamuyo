@@ -5,43 +5,31 @@
 
 #include "record.h"
 
-//Clase que representa un heap.
 template<class T> class Heap {
 private:
-	//Vector que representa el monticulo
 	std::vector<T> heap;
 
 	std::vector<T>& getHeap();
 
-	//Metodo para obtener el indice al hijo mas chico
 	unsigned int getSmallestChildIndex(unsigned int parentIndex);
 
-	//Metodo para intercambiar 2 elementos del monticulo
 	void swap(T& x, T& y);
 
 public:
-	//Constructor
 	Heap();
 
-	//Metodo para obtener el tamaño del monticulo.
 	unsigned int size();
 
-	//Indica si el monticulo esta vacio.
 	bool empty();
 
-	//Metodo para obtener el elemento del monticulo en el indice index.
 	T& get(unsigned short int index);
 
-	//Metodo para eliminar el ultimo elemento del monticulo.
 	void popBack();
 
-	//Metodo para reemplazar la raiz del monticulo.
 	void replaceRoot(const T& record);
 
-	//Metodo para insertar un elemento al final del monticulo.
 	void insert(const T& record);
 
-	//Destructor
 	~Heap();
 };
 
