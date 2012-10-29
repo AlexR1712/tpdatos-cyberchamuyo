@@ -57,28 +57,34 @@
 #define QUOTES_WORDS_SEPARATOR ' '
 #endif /*QUOTES_WORDS_SEPARATOR*/
 
+//Clase para obtener las estadísticas solicitadas en el TP.
 class StatisticsManager {
 private:
+	//Ubicacion del archivo de diccionario.
 	std::string dictionaryFilePath;
 
+	//Ubicacion del archivo de frases celebres.
 	std::string memorableQuotesFilePath;
 
+	//Cantidad total de palabras.
 	unsigned int numberOfWords;
 
+	//Cantidad total de frases.
 	unsigned int numberOfQuotes;
 
+	//Cantidad total de fallas.
 	unsigned int numberOfFailures;
 
-	//Es un set porque la b�squeda es generalmente mas r�pida que la b�squeda binaria en un vector.
-	//TODO Mariano. Corregir la configuraci�n del proyecto para usar unordered_set que deber�a ser aun mas r�pido.
+	//Stop words.
 	std::set<std::string> stopWords;
 
-	//A falta de mejores nombres por ahora
+	//Indice del diccionario.
 	IndiceArbol dictionary;
 
-	//A falta de mejores nombres por ahora
+	//Indice de las frases celebres.
 	Hash::DispersionEx memorableQuotes;
 
+	//Indice de palabras no encontradas.
 	IndiceArbol notFoundWords;
 
 	std::string getDictionaryFilePath() const;
@@ -109,35 +115,50 @@ private:
 
 	IndiceArbol& getNotFoundWords();
 
+	//Metodo para cargar el estado del modulo desde un archivo.
 	void loadStatus();
 
+	//Metodo para cargar las stop words.
 	void loadStopWords();
 
+	//Metodo para crear el diccionario.
 	void createDictionary(bool force);
 
+	//Metodo para cargar las frases celebres.
 	void loadMemorableQuotes(bool insertInHash);
 
+	//Metodo para limpiar las estadisticas.
 	void clearStatistics();
 
+	//Indica si el comando ingresado es valido.
 	bool isValidCommand(std::string& command, std::vector<std::string>& commandParams);
 
+	//Imprime por pantalla la cantidad de palabras promedio por frase.
 	void printAverageWordsPerPhrase();
 
+	//Imprime por pantalla la cantidad promedio de fallos.
 	void printAverageFailures();
 
+	//Imprime por pantalla las palabras no encontradas.
 	void printNotFoundWords();
 
+	//Imprime por pantalla el ranking de palabras mas buscadas.
 	void printWordRanking(unsigned int rankingSize);
 
+	//Metodo para guardar el estado del modulo en un archivo.
 	void saveStatus();
 
 public:
+	//Constructor.
 	StatisticsManager();
 
+	//Metodo para procesar el comando recibido.
 	void processCommand(std::string& command, std::vector<std::string>& commandParams);
 
+	//Metodo para imprimir la ayuda.
 	void printHelp();
 
+	//Destructor.
 	~StatisticsManager();
 };
 

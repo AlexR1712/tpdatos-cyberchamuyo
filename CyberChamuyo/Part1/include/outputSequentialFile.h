@@ -7,16 +7,22 @@
 
 #include "record.h"
 
+//Clase que representa un archivo secuencial para escritura.
 template<class T> class OutputSequentialFile : public SequentialFile<T> {
 protected:
+	//Metodo para escribir en el archivo el contenido del buffer del mismo.
 	virtual void flush() = 0;
 public:
+	//Constructor
 	OutputSequentialFile();
 
+	//Metodo para cerrar el archivo.
 	void close();
 
+	//Metodo para insertar un registro en el buffer.
 	void putRecord(const T& record);
 
+	//Destructor
 	virtual ~OutputSequentialFile() = 0;
 };
 

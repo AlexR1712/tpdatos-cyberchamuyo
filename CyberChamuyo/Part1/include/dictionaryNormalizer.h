@@ -16,21 +16,28 @@
 #include <string>
 #include <map>
 
+//Clase cuya función es normalizar un diccionario.
 class DictionaryNormalizer {
 private:
+	//Mapa de caracteres especiales a normalizar.
 	std::map<std::wstring,char> charMap;
 
 	std::map<std::wstring,char>& getCharMap();
 
+	//Metodo para cargar el mapa de caracteres especiales a normalizar desde un archivo.
 	void loadCharmap();
 
 public:
+	//Constructor
 	DictionaryNormalizer();
 
+	//Metodo para normalizar el diccionario en la ubicacion indicada por diccionaryPath.
 	void normalize(std::string dictionaryPath);
 
+	//Metodo para normalizar una palabra.
 	std::string normalizeWord(const std::string string);
 
+	//Destructor
 	~DictionaryNormalizer();
 };
 

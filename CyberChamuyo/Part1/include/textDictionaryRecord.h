@@ -19,14 +19,19 @@
 #define SEPARATOR '\t'
 #endif /*SEPARATOR*/
 
+//Clase que representa un registro de diccionario que se almacena de forma de texto.
 template<bool withId> class TextDictionaryRecord : public DictionaryRecord {
 public:
+	//Constructor.
 	TextDictionaryRecord();
 
+	//Metodo para hidratar el objeto desde un string.
 	void deserialize(std::string string);
 
+	//Metodo para serializar el objeto a un string.
 	std::string serialize();
 
+	//Destructor.
 	virtual ~TextDictionaryRecord();
 };
 

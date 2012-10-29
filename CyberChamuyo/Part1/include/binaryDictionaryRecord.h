@@ -5,14 +5,19 @@
 #ifndef BINARYDICTIONARYRECORD_H_
 #define BINARYDICTIONARYRECORD_H_
 
+//Clase que representa un registro de diccionario que se almacena de forma binaria.
 template<bool withId> class BinaryDictionaryRecord : public DictionaryRecord {
 public:
+	//Constructor.
 	BinaryDictionaryRecord();
 
+	//Metodo para hidratar el objeto desde un string.
 	void deserialize(std::string string);
 
+	//Metodo para serializar el objeto a un string.
 	std::string serialize();
 
+	//Destructor.
 	virtual ~BinaryDictionaryRecord();
 };
 

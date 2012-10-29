@@ -31,21 +31,28 @@
 #define OUTPUT_FILE_PATH_BINARY_ORDERED "outputFiles/dictionary_RANDOMIZED_ORDERED"
 #endif /*OUTPUT_FILE_PATH_BINARY_ORDERED*/
 
+//Clase cuya función es aleatorizar un diccionario.
 class DictionayRandomizer {
 private:
+	//generador de números aleatorios.
 	std::default_random_engine generator;
 
 	std::default_random_engine& getGenerator();
 
+	//Metodo para crear un archivo de trabajo asignando a cada palabra del diccionario un ID aleatorio.
 	void createRandomIds(std::string dictionaryPath);
 
+	//Metodo para generar un ID aleatorio.
 	long generateRandomId();
 
 public:
+	//Constructor
 	DictionayRandomizer();
 
+	//Metodo para aleatorizar el diccionario ubicado en dictionaryPath.
 	void randomizeDictionary(std::string dictionaryPath, bool showId);
 
+	//Destructor
 	~DictionayRandomizer();
 };
 

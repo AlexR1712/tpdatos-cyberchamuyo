@@ -7,16 +7,22 @@
 
 #include "record.h"
 
+//Clase que representa un archivo secuencial para lectura de registro de texto.
 template<class T> class TextInputSequentialFile : public InputSequentialFile<T> {
 private:
+	//Metodo para cargar en el buffer del archivo los proximos registros del archivo
 	void load();
 public:
+	//Constructor.
 	TextInputSequentialFile();
 
+	//Constructor.
 	TextInputSequentialFile(std::string filePath, unsigned int bufferMaxSize = 1);
 
+	//Metodo para abrir el archivo.
 	void open(std::string filePath, unsigned int bufferMaxSize = 1);
 
+	//Destructor.
 	~TextInputSequentialFile();
 };
 

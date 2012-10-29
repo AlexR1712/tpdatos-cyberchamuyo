@@ -7,18 +7,24 @@
 
 #include "record.h"
 
+//Clase que representa un archivo secuencial para lectura.
 template<class T> class InputSequentialFile : public SequentialFile<T> {
 protected:
+	//Metodo para cargar en el buffer del archivo los proximos registros del archivo.
 	virtual void load() = 0;
 public:
+	//Constructor
 	InputSequentialFile();
 
+	//Metodo para cerrar el archivo.
 	void close();
 
+	//Metodo para obtener el contenido del primer elemento del buffer sin extraerlo.
 	T& peek();
 
 	T getRecord();
 
+	//Destructor
 	virtual ~InputSequentialFile() = 0;
 };
 
