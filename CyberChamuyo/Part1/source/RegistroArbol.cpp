@@ -66,7 +66,7 @@ long RegistroArbol::timesSearched() {
 	return n;
 }
 
-Registro& RegistroArbol::operator=(const Registro& r) {
+Registro& RegistroArbol::operator=(Registro& r) {
 	Registro::setSize(r.size());
 	Registro::setTipo(r.getTipo());
 	int tipo = r.getClave()->getTipo();
@@ -82,9 +82,11 @@ Registro& RegistroArbol::operator=(const Registro& r) {
 	*clave = *(r.getClave());
 	Registro::setClave(clave);
 	Registro::setDato(r.getDato());
+	n = reinterpret_cast<RegistroArbol&>(r).n;
+	s = reinterpret_cast<RegistroArbol&>(r).s;
 }
 
-Registro& RegistroArbol::operator=(const RegistroArbol& r) {
+Registro& RegistroArbol::operator=(RegistroArbol& r) {
 	Registro::setSize(r.size());
 	Registro::setTipo(r.getTipo());
 	int tipo = r.getClave()->getTipo();
@@ -113,4 +115,9 @@ std::ostream& operator<<(std::ostream& os, const RegistroArbol& r) {
 void RegistroArbol::setReg(Registro& reg) {
 	n = dynamic_cast<RegistroArbol&>(reg).n;
 	s = dynamic_cast<RegistroArbol&>(reg).s;
+}
+
+int RegistroArbol::totalSize() {
+	int regSize = Registro::totalSize();
+	return regSize + 2 * sizeof(int);
 }

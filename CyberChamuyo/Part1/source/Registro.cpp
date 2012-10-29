@@ -169,7 +169,7 @@ std::string Registro::getDato() const {
 	return dato;
 }
 
-Registro& Registro::operator=(const Registro& r) {
+Registro& Registro::operator=(Registro& r) {
 	tam = r.tam;
 	tipo = r.getTipo();
 	int tipo = r.clave->getTipo();

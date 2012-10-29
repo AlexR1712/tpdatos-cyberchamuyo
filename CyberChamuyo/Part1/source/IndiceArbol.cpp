@@ -11,18 +11,19 @@
 #include <cstring>
 #include "../include/RegistroArbol.h"
 #include "../include/stringUtilities.h"
-
+#include "../include/dictionaryNormalizer.h"
 
 IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), N_SIZE) {
 }
 
-bool IndiceArbol::find(const std::string& word) {
+bool IndiceArbol::find(std::string word) {
 	if(isEmpty())
 		return false;
+	DictionaryNormalizer normalizer;
+	normalizer.normalizeWord(word);
 	CAlfa* clave = new CAlfa(word);
 	Registro* ret_reg = new RegistroArbol();
 	bool resultado = arbol.buscar(clave, ret_reg);
-	//delete ret_reg;
 	return resultado;
 }
 
@@ -61,12 +62,17 @@ void IndiceArbol::createIndex(std::string in_path) {
 	record = arch_sec.getRecord();
 	while(!arch_sec.endOfFile()) {
 		std::string s = record.getWord();
+		std::cout << s << std::endl;
+		if(s.size() > 1 && s != "\n") {
 		StringUtilities::sacarR(s);
 		CAlfa* c = new CAlfa(s);
 		Registro* reg = new RegistroArbol(c);
 		arbol.insertarRegistro(reg);
-		record = arch_sec.getRecord();
 		delete reg;
+		record = arch_sec.getRecord();
+		} else {
+			record = arch_sec.getRecord();
+		}
 	}
 }
 
@@ -76,6 +82,10 @@ void IndiceArbol::rewind() {
 
 bool IndiceArbol::isEmpty() {
 	return arbol.isEmpty();
+}
+
+void IndiceArbol::mostrar() {
+	arbol.imprimirNodos();
 }
 
 IndiceArbol::~IndiceArbol() {

@@ -29,7 +29,7 @@ public:
 	void createIndex(std::string path);
 
 	//  devuelve 1 si la palabra "word" esta en el arbol, 0 sino
-	bool find(const std::string& word);
+	bool find(std::string word);
 
 	//  devuelve siguiente registro del arbol
 	BinaryDictionaryRecord<true> next();
@@ -53,6 +53,8 @@ public:
 
 	//  1 si esta vacio, 0 sino
 	bool isEmpty();
+
+	void mostrar();
 private:
 	void crearIndice(std::ifstream& arch);
 	ArbolBp arbol;

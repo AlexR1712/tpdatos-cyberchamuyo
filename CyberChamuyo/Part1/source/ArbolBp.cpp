@@ -10,7 +10,7 @@
 #include "../include/common.h"
 #include "../include/RegistroArbol.h"
 
-ArbolBp::ArbolBp(const char* n_arch, int block_size) : arch_arbol(n_arch, N_SIZE), b_size(block_size) {
+ArbolBp::ArbolBp(const char* n_arch, int block_size) : arch_arbol(n_arch, block_size), b_size(block_size) {
 	if(arch_arbol.getCantidadBloques() > 0) {
 		std::vector<char>* raiz_data = leerNodo2(0);
 		if((*raiz_data)[0] == 'H') {
@@ -43,8 +43,8 @@ int ArbolBp::buscar(Clave* c, Registro*& reg) {
 	int res = raiz->buscar(c, reg);
 	if((this->max == 0) && res)
 		guardarNodo(raiz, 0);
-	if((ultimoNodoLeido != anteriorUltimoLeido) && (anteriorUltimoLeido != NULL) && anteriorUltimoLeido != raiz)
-		delete anteriorUltimoLeido;
+	//if((ultimoNodoLeido != anteriorUltimoLeido) && (anteriorUltimoLeido != NULL) && anteriorUltimoLeido != raiz);
+	//		delete anteriorUltimoLeido;
 	return res;
 }
 
@@ -146,8 +146,7 @@ int ArbolBp::insertarRegistro(Registro* r) {
 void ArbolBp::imprimirNodos() {
 	int cant = arch_arbol.getCantidadBloques();
 	int pos;
-	std::fstream file;
-	file.open("Arboltest.bin", std::fstream::in|std::fstream::out|std::fstream::binary);
+	std::ofstream file("Arboltest.bin");
 	for(int i = 0; i < cant; ++i) {
 		std::vector<char>* nodo = leerNodo2(i);
 		char t = (*nodo)[0];
@@ -158,9 +157,9 @@ void ArbolBp::imprimirNodos() {
 			nI->hidratar(nodo, pos);
 			long nivel = nI->getNivel();
 			for(int i = 0; i < nivel; ++i) {
-				cout << "	";
+				file << "	";
 			}
-			std::cout << nI->serializarDecimal() << std::endl;
+			file << nI->serializarDecimal() << std::endl;
 			//delete nI;
 		} else {
 			pos = 0;
@@ -169,9 +168,9 @@ void ArbolBp::imprimirNodos() {
 			nE->hidratar(nodo, pos);
 			int nivel = nE->getNivel();
 			for(int i = nivel; i > 0; --i) {
-				cout << "	";
+				file << "	";
 			}
-			std::cout << *nE << std::endl;
+			file << *nE << std::endl;
 			//delete nE;
 		}
 		//delete nodo;
@@ -293,6 +292,7 @@ void ArbolBp::exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >
 	reg = nE->getRegistro(0, reg);
 	while(reg != NULL) {
 		record.setId(reinterpret_cast<RegistroArbol*>(reg)->timesSearched());
+		std::cout << reinterpret_cast<RegistroArbol*>(reg)->timesSearched();
 		record.setWord(reinterpret_cast<CAlfa*>(reg->getClave())->getWord());
 		os.putRecord(record);
 		reg = siguiente();
