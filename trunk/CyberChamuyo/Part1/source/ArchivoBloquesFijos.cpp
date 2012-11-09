@@ -8,7 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include "../include/ArchivoBloquesFijos.h"
-#include "common.h"
+#include "../include/common.h"
 
 // FUNCIONAMIENTO Constructor de ArchivoBloquesFijos:
 // Construye el objeto seteando sus valores en default o

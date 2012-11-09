@@ -9,6 +9,18 @@
 #include "IndiceArbol.h"
 #include "DispersionEx.h"
 
+#ifndef OUTPUT_DIRECTORY_PATH
+#define OUTPUT_DIRECTORY_PATH "outputFiles"
+#endif
+
+#ifndef INPUT_DIRECTORY_PATH
+#define INPUT_DIRECTORY_PATH "inputFiles"
+#endif
+
+#ifndef CONFIG_DIRECTORY_PATH
+#define CONFIG_DIRECTORY_PATH "config"
+#endif
+
 #ifndef STATUS_FILE_PATH
 #define STATUS_FILE_PATH "config/statisticsManager/statisticsManagerStatus"
 #endif /*STATUS_FILE_PATH*/
@@ -79,13 +91,13 @@ private:
 	std::set<std::string> stopWords;
 
 	//Indice del diccionario.
-	IndiceArbol dictionary;
+	IndiceArbol* dictionary;
 
 	//Indice de las frases celebres.
-	Hash::DispersionEx memorableQuotes;
+	Hash::DispersionEx* memorableQuotes;
 
 	//Indice de palabras no encontradas.
-	IndiceArbol notFoundWords;
+	IndiceArbol* notFoundWords;
 
 	std::string getDictionaryFilePath() const;
 
@@ -109,11 +121,11 @@ private:
 
 	std::set<std::string>& getStopWords();
 
-	IndiceArbol& getDictionary();
+	IndiceArbol* getDictionary();
 
-	Hash::DispersionEx& getMemorableQuotes();
+	Hash::DispersionEx* getMemorableQuotes();
 
-	IndiceArbol& getNotFoundWords();
+	IndiceArbol* getNotFoundWords();
 
 	//Metodo para cargar el estado del modulo desde un archivo.
 	void loadStatus();
@@ -148,6 +160,7 @@ private:
 	//Metodo para guardar el estado del modulo en un archivo.
 	void saveStatus();
 
+	void checkDirectoryStructure();
 public:
 	//Constructor.
 	StatisticsManager();

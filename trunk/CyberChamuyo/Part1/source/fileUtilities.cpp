@@ -1,4 +1,4 @@
-#include "fileUtilities.h"
+#include "../include/fileUtilities.h"
 
 namespace FileUtilities {
 
@@ -29,5 +29,12 @@ void deleteFile(std::string fileName) {
 	#endif
 }
 
-
+bool directoryExists(std::string path) {
+	#ifdef LINUX
+	struct stat sb;	
+	if(stat(path.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode))
+		return true;
+	return false;
+	#endif
+}
 }

@@ -1,8 +1,8 @@
-#include "logRecord.h"
+#include "../include/logRecord.h"
 
 #include <iostream>
 
-#include "stringUtilities.h"
+#include "../include/stringUtilities.h"
 
 LogRecord::LogRecord(std::string title, std::string itemName) {
 	this->title = title;

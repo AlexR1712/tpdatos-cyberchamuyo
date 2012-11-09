@@ -10,6 +10,9 @@ namespace StringUtilities {
 //Metodo para quitar el \r del final de las líneas.
 void sacarR(std::string& s);
 
+//Metodo para quitar los \n del final de las lineas.
+void sacarN(std::string& s);
+
 //Metodo para dividir un string según un separador indicado.
 void splitString(std::string string, std::vector<std::string>& splittedString, char delimiter);
 
@@ -36,6 +39,9 @@ std::wstring stringToWstring(std::string string);
 
 //Metodo para remover los espacios en blanco al comienzo y al final del string.
 std::string trim(std::string string);
+
+//Metodo para remover signos de puntuacion y de expresion en una linea
+void quitarPuntuacion(std::string& s);
 
 }
 
