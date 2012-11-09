@@ -62,9 +62,9 @@ void IndiceArbol::createIndex(std::string in_path) {
 	record = arch_sec.getRecord();
 	while(!arch_sec.endOfFile()) {
 		std::string s = record.getWord();
-		std::cout << s << std::endl;
 		if(s.size() > 1 && s != "\n") {
 		StringUtilities::sacarR(s);
+		StringUtilities::sacarN(s);
 		CAlfa* c = new CAlfa(s);
 		Registro* reg = new RegistroArbol(c);
 		arbol.insertarRegistro(reg);

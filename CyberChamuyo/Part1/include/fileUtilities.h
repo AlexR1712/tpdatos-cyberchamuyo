@@ -24,6 +24,9 @@ void deleteFolder(std::string directoryName);
 //Metodo para borrar un archivo.
 void deleteFile(std::string fileName);
 
+//Chequea si existe un directorio
+bool directoryExists(std::string path);
+
 }
 
 #endif /* FILEUTILITIES_H_ */

@@ -184,7 +184,7 @@ void ExternalSorter::merge(std::string outputFilepath) {
 				}
 			} else {
 				levelFinished = true;
-				if (inputFileLevelCounter == 0)
+				//if (inputFileLevelCounter == 0)
 					inputDirectoryName = "";
 				inputDirectoryName += outputDirectoryName;
 				inputFileLevelCounter++;

@@ -13,13 +13,32 @@
 #include "../include/dictionaryRandomizer.h"
 #include "../include/stringUtilities.h"
 #include "../include/DispersionEx.h"
+#include "../include/fileUtilities.h"
 
-StatisticsManager::StatisticsManager() : dictionary(DICTIONARY_NAME), notFoundWords(NOTFOUND_NAME), memorableQuotes(MEMORABLE_QUOTES_NAME) {
-	this->loadStatus();
+#define RANDOMIZED_ORDERED_PATH "outputFiles/dictionary_RANDOMIZED_ORDERED"
+
+// MENSAJES DE ERROR
+
+
+#define INEXISTANT_INPUT_DIRECTORY_ERROR 		"ERROR: No existe directorio de archivos de entrada inputFiles"
+#define INEXISTANT_CONFIG_DIRECTORY_INEXISTANT_ERROR	"ERROR: No existe directorio de archivos de configuracion config"
+#define INEXISTANT_OR_BAD_STATUS_FILE_ERROR		"ERROR: No existe archivo de configuracion statisticsManagerStatus"
+#define INEXISTANT_OR_BAD_PROPERTIES_FILE_ERROR		"ERROR: No existe archivo de propiedades statisticsManager.properties"
+#define INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR		"ERROR: No existe archivo de stopwords stop-words.txt"
+#define INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR		"ERROR: No existe archivo de configuracion de char map charMap"
+#define INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR		"ERROR: No existe archivo de entrada de diccionario dictionary.txt"
+#define INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR	"ERROR: No eiste archivo de entrada de frases frases-celebres.txt"
+
+StatisticsManager::StatisticsManager() {
+	dictionary = new IndiceArbol(DICTIONARY_NAME);	
+	notFoundWords = new IndiceArbol(NOTFOUND_NAME);
+	memorableQuotes = new Hash::DispersionEx(MEMORABLE_QUOTES_NAME); 
+	this->loadStatus();		
 	this->loadStopWords();
 	this->createDictionary(false);
-	this->getDictionary().createIndex("outputFiles/dictionary_RANDOMIZED_ORDERED");
-	this->getMemorableQuotes().createIndex(this->getMemorableQuotesFilePath());
+	if(this->getDictionary()->isEmpty())
+		this->getDictionary()->createIndex(RANDOMIZED_ORDERED_PATH);
+	this->getMemorableQuotes()->createIndex(this->getMemorableQuotesFilePath());
 	if (this->getNumberOfWords() == 0)
 		this->loadMemorableQuotes(true);
 }
@@ -68,15 +87,15 @@ std::set<std::string>& StatisticsManager::getStopWords() {
 	return this->stopWords;
 }
 
-IndiceArbol& StatisticsManager::getDictionary() {
+IndiceArbol* StatisticsManager::getDictionary() {
 	return this->dictionary;
 }
 
-Hash::DispersionEx& StatisticsManager::getMemorableQuotes() {
+Hash::DispersionEx* StatisticsManager::getMemorableQuotes() {
 	return this->memorableQuotes;
 }
 
-IndiceArbol& StatisticsManager::getNotFoundWords() {
+IndiceArbol* StatisticsManager::getNotFoundWords() {
 	return this->notFoundWords;
 }
 
@@ -97,6 +116,10 @@ void StatisticsManager::loadStopWords() {
 
 	while (!stopWordsFile.endOfFile()) {
 		stopWord = stopWordsFile.getRecord();
+		std::string stopWordString = stopWord.getData();
+		StringUtilities::sacarR(stopWordString);
+		StringUtilities::sacarN(stopWordString);
+		stopWord.setData(stopWordString);
 		this->getStopWords().insert(stopWord.getData());
 	}
 }
@@ -121,7 +144,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	unsigned int totalWords = 0;
 	unsigned int totalFailures = 0;
 	ExternalSorter externalSorter(FILES_BUFFER_SIZE,true);
-	this->getDictionary().rewind();
+	this->getDictionary()->rewind();
 	while (!memorableQuotesFile.endOfFile()) {
 		phrase = memorableQuotesFile.getRecord().getData();
 		//separo el autor de la frase
@@ -133,15 +156,16 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 			//chequeo que no sea stopWord.
 			StringUtilities::sacarR(phraseWords[i]);
 			normalizer.normalizeWord(phraseWords[i]);
+			StringUtilities::quitarPuntuacion(phraseWords[i]);			
 			if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 				totalWords++;
 				//si no est� en el �ndice de fallos ni en el diccionario, se inserta en el �ndice de fallos y se
 				//contabiliza.
-				if (this->getNotFoundWords().find(phraseWords[i])) {
+				if (this->getNotFoundWords()->find(phraseWords[i])) {
 					totalFailures++;
 				} else {
-					if (!this->getDictionary().find(phraseWords[i])) {
-						this->getNotFoundWords().insert(phraseWords[i]);
+					if (!this->getDictionary()->find(phraseWords[i])) {
+						this->getNotFoundWords()->insert(phraseWords[i]);
 						totalFailures++;
 					}
 				}
@@ -149,7 +173,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		}
 		phraseWords.erase(phraseWords.begin(), phraseWords.end());
 		if (insertInHash) {
-			this->getMemorableQuotes().insert(phrase);
+			this->getMemorableQuotes()->insert(phrase);
 		}
 		//phrase.erase(phrase.begin(), phrase.end());
 	}
@@ -160,7 +184,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	this->setNumberOfFailures(totalFailures);
 
 	//Se genera el ranking de palabras.
-	this->getDictionary().exportar(RANKINGS_FILE_PATH);
+	this->getDictionary()->exportar(RANKINGS_FILE_PATH);
 	externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
 }
 
@@ -189,9 +213,9 @@ void StatisticsManager::printNotFoundWords() {
 	BinaryDictionaryRecord<true> record;
 
 	std::cout << TEXT_NOT_FOUND_WORDS << std::endl;
-	getNotFoundWords().rewind();
-	while (getNotFoundWords().hasNext()) {
-		record = this->getNotFoundWords().next();
+	getNotFoundWords()->rewind();
+	while (getNotFoundWords()->hasNext()) {
+		record = this->getNotFoundWords()->next();
 		std::cout << record.getWord() << std::endl;
 	}
 }
@@ -297,18 +321,31 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 		}
 
 		if (command == COMMAND_LOAD_DICTIONARY) {
-			this->getDictionary().clear();
+			this->getDictionary()->clear();
 			this->clearStatistics();
 			this->setDictionaryFilePath(commandParams[0]);
 			this->createDictionary(true);
-			this->getDictionary().createIndex(DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH);
+			delete dictionary;
+			dictionary = new IndiceArbol(DICTIONARY_NAME);
+			this->getDictionary()->createIndex(DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH);
+			this->getMemorableQuotes()->clear();
+			delete memorableQuotes;
+			memorableQuotes = new Hash::DispersionEx(MEMORABLE_QUOTES_NAME);
+			this->getNotFoundWords()->clear();
+			delete notFoundWords;
+			notFoundWords = new IndiceArbol(NOTFOUND_NAME);
 			this->loadMemorableQuotes(false);
 		}
 
 		if (command == COMMAND_LOAD_MEMORABLE_QUOTES) {
-			this->getMemorableQuotes().clear();
+			this->getMemorableQuotes()->clear();
 			clearStatistics();
 			this->setMemorableQuotesFilePath(commandParams[0]);
+			delete memorableQuotes;
+			memorableQuotes = new Hash::DispersionEx(MEMORABLE_QUOTES_NAME);
+			this->getNotFoundWords()->clear();
+			delete notFoundWords;
+			notFoundWords = new IndiceArbol(NOTFOUND_NAME);			
 			this->loadMemorableQuotes(true);
 		}
 
@@ -320,6 +357,47 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 	}
 }
 
+void StatisticsManager::checkDirectoryStructure() {
+	if(!FileUtilities::directoryExists(INPUT_DIRECTORY_PATH)) {
+		std::cout << INEXISTANT_INPUT_DIRECTORY_ERROR << std::endl;
+		throw(1);	
+	}
+	if(!FileUtilities::directoryExists(CONFIG_DIRECTORY_PATH)) {
+		std::cout << INEXISTANT_CONFIG_DIRECTORY_INEXISTANT_ERROR << std::endl;
+		throw(1);	
+	}
+	if(FileUtilities::directoryExists(OUTPUT_DIRECTORY_PATH))
+		FileUtilities::createFolder(OUTPUT_DIRECTORY_PATH);
+	ifstream status_file(STATUS_FILE_PATH);
+	if(!status_file.good()) {
+		std::cout << INEXISTANT_OR_BAD_STATUS_FILE_ERROR << std::endl;
+		throw(1);
+	}	
+	ifstream stop_words_file(STOP_WORDS_FILE_PATH);	
+	if(!stop_words_file.good()) {
+		std::cout << INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR << std::endl;
+		throw(1);
+	}	
+	ifstream char_map_file(CHAR_MAP_FILE_PATH);
+	if(!char_map_file.good()) {
+		std::cout << INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR << std::endl;
+		throw(1);	
+	}	
+	ifstream dictionary_file(this->getDictionaryFilePath());
+	if(!dictionary_file.good()) {
+		std::cout << INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR << std::endl;
+		throw(1);
+	}
+	ifstream mem_quotes_file(this->getMemorableQuotesFilePath());
+	if(!mem_quotes_file.good()) {
+		std::cout << INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR << std::endl;
+		throw(1);
+	}
+}
+
 StatisticsManager::~StatisticsManager() {
 	this->saveStatus();
+	delete notFoundWords;
+	delete dictionary;
+	delete memorableQuotes;
 }

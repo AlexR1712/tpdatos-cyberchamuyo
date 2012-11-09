@@ -39,7 +39,7 @@ ArbolBp::~ArbolBp() {
 }
 
 int ArbolBp::buscar(Clave* c, Registro*& reg) {
-	NodoExterno* anteriorUltimoLeido = ultimoNodoLeido;
+	//NodoExterno* anteriorUltimoLeido = ultimoNodoLeido;
 	int res = raiz->buscar(c, reg);
 	if((this->max == 0) && res)
 		guardarNodo(raiz, 0);
@@ -214,8 +214,8 @@ int ArbolBp::crearNodo() {
 }
 
 void ArbolBp::clear() {
-	delete raiz;
-	delete ultimoNodoLeido;
+	//delete raiz;
+	//delete ultimoNodoLeido;
 	ultimoRegistroLeido = 0;
 	ultimoNodoLeido = NULL;
 	arch_arbol.clear();

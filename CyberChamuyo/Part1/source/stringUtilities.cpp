@@ -8,6 +8,11 @@ void sacarR(std::string& s) {
 		s.erase(s.find('\r'));
 }
 
+void sacarN(std::string& s) {
+	if(s.find('\n') != std::string::npos)
+		s.erase(s.find('\n'));
+}
+
 void splitString(std::string string, std::vector<std::string>& splittedString, char delimiter) {
 	unsigned int from = 0;
 	unsigned int to = 0;
@@ -106,5 +111,13 @@ std::string trim(std::string string) {
 
 	return string.substr(from,to);
 }
+
+void quitarPuntuacion(std::string& s) {
+	for(int i = 0; i < s.size(); ++i) {
+		if((s[i] > 32) && (s[i] < 47))
+			s.erase(i, 1);
+	}
+}
+
 
 }
