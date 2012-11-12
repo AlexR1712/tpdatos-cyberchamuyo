@@ -40,7 +40,7 @@ template<class T> void TextInputSequentialFile<T>::load() {
 	while ( (this->getFile().good()) && (this->getBuffer().size() < this->getBufferMaxSize()) ) {
 		recordAsString = "";
 		std::getline(this->getFile(),recordAsString);
-
+;
 		if (recordAsString.size() != 0) {
 			record->deserialize(recordAsString);
 			this->getBuffer().push(*(static_cast<T*>(record)));
@@ -58,6 +58,7 @@ template<class T> void TextInputSequentialFile<T>::open(std::string filePath, un
 	if (this->getFile().is_open())
 		this->close();
 	this->getFile().open(filePath.c_str(),std::iostream::in);
+	this->setFileExists(!this->getFile().fail());
 	this->load();
 }
 

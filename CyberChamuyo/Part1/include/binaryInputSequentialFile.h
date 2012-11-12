@@ -65,6 +65,7 @@ template<class T> void BinaryInputSequentialFile<T>::open(std::string filePath, 
 	if (this->getFile().is_open())
 		this->close();
 	this->getFile().open(filePath.c_str(),std::iostream::in | std::iostream::binary);
+	this->setFileExists(!this->getFile().fail());
 	this->load();
 }
 

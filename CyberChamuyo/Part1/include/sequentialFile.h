@@ -10,10 +10,15 @@ private:
 	//File handler
 	std::fstream file;
 
+	/* flag que indica si el archivo existe (See debió agregar dado que el flag fail de fstream
+	 * por alguna razón se setea con el EOF aunque según la documentación no debería.
+	 */
+	bool fileExists;
+
 	//Buffer
 	std::queue<T> buffer;
 
-	//Tama�o m�ximo para el buffer
+	//Tamaño máximo para el buffer
 	unsigned int bufferMaxSize;
 
 protected:
@@ -25,8 +30,10 @@ protected:
 
 	void setBufferMaxSize(unsigned int bufferMaxSize);
 
-	//Indica si el buffer est� vac�o.
+	//Indica si el buffer está vacío.
 	const bool isBufferEmpty();
+
+	void setFileExists(bool fileExists);
 
 public:
 	//Constructor.
@@ -38,11 +45,11 @@ public:
 	//Metodo para cerrar el archivo.
 	virtual void close() = 0;
 
-	//Indica si se lleg� al final del archivo.
+	//Indica si se llegó al final del archivo.
 	const bool endOfFile();
 
-	//Indica si no se pudo abrir el archivo.
-	const bool fail();
+	//Indica si el archivo existe.
+	const bool exists();
 
 	//Destructor.
 	virtual ~SequentialFile() = 0;
@@ -71,8 +78,12 @@ template<class T> const bool SequentialFile<T>::endOfFile() {
 	return this->getBuffer().empty();
 }
 
-template<class T> const bool SequentialFile<T>::fail() {
-	return this->getFile().fail();
+template<class T> void SequentialFile<T>::setFileExists(bool fileExists) {
+	this->fileExists = fileExists;
+}
+
+template<class T> const bool SequentialFile<T>::exists() {
+	return this->fileExists;
 }
 
 template<class T> SequentialFile<T>::~SequentialFile(){
