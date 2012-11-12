@@ -11,7 +11,7 @@
 #include <cstring>
 #include "../include/RegistroArbol.h"
 #include "../include/stringUtilities.h"
-#include "../include/dictionaryNormalizer.h"
+#include "../include/wordNormalizer.h"
 
 IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), N_SIZE) {
 }
@@ -19,7 +19,7 @@ IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), N_SIZ
 bool IndiceArbol::find(std::string word) {
 	if(isEmpty())
 		return false;
-	DictionaryNormalizer normalizer;
+	WordNormalizer normalizer;
 	normalizer.normalizeWord(word);
 	CAlfa* clave = new CAlfa(word);
 	Registro* ret_reg = new RegistroArbol();

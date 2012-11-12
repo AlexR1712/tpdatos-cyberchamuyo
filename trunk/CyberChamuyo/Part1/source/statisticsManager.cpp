@@ -9,6 +9,7 @@
 #include "../include/binaryDictionaryRecord.h"
 #include "../include/textRecord.h"
 #include "../include/externalSorter.h"
+#include "../include/wordNormalizer.h"
 #include "../include/dictionaryNormalizer.h"
 #include "../include/dictionaryRandomizer.h"
 #include "../include/stringUtilities.h"
@@ -126,7 +127,7 @@ void StatisticsManager::loadStopWords() {
 
 void StatisticsManager::createDictionary(bool force) {
 	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > dictionaryFile(DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH);
-	if (dictionaryFile.fail() || force) {
+	if (!dictionaryFile.exists() || force) {
 		DictionaryNormalizer dictionaryNormalizer;
 		DictionayRandomizer dictionayRandomizer;
 
@@ -138,7 +139,7 @@ void StatisticsManager::createDictionary(bool force) {
 void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	TextInputSequentialFile<TextRecord> memorableQuotesFile(this->getMemorableQuotesFilePath(),FILES_BUFFER_SIZE);
 	std::string phrase;
-	DictionaryNormalizer normalizer;
+	WordNormalizer normalizer;
 	std::vector<std::string> phraseWords;
 	unsigned int totalQuotes = 0;
 	unsigned int totalWords = 0;
@@ -378,11 +379,11 @@ void StatisticsManager::checkDirectoryStructure() {
 		std::cout << INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR << std::endl;
 		throw(1);
 	}	
-	ifstream char_map_file(CHAR_MAP_FILE_PATH);
-	if(!char_map_file.good()) {
-		std::cout << INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR << std::endl;
-		throw(1);	
-	}	
+//	ifstream char_map_file(CHAR_MAP_FILE_PATH);
+//	if(!char_map_file.good()) {
+//		std::cout << INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR << std::endl;
+//		throw(1);
+//	}
 	ifstream dictionary_file(this->getDictionaryFilePath());
 	if(!dictionary_file.good()) {
 		std::cout << INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR << std::endl;
