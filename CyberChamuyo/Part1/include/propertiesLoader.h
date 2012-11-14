@@ -4,6 +4,10 @@
 #include <string>
 #include <unordered_map>
 
+#ifndef TEXT_PROPERTIES_FILE_NOT_FOUND
+#define TEXT_PROPERTIES_FILE_NOT_FOUND(propertiesFilePath) "El archivo de propiedades \"" + propertiesFilePath + "\" no existe"
+#endif /*TEXT_PROPERTIES_FILE_NOT_FOUND*/
+
 //Clase cuya función es cargar propiedades desde un archivo de propiedades.
 class PropertiesLoader {
 private:

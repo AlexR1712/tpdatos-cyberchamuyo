@@ -1,8 +1,5 @@
 #include "../include/statisticsManager.h"
 
-#include <iostream>
-#include <list>
-
 #include "../include/textInputSequentialFile.h"
 #include "../include/textOutputSequentialFile.h"
 #include "../include/binaryInputSequentialFile.h"
@@ -15,20 +12,9 @@
 #include "../include/stringUtilities.h"
 #include "../include/DispersionEx.h"
 #include "../include/fileUtilities.h"
+#include "../include/outputTexts.h"
 
 #define RANDOMIZED_ORDERED_PATH "outputFiles/dictionary_RANDOMIZED_ORDERED"
-
-// MENSAJES DE ERROR
-
-
-#define INEXISTANT_INPUT_DIRECTORY_ERROR 		"ERROR: No existe directorio de archivos de entrada inputFiles"
-#define INEXISTANT_CONFIG_DIRECTORY_INEXISTANT_ERROR	"ERROR: No existe directorio de archivos de configuracion config"
-#define INEXISTANT_OR_BAD_STATUS_FILE_ERROR		"ERROR: No existe archivo de configuracion statisticsManagerStatus"
-#define INEXISTANT_OR_BAD_PROPERTIES_FILE_ERROR		"ERROR: No existe archivo de propiedades statisticsManager.properties"
-#define INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR		"ERROR: No existe archivo de stopwords stop-words.txt"
-#define INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR		"ERROR: No existe archivo de configuracion de char map charMap"
-#define INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR		"ERROR: No existe archivo de entrada de diccionario dictionary.txt"
-#define INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR	"ERROR: No eiste archivo de entrada de frases frases-celebres.txt"
 
 StatisticsManager::StatisticsManager() {
 	dictionary = new IndiceArbol(DICTIONARY_NAME);	
@@ -37,8 +23,6 @@ StatisticsManager::StatisticsManager() {
 	this->loadStatus();		
 	this->loadStopWords();
 	this->createDictionary(false);
-	if(this->getDictionary()->isEmpty())
-		this->getDictionary()->createIndex(RANDOMIZED_ORDERED_PATH);
 	this->getMemorableQuotes()->createIndex(this->getMemorableQuotesFilePath());
 	if (this->getNumberOfWords() == 0)
 		this->loadMemorableQuotes(true);
@@ -105,9 +89,9 @@ void StatisticsManager::loadStatus() {
 
 	this->setDictionaryFilePath(statusFile.getRecord().getData());
 	this->setMemorableQuotesFilePath(statusFile.getRecord().getData());
-	this->setNumberOfWords(StringUtilities::StringToInt(statusFile.getRecord().getData()));
-	this->setNumberOfQuotes(StringUtilities::StringToInt(statusFile.getRecord().getData()));
-	this->setNumberOfFailures(StringUtilities::StringToInt(statusFile.getRecord().getData()));
+	this->setNumberOfWords(StringUtilities::stringToInt(statusFile.getRecord().getData()));
+	this->setNumberOfQuotes(StringUtilities::stringToInt(statusFile.getRecord().getData()));
+	this->setNumberOfFailures(StringUtilities::stringToInt(statusFile.getRecord().getData()));
 
 }
 
@@ -129,10 +113,13 @@ void StatisticsManager::createDictionary(bool force) {
 	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > dictionaryFile(DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH);
 	if (!dictionaryFile.exists() || force) {
 		DictionaryNormalizer dictionaryNormalizer;
-		DictionayRandomizer dictionayRandomizer;
+		DictionaryRandomizer dictionaryRandomizer;
 
 		dictionaryNormalizer.normalize(this->getDictionaryFilePath());
-		dictionayRandomizer.randomizeDictionary(DICTIONARY_NORMALIZED_FILE_PATH,false);
+		dictionaryRandomizer.randomizeDictionary(dictionaryNormalizer.getOutputFilePath(),false);
+
+		if(this->getDictionary()->isEmpty())
+			this->getDictionary()->createIndex(dictionaryRandomizer.getOrderedRandomizedDictionaryFilePath());
 	}
 }
 
@@ -317,7 +304,7 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 
 		if (command == COMMAND_PRINT_WORD_RANKING) {
 			if (commandParams.size() == 1) {
-				this->printWordRanking(StringUtilities::StringToInt(commandParams[0]));
+				this->printWordRanking(StringUtilities::stringToInt(commandParams[0]));
 			}
 		}
 

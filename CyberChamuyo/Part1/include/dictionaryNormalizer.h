@@ -13,11 +13,11 @@ private:
 	//Path del del archivo de salida.
 	std::string outputFilePath;
 
-	std::string getOutputFilePath() const;
-
 public:
 	//Constructor
 	DictionaryNormalizer();
+
+	std::string getOutputFilePath() const;
 
 	//Metodo para normalizar el diccionario en la ubicacion indicada por diccionaryPath.
 	void normalize(std::string dictionaryPath);

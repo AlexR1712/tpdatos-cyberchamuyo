@@ -1,7 +1,7 @@
 #ifndef OUTPUTTEXTS_H_
 #define OUTPUTTEXTS_H_
 
-// Header para incluir los textos a usar en la aplicación.
+// Header para incluir los textos a usar en la aplicaciÃ³n.
 
 #ifndef COMMAND_PRINT_AVG_WORDS_PER_QUOTE
 #define COMMAND_PRINT_AVG_WORDS_PER_QUOTE "palabrasPromedio"
@@ -72,7 +72,7 @@
 #endif /*HELP_TEXT_CALLHELP*/
 
 #ifndef HELP_TEXT_EXIT
-#define HELP_TEXT_EXIT "	salir: abandonar la aplicación."
+#define HELP_TEXT_EXIT "	salir: abandonar la aplicaciÃ³n."
 #endif /*HELP_TEXT_EXIT*/
 
 #ifndef TEXT_AVG_WORDS_PER_QUOTE
@@ -94,5 +94,37 @@
 #ifndef TEXT_MOST_SEARCHED_WORDS_ITEM
 #define TEXT_MOST_SEARCHED_WORDS_ITEM(itemNumber,word,times) itemNumber + ") " + word + " - " + times + " veces."
 #endif /*TEXT_MOST_SEARCHED_WORDS_ITEM*/
+
+#ifndef INEXISTANT_INPUT_DIRECTORY_ERROR
+#define INEXISTANT_INPUT_DIRECTORY_ERROR "ERROR: No existe directorio de archivos de entrada inputFiles"
+#endif
+
+#ifndef INEXISTANT_CONFIG_DIRECTORY_INEXISTANT_ERROR
+#define INEXISTANT_CONFIG_DIRECTORY_INEXISTANT_ERROR "ERROR: No existe directorio de archivos de configuracion config"
+#endif
+
+#ifndef INEXISTANT_OR_BAD_STATUS_FILE_ERROR
+#define INEXISTANT_OR_BAD_STATUS_FILE_ERROR "ERROR: No existe archivo de configuracion statisticsManagerStatus"
+#endif
+
+#ifndef INEXISTANT_OR_BAD_PROPERTIES_FILE_ERROR
+#define INEXISTANT_OR_BAD_PROPERTIES_FILE_ERROR "ERROR: No existe archivo de propiedades statisticsManager.properties"
+#endif
+
+#ifndef INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR
+#define INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR "ERROR: No existe archivo de stopwords stop-words.txt"
+#endif
+
+#ifndef INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR
+#define INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR "ERROR: No existe archivo de configuracion de char map charMap"
+#endif
+
+#ifndef INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR
+#define INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR "ERROR: No existe archivo de entrada de diccionario dictionary.txt"
+#endif
+
+#ifndef INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR
+#define INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR "ERROR: No eiste archivo de entrada de frases frases-celebres.txt"
+#endif
 
 #endif /* OUTPUTTEXTS_H_ */
