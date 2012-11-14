@@ -10,11 +10,6 @@ private:
 	//File handler
 	std::fstream file;
 
-	/* flag que indica si el archivo existe (See debió agregar dado que el flag fail de fstream
-	 * por alguna razón se setea con el EOF aunque según la documentación no debería.
-	 */
-	bool fileExists;
-
 	//Buffer
 	std::queue<T> buffer;
 
@@ -33,8 +28,6 @@ protected:
 	//Indica si el buffer está vacío.
 	const bool isBufferEmpty();
 
-	void setFileExists(bool fileExists);
-
 public:
 	//Constructor.
 	SequentialFile();
@@ -47,9 +40,6 @@ public:
 
 	//Indica si se llegó al final del archivo.
 	const bool endOfFile();
-
-	//Indica si el archivo existe.
-	const bool exists();
 
 	//Destructor.
 	virtual ~SequentialFile() = 0;
@@ -76,14 +66,6 @@ template<class T> void SequentialFile<T>::setBufferMaxSize(unsigned int bufferMa
 
 template<class T> const bool SequentialFile<T>::endOfFile() {
 	return this->getBuffer().empty();
-}
-
-template<class T> void SequentialFile<T>::setFileExists(bool fileExists) {
-	this->fileExists = fileExists;
-}
-
-template<class T> const bool SequentialFile<T>::exists() {
-	return this->fileExists;
 }
 
 template<class T> SequentialFile<T>::~SequentialFile(){

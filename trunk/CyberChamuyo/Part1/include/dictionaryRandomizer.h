@@ -8,36 +8,50 @@
 
 
 #ifndef RANDOM_RANGE_MIN
-#define RANDOM_RANGE_MIN 1
+#define RANDOM_RANGE_MIN "randomRangeMin"
 #endif /*RANDOM_RANGE_MIN*/
 
 #ifndef RANDOM_RANGE_MAX
-#define RANDOM_RANGE_MAX 999999999
+#define RANDOM_RANGE_MAX "randomRangeMax"
 #endif /*RANDOM_RANGE_MAX*/
 
-#ifndef FILE_BUFFER_SIZE
-#define FILE_BUFFER_SIZE 5
-#endif /*FILE_BUFFER_SIZE*/
-
 #ifndef OUTPUT_FILE_PATH_TEXT
-#define OUTPUT_FILE_PATH_TEXT "outputFiles/dictionary_RANDOMIZED.txt"
+#define OUTPUT_FILE_PATH_TEXT "outputFilePathText"
 #endif /*OUTPUT_FILE_PATH_TEXT*/
 
 #ifndef OUTPUT_FILE_PATH_BINARY
-#define OUTPUT_FILE_PATH_BINARY "outputFiles/dictionary_RANDOMIZED"
+#define OUTPUT_FILE_PATH_BINARY "outputFilePathBinary"
 #endif /*OUTPUT_FILE_PATH_BINARY*/
 
 #ifndef OUTPUT_FILE_PATH_BINARY_ORDERED
-#define OUTPUT_FILE_PATH_BINARY_ORDERED "outputFiles/dictionary_RANDOMIZED_ORDERED"
+#define OUTPUT_FILE_PATH_BINARY_ORDERED "outputFilePathBinaryOrdered"
 #endif /*OUTPUT_FILE_PATH_BINARY_ORDERED*/
 
-//Clase cuya función es aleatorizar un diccionario.
-class DictionayRandomizer {
+//Clase cuya funciÃ³n es aleatorizar un diccionario.
+class DictionaryRandomizer {
 private:
-	//generador de números aleatorios.
+	//generador de nÃºmeros aleatorios.
 	std::default_random_engine generator;
 
+	unsigned int randomRangeMin;
+
+	unsigned int randomRangeMax;
+
+	std::string randomizedDictionaryAsTextFilePath;
+
+	std::string randomizedDictionaryAsBinaryFilePath;
+
+	std::string orderedRandomizedDictionaryFilePath;
+
 	std::default_random_engine& getGenerator();
+
+	unsigned int getRandomRangeMin() const;
+
+	unsigned int getRandomRangeMax() const;
+
+	std::string getRandomizedDictionaryAsTextFilePath() const;
+
+	std::string getRandomizedDictionaryAsBinaryFilePath() const;
 
 	//Metodo para crear un archivo de trabajo asignando a cada palabra del diccionario un ID aleatorio.
 	void createRandomIds(std::string dictionaryPath);
@@ -47,13 +61,15 @@ private:
 
 public:
 	//Constructor
-	DictionayRandomizer();
+	DictionaryRandomizer();
+
+	std::string getOrderedRandomizedDictionaryFilePath() const;
 
 	//Metodo para aleatorizar el diccionario ubicado en dictionaryPath.
 	void randomizeDictionary(std::string dictionaryPath, bool showId);
 
 	//Destructor
-	~DictionayRandomizer();
+	~DictionaryRandomizer();
 };
 
 #endif /* DICTIONARYRANDOMIZER_H_ */

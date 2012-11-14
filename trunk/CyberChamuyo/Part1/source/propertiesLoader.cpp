@@ -25,7 +25,7 @@ void PropertiesLoader::loadProperties(std::string propertiesFilePath) {
 			this->getProperties().insert(std::pair<std::string,std::string>(propertiesContents[0],propertiesContents[1]));
 		}
 	} else {
-		std::cout << "El archivo de propiedades \"" + propertiesFilePath + "\" no existe" << std::endl;
+		std::cout << TEXT_PROPERTIES_FILE_NOT_FOUND(propertiesFilePath) << std::endl;
 	}
 }
 

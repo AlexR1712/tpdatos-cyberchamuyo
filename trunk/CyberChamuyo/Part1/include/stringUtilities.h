@@ -7,13 +7,13 @@
 
 namespace StringUtilities {
 
-//Metodo para quitar el \r del final de las líneas.
+//Metodo para quitar el \r del final de las lï¿½neas.
 void sacarR(std::string& s);
 
 //Metodo para quitar los \n del final de las lineas.
 void sacarN(std::string& s);
 
-//Metodo para dividir un string según un separador indicado.
+//Metodo para dividir un string segï¿½n un separador indicado.
 void splitString(std::string string, std::vector<std::string>& splittedString, char delimiter);
 
 //Indica si el string es numerico.
@@ -26,7 +26,7 @@ std::string padLeft(std::string string, char padWith, unsigned int padTo);
 std::string padRight(std::string string, char padWith, unsigned int padTo);
 
 //Metodo para convertir un string a int.
-int StringToInt (const std::string Text );
+int stringToInt (const std::string Text );
 
 //Metodo para convertir un int a string.
 std::string intToString(int i);
