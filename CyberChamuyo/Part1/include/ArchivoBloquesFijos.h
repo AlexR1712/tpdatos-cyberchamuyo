@@ -7,6 +7,7 @@
 #define	ARCHIVOBLOQUESFIJOS_H
 #include "Bloque.h"
 #include "ArchivoDispErr.h"
+#include "Bitmap.h"
 #include <fstream>
 #include <vector>
 #include <string>
@@ -37,11 +38,10 @@ private:
     std::fstream path;
     int cantidadBloques;
     long tamanoBloque;
-    std::vector <unsigned int> bloquesLibres;
-    int cantidadBloquesLibres;
     std::string dir;
+    Bitmap map;
     void setCantidadBloques(int cantidadBloques);
-    void setCantidadBloquesLibres (int cantidad);
+    //void setCantidadBloquesLibres (int cantidad);
     void SetearBloqueLibre (unsigned int bloque);
 public:
     ArchivoBloquesFijos (const char* filename, long tamanoBloque);

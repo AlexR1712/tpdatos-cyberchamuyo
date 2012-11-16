@@ -8,15 +8,12 @@
 #include <iostream>
 #include <fstream>
 #include "../include/ArchivoBloquesFijos.h"
-#include "../include/common.h"
 
 // FUNCIONAMIENTO Constructor de ArchivoBloquesFijos:
 // Construye el objeto seteando sus valores en default o
 // lee y carga del archivo en caso de existir.
 
 ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque){
-    int it = 0;
-    int bloqueLibre;
     path.open(filename, std::fstream::in|std::fstream::out|std::fstream::binary);
     if (!path){
         std:: fstream archivo (filename, std::fstream::out|std::fstream::binary);
@@ -24,17 +21,11 @@ ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque
         path.open(filename, std::fstream::in|std::fstream::out|std::fstream::binary);
         this->tamanoBloque=tamanoBloque;
         this->cantidadBloques=0;
-        this->cantidadBloquesLibres=0;
     }else{ //probar
         path.seekg(0, std::ios::beg);
         path.read((char*)&(this->tamanoBloque),sizeof(long));
         path.read((char*)&cantidadBloques,sizeof(int));
-        path.read((char*)&cantidadBloquesLibres,sizeof(int));
-        while(it<cantidadBloquesLibres){
-           path.read((char*)&bloqueLibre,sizeof(int));
-            bloquesLibres.push_back(bloqueLibre);
-            it++;
-        }
+        path >> this->map;
     }
     this->dir = filename;
 }
@@ -60,22 +51,20 @@ void ArchivoBloquesFijos::setCantidadBloques(int cantidadBloques){
 }
 
 int ArchivoBloquesFijos::getCantidadBloquesLibres(){
-    return (this->cantidadBloquesLibres);
+    return (this->map.getCantidadBloquesLibres());
 }
 
-void ArchivoBloquesFijos::setCantidadBloquesLibres(int cantidad){
+/*void ArchivoBloquesFijos::setCantidadBloquesLibres(int cantidad){
     this->cantidadBloquesLibres = cantidad;
-}
+}*/
 
 // FUNCIONAMIENTO OBTENER BLOQUE LIBRE:
 // Devuelve el primer bloque libre del vector de bloques libres.
 // En caso de no existir devuelve ERR_BLOQUE_INEXISTENTE.
 
 unsigned int ArchivoBloquesFijos::ObtenerBloqueLibre(){
-    unsigned int bloqueLibre;
-    if (cantidadBloquesLibres>0){
-        bloqueLibre =bloquesLibres.at(0);
-        return (bloqueLibre);
+	if (this->map.getCantidadBloquesLibres() > 0){
+    	return (this->map.getBloqueLibre());
     }else return ERR_BLOQUE_INEXISTENTE;
 }
 
@@ -84,33 +73,14 @@ unsigned int ArchivoBloquesFijos::ObtenerBloqueLibre(){
 // bloque libre..
 
 int ArchivoBloquesFijos::VerificarBloqueLibre(unsigned int bloque){
-    int it = 0;
-    int resultado = 0;
-    while (it<cantidadBloquesLibres){
-        if (bloquesLibres.at(it)==bloque){
-            resultado=1;
-            break;
-        }
-        it++;
-    }
-    return resultado;
+    return (this->map.verificarBloqueLibre(bloque));
 }
 
 // FUNCIONAMIENTO SETEAR BLOQUE LIBRE:
 // Borra un bloque libre pasado por parámetro.
 
 void ArchivoBloquesFijos::SetearBloqueLibre(unsigned int bloque){
-    int it = 0;
-    std::vector<unsigned int>::iterator iterador = bloquesLibres.begin();
-    while (it<cantidadBloquesLibres){
-    	if (bloquesLibres.at(it)==bloque){
-    		bloquesLibres.erase(iterador);
-    		cantidadBloquesLibres--;
-    		break;
-    	}
-    	it++;
-    	iterador++;
-    }
+	this->map.setBloqueOcupado(bloque);
 }
 
 // FUNCIONAMIENTO ESCRIBIR:
@@ -127,7 +97,6 @@ int ArchivoBloquesFijos::Escribir(Bloque* elemento, long posicion){
     	int corrimiento = (posicion + 1) * tamanoBloque * metadatasize;
     	path.seekp(corrimiento, std::ios::beg);
     	path << *elemento;
-    	path.flush();
     }
    return RES_OK;
 }
@@ -156,8 +125,7 @@ void ArchivoBloquesFijos::Borrar(long posicion){
     	if (VerificarBloqueLibre(posicion)){
     		throw ExcepcionBloqueLibre();
     }else{
-    	bloquesLibres.push_back(posicion);
-    	cantidadBloquesLibres ++;
+    	this->map.setBloqueLibre(posicion);
     }          
     }else{
         throw ExcepcionBloqueInexistente();
@@ -169,17 +137,10 @@ void ArchivoBloquesFijos::Borrar(long posicion){
 // en otra sesión.
 
 ArchivoBloquesFijos::~ArchivoBloquesFijos(){
-	int it = 0;
-	int bloqueLibre;
 	path.seekp(0, std::ios::beg);
 	path.write((char*)&(this->tamanoBloque),sizeof(long));
 	path.write((char*)&cantidadBloques,sizeof(int));
-	path.write((char*)&cantidadBloquesLibres,sizeof(int));
-	while(it<cantidadBloquesLibres){
-		bloqueLibre = bloquesLibres.at(it);
-		path.write((char*)&bloqueLibre,sizeof(int));
-		it++;
-	}
+	path << this->map;
 	path.close();
 }
 
@@ -193,7 +154,7 @@ std::ostream& operator<<(std::ostream& oss, ArchivoBloquesFijos &arch) {
 	oss << "***********************" << std::endl;
 	oss << "TAMAÑO BLOQUE:" << "\t" << arch.tamanoBloque << std::endl;
 	oss << "CANTIDAD DE BLOQUES:" << "\t" << arch.cantidadBloques << std::endl;
-	oss << "CANTIDAD DE BLOQUES LIBRES:" << "\t" << arch.cantidadBloquesLibres << std::endl;
+	arch.map.ImprimirATexto(oss);
 	return oss;
 }
 
