@@ -6,7 +6,6 @@
  */
 
 #include "../include/Tabla.h"
-#include <cstdlib>
 
 namespace Hash {
 
@@ -216,14 +215,30 @@ void Tabla::RecorrerYReemplazar(int posTabla, long nuevoValor, unsigned int td) 
 // Reemplaza valores de la tabla por el que se encuentra a
 // derecha e izquierda del mismo en td posiciones.
 
+unsigned int Tabla::calcularPosDerecha(int posTabla, unsigned int td) {
+	unsigned int provisorio = posTabla;
+	for (unsigned int i = 0; i < td; ++i) {
+		if (provisorio + 1 > this->tabla.size())
+			provisorio = 0;
+		++provisorio;
+	}
+	return provisorio;
+}
+
+int Tabla::calcularPosIzquierda(int posTabla, unsigned int td) {
+	int provisorio = posTabla;
+	for (unsigned int i = 0; i < td; ++i) {
+		if (provisorio - 1 < 0)
+			provisorio = this->tabla.size();
+		--provisorio;
+	}
+	return provisorio;
+}
+
 bool Tabla::BuscarYReemplazar(int posTabla, unsigned int td) {
 	if (this->tabla.size() != 1) {
-		unsigned int posDerecha = posTabla + td;
-		if (posDerecha >= this->tabla.size())
-			posDerecha = posDerecha - this->tabla.size();
-		int posIzquierda = posTabla - td;
-		if (posIzquierda < 0)
-			posIzquierda = 0 - posIzquierda;
+		unsigned int posDerecha = calcularPosDerecha(posTabla, td);
+		int posIzquierda = calcularPosIzquierda(posTabla, td);
 		if (this->tabla[posIzquierda] == this->tabla[posDerecha]) {
 			this->tabla[posTabla] = this->tabla[posIzquierda];
 			return true;
