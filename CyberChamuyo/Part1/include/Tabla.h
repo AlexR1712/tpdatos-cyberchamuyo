@@ -44,6 +44,8 @@ private:
 	void ParticionarTabla(listaTabla& list);
 	void GuardarUnicaParticion(listaTabla& list);
 	void ActualizarSiguiente(unsigned int pos);
+	unsigned int calcularPosDerecha(int posTabla, unsigned int td);
+	int calcularPosIzquierda(int posTabla, unsigned int td);
 	void ActualizarOCrear(itListaTabla& jt, listaTabla& list,
 			Data::ArrayBytes* dato);
 public:

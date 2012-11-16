@@ -9,7 +9,6 @@
 
 namespace Hash {
 
-
 // FUNCIONAMIENTO CONSTRUCTOR DE DISPERSION EX:
 // Crea el archivo de bloques fijos y la tabla. Si el objeto
 // fué creado por primera vez crea un bloque tabla nuevo y un bloque
@@ -218,6 +217,16 @@ void DispersionEx::modificarTdBloques(void) {
 	}
 }
 
+void DispersionEx::cambiarTdBloque(int posTabla) {
+	int numBloque = this->tabla.getNumeroBloque(posTabla);
+	BloqueDato bl(this->arch_disp.getTamanoBloque());
+	this->arch_disp.Leer(numBloque, &bl);
+	unsigned int td = bl.getTd()/2;
+	bl.setTd(td);
+	this->arch_disp.Escribir(&bl, numBloque);
+}
+
+
 // FUNCIONAMIENTO BORRAR
 // Borra un registro a partir de su clave y actualiza
 // la tabla en caso necesario.
@@ -233,10 +242,10 @@ void DispersionEx::Borrar(unsigned int clave) {
 			this->arch_disp.Escribir(&bl, numBloque);
 			if (bl.estaVacio()) {
 				if (this->tabla.BuscarYReemplazar(posTabla, bl.getTd()/2)) {
-					if (this->tabla.disminuirTabla()) {
-						this->arch_disp.Borrar(numBloque);
+					this->arch_disp.Borrar(numBloque);
+					if (this->tabla.disminuirTabla())
 						modificarTdBloques();
-					}
+					else cambiarTdBloque(posTabla);
 				}
 			}
 		}
