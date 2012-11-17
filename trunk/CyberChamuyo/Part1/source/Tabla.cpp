@@ -35,10 +35,7 @@ void Tabla::Hidratar(const std::string& dato) {
 void Tabla::CargarTablaRecursivo(unsigned long int pos) {
 	BloqueTabla bl(this->arch.getTamanoBloque());
 	this->arch.Leer(pos, &bl);
-	RegistroVariable* reg = bl.getRegistro(0);
-	std::ostringstream oss;
-	reg->serializar(oss);
-	Hidratar(oss.str());
+	bl.cargarTabla(this->tabla);
 	unsigned int sig = bl.getSiguiente();
 	if (sig != SIN_SIGUIENTE) {
 		CargarTablaRecursivo(sig);
@@ -87,7 +84,7 @@ void Tabla::ActualizarBloque(unsigned int pos, Data::ArrayBytes* dato) {
 	BloqueTabla bl(this->arch.getTamanoBloque());
 	this->arch.Leer(pos, &bl);
 	bl.vaciar();
-	RegistroVariable* reg = new RegistroTabla(dato);
+	RegistroTabla* reg = new RegistroTabla(dato);
 	bl.addRegistro(reg);
 	this->arch.Escribir(&bl, pos);
 }
@@ -99,7 +96,7 @@ void Tabla::CrearBloqueTabla(Data::ArrayBytes* dato) {
 	BloqueTabla bl(this->arch.getTamanoBloque());
 	bl.setSiguiente(0);
 	VincularAnterior(POSTABLA, nuevoBloque);
-	RegistroVariable* reg = new RegistroTabla(dato);
+	RegistroTabla* reg = new RegistroTabla(dato);
 	bl.addRegistro(reg);
 	this->arch.Escribir(&bl, nuevoBloque);
 }
@@ -179,7 +176,7 @@ void Tabla::GuardarTablaInicial(void) {
 	bl.setSiguiente(SIN_SIGUIENTE);
 	Data::ArrayBytes* dato = new Data::ArrayBytes;
 	dato->insertar(this->tabla[0]);
-	RegistroVariable* reg = new RegistroTabla(dato);
+	RegistroTabla* reg = new RegistroTabla(dato);
 	bl.addRegistro(reg);
 	this->arch.Escribir(&bl, POSTABLA);
 }

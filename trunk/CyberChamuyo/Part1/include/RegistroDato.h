@@ -35,6 +35,8 @@ public:
 	virtual void borrarDato();
 	virtual int getTamanoDato();
 	virtual void ImprimirATexto(std::ostream& oss);
+	void getFrase(std::string& frase);
+	void getAutor(std::string& autor);
 	virtual ~RegistroDato();
 	friend std::ostream& operator<<(std::ostream& oss,
 					  RegistroDato &reg);

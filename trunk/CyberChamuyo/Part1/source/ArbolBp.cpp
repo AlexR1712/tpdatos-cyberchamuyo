@@ -180,7 +180,7 @@ void ArbolBp::imprimirNodos() {
 void ArbolBp::guardarNodo(Nodo* n, unsigned int id) {
 	std::vector<char>* ns = n->serializar();
 	DatoNodo* dato = new DatoNodo(ns);
-	RegistroVariable* reg = new RegistroNodo(dato);
+	RegistroNodo* reg = new RegistroNodo(dato);
 	BloqueNodo b(N_SIZE);
 	b.addRegistro(reg);
 	arch_arbol.Escribir(&b, id);

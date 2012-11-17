@@ -9,12 +9,11 @@
 
 #include "RegistroVariable.h"
 #include "BloqueCtes.h"
-#include <list>
+
 #include <stdexcept>
 using std::runtime_error;
+#include <list>
 
-typedef std::list <RegistroVariable*> listaReg;
-typedef std::list <RegistroVariable*>::iterator itListaReg;
 
 // BLOQUE: Clase que representa la entidad bloque. Contiene
 // registros variables que podrán ser agregados dependiendo
@@ -33,31 +32,24 @@ typedef std::list <RegistroVariable*>::iterator itListaReg;
 // el bloque.
 //
 
-class Bloque
-{
+class Bloque {
 private:
-    long tamanoBloque;
-    listaReg registros;
-    long espacioLibre;
-    int cantRegistros;
-    void setEspacioLibre(long espacioOcupado);
-    virtual void print(std::ostream& oss) const = 0;
-	virtual void input(std::istream& oss) const = 0;
+    virtual void setEspacioLibre(long espacioOcupado) = 0;
+    virtual void print(std::ostream& oss) = 0;
+	virtual void input(std::istream& oss) = 0;
 	virtual void LlenarRegistros(std::istream& oss, int cantReg) = 0;
-	void borrarDatos(void);
 public:
-    Bloque(long tamanoBloque);
-    long getTamanoBloque();
-    long getEspacioLibre();
+	Bloque(void);
+	virtual void anularRegistros(void) = 0;
+	virtual void borrarDatos(void) = 0;
+	virtual long getTamanoBloque() = 0;
+    virtual long getEspacioLibre() = 0;
     virtual void ImprimirATexto(std::ostream& oss) = 0;
-    int addRegistro(RegistroVariable* registro);
-    RegistroVariable* getRegistro(int posicion);
-    void setCantRegistros(int cantReg);
-    int getCantRegistros();
-    void anularRegistros(void);
-    void vaciar(void);
-    void borrarRegistro(int posicion);
-    bool estaVacio(void);
+    virtual int getCantRegistros() = 0;
+    virtual void vaciar(void) = 0;
+    virtual bool estaVacio(void) = 0;
+    virtual void borrarRegistro(unsigned int posicion) = 0;
+    virtual bool buscarRegistro(unsigned int clave, unsigned int& pos) = 0;
     virtual ~Bloque();
     friend std::ostream& operator<<(std::ostream& oss,
 					  Bloque &bl);

@@ -31,6 +31,7 @@ public:
 	std::vector<unsigned char> Binary();
 	//	returns the corresponding ascii values of the data stored in the array
 	//	always returns the 8 bits of each byte, even if there are zeros to the left
+	std::vector<unsigned char> Ascii8();
 	std::vector<unsigned char> Ascii();
 	//	works exactly as vector::operator[] (its a delegation to that operator)
 	unsigned char& operator[](unsigned int pos);

@@ -9,7 +9,7 @@
 #define FRASE_H_
 
 #include <iostream>
-#include "_Aux.h"
+#include "../include/_Aux.h"
 
 // FRASE: Clase que contiene los datos de una frase.
 
@@ -34,6 +34,9 @@ public:
 	Frase(void);
 	unsigned long int getClave(void);
 	std::string* Deshidratar(void);
+	void serializar(std::ostream& oss);
+	std::string& getFrase(void);
+	std::string& getAutor(void);
 	int getTamano();
 	virtual ~Frase();
 	friend std::ostream& operator<<(std::ostream& oss,

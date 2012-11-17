@@ -15,10 +15,11 @@
 #include "_Aux.h"
 #include "Tabla.h"
 #include <iostream>
+#include <sstream>
 
 
-typedef std::list<RegistroVariable*> listReg;
-typedef std::list<RegistroVariable*>::iterator itListReg;
+typedef std::list<Hash::RegistroDato*> listReg;
+typedef std::list<Hash::RegistroDato*>::iterator itListReg;
 
 // DISPERSION EX: Clase que implementa la dispersión extensible,
 
@@ -39,7 +40,7 @@ private:
 	ArchivoBloquesFijos arch_disp;
 	Tabla tabla;
 	unsigned int numRandom;
-	int insertarRecursivo(RegistroVariable* r, unsigned int clave);
+	int insertarRecursivo(RegistroDato* r, unsigned int clave);
 	void redistribuir(listReg& list);
 	void ActualizarTablaAlta(unsigned int td, int posTabla);
 	void ActualizarDispersion(BloqueDato& bl, int posTabla, int numBloque);
@@ -48,17 +49,18 @@ private:
 	void LlenarListaRegistros(BloqueDato& bl, listReg& list);
 	void crearNuevoBloque(int nuevoBloque, unsigned int td);
 	void Borrar(unsigned int clave);
-	void Modificar(RegistroVariable* r, unsigned int clave);
-	int buscarRegistro(unsigned int clave, BloqueDato& bl);
+	void Modificar(RegistroDato* r, unsigned int clave);
+
 	void modificarTdBloques(void);
 	void cambiarTdBloque(int posTabla);
 public:
 	DispersionEx(std::string archDir);
 	void createIndex(std::string path);
-	void insertarRegistro(RegistroVariable* r, unsigned int clave);
-	void modificarRegistro(RegistroVariable* r, unsigned int clave);
+	void insertarRegistro(RegistroDato* r, unsigned int clave);
+	void modificarRegistro(RegistroDato* r, unsigned int clave);
 	void borrarRegistro(unsigned int clave);
 	void cargarFrases(const char* archFrases);
+	bool getFrase(unsigned int clave, std::string& frase);
 	void insert(std::string& phrase);
 	void clear(void);
 	virtual ~DispersionEx();

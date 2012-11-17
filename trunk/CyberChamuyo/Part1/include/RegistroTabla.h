@@ -28,6 +28,7 @@ private:
 public:
 	RegistroTabla(Data::ArrayBytes* dato);
 	RegistroTabla(void);
+	void cargarTabla(array& vec);
 	virtual ~RegistroTabla();
 	virtual void serializar(std::ostream& oss);
 	virtual void ImprimirATexto(std::ostream& oss);
