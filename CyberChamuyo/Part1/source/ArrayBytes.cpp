@@ -35,7 +35,7 @@ void ArrayBytes::insertar(unsigned int num) {
 // Concatena vectores.
 
 void ArrayBytes::concatenar(array& vec) {
-	vec.insert(vec.begin(), this->arreglo.begin(), this->arreglo.end());
+	vec.insert(vec.end(), this->arreglo.begin(), this->arreglo.end());
 }
 
 ArrayBytes::~ArrayBytes() {

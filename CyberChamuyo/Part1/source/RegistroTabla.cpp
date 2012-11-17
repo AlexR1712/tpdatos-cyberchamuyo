@@ -71,6 +71,10 @@ void RegistroTabla::ImprimirATexto(std::ostream& oss) {
 	this->dato->Imprimir(oss);
 }
 
+void RegistroTabla::cargarTabla(array& vec) {
+	this->dato->concatenar(vec);
+}
+
 }
 
 

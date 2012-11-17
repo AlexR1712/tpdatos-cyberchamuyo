@@ -13,5 +13,6 @@
 
 unsigned int stoi(std::string& s);
 void obtenerSiguientePosicion(int &posAnterior, int &posActual, const std::string &linea);
+unsigned long int generateHash(const char * string, size_t len);
 
 #endif /* AUXILIAR_H_ */

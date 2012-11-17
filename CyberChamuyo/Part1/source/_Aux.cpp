@@ -20,3 +20,11 @@ void obtenerSiguientePosicion(int
   posActual = (linea.find("\t", posAnterior + 1));
 }
 
+unsigned long int generateHash(const char * string, size_t len) {
+    unsigned long int hash = 0;
+    for(size_t i = 0; i < len; ++i)
+        hash = 65599 * hash + string[i];
+    return hash ^ (hash >> 16);
+}
+
+

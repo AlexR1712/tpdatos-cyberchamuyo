@@ -47,6 +47,10 @@ void Frase::Imprimir(std::ostream& oss) {
 	//oss << "***********************" << std::endl;
 }
 
+void Frase::serializar(std::ostream& oss) {
+	oss << this->autor << "\t" << this->frase;
+}
+
 // FUNCIONAMIENTO OPERATOR<<:
 // Imprime los datos de la frase en un archivo binario.
 
@@ -82,5 +86,14 @@ std::istream& operator>>(std::istream& oss, Frase &phrase) {
 	delete [] phhrase;
 	return oss;
 }
+
+std::string& Frase::getFrase(void) {
+	return this->frase;
+}
+
+std::string& Frase::getAutor(void) {
+	return this->autor;
+}
+
 
 }

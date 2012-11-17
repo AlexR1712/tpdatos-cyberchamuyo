@@ -57,6 +57,7 @@ void RegistroDato::borrarDato() {
 }
 
 void RegistroDato::serializar(std::ostream& oss) {
+	this->dato->serializar(oss);
 }
 
 int RegistroDato::getTamanoDato() {
@@ -67,6 +68,14 @@ void RegistroDato::ImprimirATexto(std::ostream& oss) {
 	//oss << "***********************" << std::endl;
 	oss << "REGISTRO DATO: " << std::endl;
 	this->dato->Imprimir(oss);
+}
+
+void RegistroDato::getFrase(std::string& frase) {
+	frase = this->dato->getFrase();
+}
+
+void RegistroDato::getAutor(std::string& autor) {
+	autor = this->dato->getAutor();
 }
 
 }
