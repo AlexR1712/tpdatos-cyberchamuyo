@@ -16,11 +16,6 @@ namespace Hash {
 
 DispersionEx::DispersionEx(std::string archDir) :
 		arch_disp(archDir.c_str(), TAM_BLOQUE),tabla(arch_disp) {
-	if (this->arch_disp.getCantidadBloques() == 0)
-		this->tabla.GuardarTablaInicial();
-	BloqueDato bl(this->arch_disp.getTamanoBloque());
-	if (this->arch_disp.Leer(1, &bl) == ERR_BLOQUE_INEXISTENTE)
-		crearNuevoBloque(1, this->tabla.getSize());
 	this->numRandom = 1;
 }
 
@@ -153,11 +148,20 @@ void DispersionEx::ActualizarDispersion(BloqueDato& bl, int posTabla,
 	redistribuir(list);
 }
 
+void DispersionEx::inicializarDispersion(void) {
+	this->tabla.GuardarTablaInicial();
+	BloqueDato bl(this->arch_disp.getTamanoBloque());
+	if (this->arch_disp.Leer(1, &bl) == ERR_BLOQUE_INEXISTENTE)
+		crearNuevoBloque(1, this->tabla.getSize());
+}
+
 // FUNCIONAMIENTO INSERTAR RECURSIVO
 // Inserta un registro. En caso de desborde se actualiza
 // la dispersión y se intenta insertarlo nuevamente.
 
 int DispersionEx::insertarRecursivo(RegistroDato* r, unsigned int clave) {
+	if (this->isEmpty())
+		inicializarDispersion();
 	unsigned int posTabla = clave % this->tabla.getSize();
 	BloqueDato bl(this->arch_disp.getTamanoBloque());
 	unsigned int numBloque = this->tabla.getNumeroBloque(posTabla);
@@ -322,6 +326,12 @@ std::ostream& operator<<(std::ostream& oss, DispersionEx &disp) {
 
 void DispersionEx::createIndex(std::string path) {
 
+}
+
+bool DispersionEx::isEmpty() {
+	if (this->arch_disp.getCantidadBloques() == 0)
+		return true;
+	else return false;
 }
 
 
