@@ -26,6 +26,7 @@ void PropertiesLoader::loadProperties(std::string propertiesFilePath) {
 		}
 	} else {
 		std::cout << TEXT_PROPERTIES_FILE_NOT_FOUND(propertiesFilePath) << std::endl;
+		throw(1);
 	}
 }
 

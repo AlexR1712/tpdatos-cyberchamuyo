@@ -23,8 +23,10 @@ void DictionaryNormalizer::normalize(std::string dictionaryPath) {
 
 	while (!dictionaryFile.endOfFile()) {
 		record = dictionaryFile.getRecord();
-		record.setData(wordNormalizer.normalizeWord(record.getData()));
-		normalizedDictionaryFile.putRecord(record);
+		if (record.getData() != "") {
+			record.setData(wordNormalizer.normalizeWord(record.getData()));
+			normalizedDictionaryFile.putRecord(record);
+		}
 	}
 }
 
