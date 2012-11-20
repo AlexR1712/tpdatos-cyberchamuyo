@@ -12,19 +12,24 @@ int main(int argc, char *argv[]){
 	std::vector<std::string> commandParams;
 	StatisticsManager statisticsManager;
 
-	statisticsManager.printHelp();
-	do {
-		std::cout << "Ingrese un comando: " << std::endl;
-		userInput = "";
-		std::getline(std::cin,userInput);
-		command = parseCommand(userInput,commandParams);
-		if (command != USER_COMMAND_EXIT) {
-			statisticsManager.processCommand(command,commandParams);
-		}
-		commandParams.clear();
-	} while (command != USER_COMMAND_EXIT);
+	if (statisticsManager.isSuccessfullInit()) {
+		statisticsManager.printHelp();
+		do {
+			std::cout << "Ingrese un comando: " << std::endl;
+			userInput = "";
+			std::getline(std::cin,userInput);
+			command = parseCommand(userInput,commandParams);
+			if (command != USER_COMMAND_EXIT) {
+				statisticsManager.processCommand(command,commandParams);
+			}
+			commandParams.clear();
+		} while (command != USER_COMMAND_EXIT);
 
-	return EXIT_SUCCESS;
+		return EXIT_SUCCESS;
+	} else {
+		std::cout << "Error en inicialización. Saliendo del programa..." << std::endl;
+		return EXIT_FAILURE;
+	}
 }
 
 std::string parseCommand(std::string userInput, std::vector<std::string>& commandParams) {

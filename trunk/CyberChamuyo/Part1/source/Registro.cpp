@@ -42,8 +42,10 @@ Registro::Registro(const Registro& reg) {
 	switch(tipo) {
 	case 0:
 		clave = new C_Entero();
+		break;
 	case 1:
 		clave = new CAlfa();
+		break;
 	}
 	*clave = *(reg.clave);
 	tam = reg.tam;
@@ -77,8 +79,10 @@ void Registro::hidratar(const std::vector<char>* vec, FrontCoding& decoder,int& 
 	case 0:
 		std::cout << "entre a 0 en registro hidratar" << std::endl;
 		clave = new C_Entero();
+		break;
 	case 1:
 		clave = new CAlfa();
+		break;
 	}
 	char c_size = (*vec)[pos++];
 	std::string clave_raw, clave_deco;
@@ -101,8 +105,10 @@ void Registro::hidratar(const string &s) {
 	case 0:
 		std::cout << "entre a 0 en Registro hidratar" << std::endl;
 		clave = new C_Entero();
+		break;
 	case 1:
 		clave = new CAlfa();
+		break;
 	}
 	//long size = Auxiliar::leerEntero(p, s);
 	std::string clave_string = s.substr(p, size);
@@ -154,8 +160,10 @@ Clave* Registro::getClaveCopia() {
 	case 0:
 		std::cout << "entre a 0 en getclavecopia" << std::endl;
 		c = new C_Entero();
+		break;
 	case 1:
 		c = new CAlfa();
+		break;
 	}
 	(*c) = *clave;
 	return c;
@@ -177,8 +185,10 @@ Registro& Registro::operator=(Registro& r) {
 		switch(tipo) {
 		case 0:
 			clave = new C_Entero();
+			break;
 		case 1:
 			clave = new CAlfa();
+			break;
 		}
 	}
 	*clave = *(r.getClave());

@@ -35,19 +35,18 @@ template<class T> TextInputSequentialFile<T>::TextInputSequentialFile(std::strin
 
 template<class T> void TextInputSequentialFile<T>::load() {
 	std::string recordAsString;
-	Record* record = new T();
+	T record;
 
 	while ( (this->getFile().good()) && (this->getBuffer().size() < this->getBufferMaxSize()) ) {
 		recordAsString = "";
 		std::getline(this->getFile(),recordAsString);
-;
-		if (recordAsString.size() != 0) {
-			record->deserialize(recordAsString);
-			this->getBuffer().push(*(static_cast<T*>(record)));
-		}
+
+//		if (recordAsString.size() != 0) {
+			record.deserialize(recordAsString);
+			this->getBuffer().push(record);
+//		}
 
 	}
-	delete record;
 }
 
 template<class T> void TextInputSequentialFile<T>::open(std::string filePath, unsigned int bufferMaxSize) {

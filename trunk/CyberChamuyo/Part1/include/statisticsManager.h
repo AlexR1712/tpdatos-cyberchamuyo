@@ -9,57 +9,57 @@
 #include "IndiceArbol.h"
 #include "DispersionEx.h"
 
-#ifndef OUTPUT_DIRECTORY_PATH
-#define OUTPUT_DIRECTORY_PATH "outputFiles"
-#endif
-
-#ifndef INPUT_DIRECTORY_PATH
-#define INPUT_DIRECTORY_PATH "inputFiles"
-#endif
-
 #ifndef CONFIG_DIRECTORY_PATH
 #define CONFIG_DIRECTORY_PATH "config"
-#endif
+#endif /*CONFIG_DIRECTORY_PATH*/
+
+#ifndef BIN_DIRECTORY_PATH
+#define BIN_DIRECTORY_PATH "bin"
+#endif /*BIN_DIRECTORY_PATH*/
+
+#ifndef OUTPUT_FILES_DIRECTORY_PATH
+#define OUTPUT_FILES_DIRECTORY_PATH "outputFiles"
+#endif /*OUTPUT_FILES_DIRECTORY_PATH*/
+
+#ifndef STOP_WORDS_FILE_PATH_PROPERTY_NAME
+#define STOP_WORDS_FILE_PATH_PROPERTY_NAME "stopWordsFilePath"
+#endif /*STOP_WORDS_FILE_PATH_PROPERTY_NAME*/
+
+#ifndef CONFIG_FILE_PATH
+#define CONFIG_FILE_PATH "config/statisticsManager.properties"
+#endif /*CONFIG_FILE_PATH*/
 
 #ifndef STATUS_FILE_PATH
-#define STATUS_FILE_PATH "config/statisticsManager/statisticsManagerStatus"
+#define STATUS_FILE_PATH "bin/statisticsManagerStatus"
 #endif /*STATUS_FILE_PATH*/
 
-#ifndef STOP_WORDS_FILE_PATH
-#define STOP_WORDS_FILE_PATH "inputFiles/stop-words.txt"
-#endif /*STOP_WORDS_FILE_PATH*/
-
 #ifndef RANKINGS_FILE_PATH
-#define RANKINGS_FILE_PATH "outputFiles/rankings"
+#define RANKINGS_FILE_PATH "bin/rankings.bin"
 #endif /*RANKINGS_FILE_PATH*/
 
 #ifndef RANKINGS_FILE_PATH_ORDERED
-#define RANKINGS_FILE_PATH_ORDERED "outputFiles/rankings_ordered"
+#define RANKINGS_FILE_PATH_ORDERED "bin/rankings_ordered.bin"
 #endif /*RANKINGS_FILE_PATH_ORDERED*/
 
-#ifndef DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH
-#define DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH "outputFiles/dictionary_RANDOMIZED_ORDERED"
-#endif /*DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH*/
+#ifndef DICTIONARY_INDEX_FILE_PATH
+#define DICTIONARY_INDEX_FILE_PATH "bin/dic.bin"
+#endif /*DICTIONARY_INDEX_FILE_PATH*/
 
-#ifndef DICTIONARY_NORMALIZED_FILE_PATH
-#define DICTIONARY_NORMALIZED_FILE_PATH "outputFiles/dictionary_NORMALIZED.txt"
-#endif /*DICTIONARY_NORMALIZED_FILE_PATH*/
+#ifndef NOT_FOUND_WORDS_INDEX_FILE_PATH
+#define NOT_FOUND_WORDS_INDEX_FILE_PATH "bin/notf.bin"
+#endif /*NOT_FOUND_WORDS_INDEX_FILE_PATH*/
 
-#ifndef DICTIONARY_NAME
-#define DICTIONARY_NAME "dic.bin"
-#endif /*DICTIONARY_NAME*/
+#ifndef MEMORABLE_QUOTES_INDEX_FILE_PATH
+#define MEMORABLE_QUOTES_INDEX_FILE_PATH "bin/memquotes.bin"
+#endif /*MEMORABLE_QUOTES_INDEX_FILE_PATH*/
 
-#ifndef NOTFOUND_NAME
-#define NOTFOUND_NAME "notf.bin"
-#endif /*NOTFOUND_NAME*/
-
-#ifndef MEMORABLE_QUOTES_NAME
-#define MEMORABLE_QUOTES_NAME "memquotes.bin"
-#endif /*MEMORABLE_QUOTES_NAME*/
-
-#ifndef FILES_BUFFER_SIZE
-#define FILES_BUFFER_SIZE 10
-#endif /*FILES_BUFFER_SIZE*/
+//#ifndef DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH
+//#define DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH "outputFiles/dictionary_RANDOMIZED_ORDERED"
+//#endif /*DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH*/
+//
+//#ifndef DICTIONARY_NORMALIZED_FILE_PATH
+//#define DICTIONARY_NORMALIZED_FILE_PATH "outputFiles/dictionary_NORMALIZED.txt"
+//#endif /*DICTIONARY_NORMALIZED_FILE_PATH*/
 
 #ifndef AUTHOR_QUOTE_SEPARATOR
 #define AUTHOR_QUOTE_SEPARATOR '\t'
@@ -73,10 +73,13 @@
 class StatisticsManager {
 private:
 	//Ubicacion del archivo de diccionario.
-	std::string dictionaryFilePath;
+	std::string inputDictionaryFilePath;
 
 	//Ubicacion del archivo de frases celebres.
-	std::string memorableQuotesFilePath;
+	std::string inputMemorableQuotesFilePath;
+
+	//Ubicacion del archivo de stopWords.
+	std::string stopWordsFilePath;
 
 	//Cantidad total de palabras.
 	unsigned int numberOfWords;
@@ -86,6 +89,12 @@ private:
 
 	//Cantidad total de fallas.
 	unsigned int numberOfFailures;
+
+	//Flag que indica si se está corriendo el programa por primera vez.
+	bool firstRun;
+
+	//Flag que indica si el componente se inicializó correctamente.
+	bool successfullInit;
 
 	//Stop words.
 	std::set<std::string> stopWords;
@@ -99,13 +108,17 @@ private:
 	//Indice de palabras no encontradas.
 	IndiceArbol* notFoundWords;
 
-	std::string getDictionaryFilePath() const;
+	std::string getInputDictionaryFilePath() const;
 
-	void setDictionaryFilePath(std::string dictionaryFilePath);
+	void setInputDictionaryFilePath(std::string dictionaryFilePath);
 
-	std::string getMemorableQuotesFilePath() const;
+	std::string getInputMemorableQuotesFilePath() const;
 
-	void setMemorableQuotesFilePath(std::string memorableQuotesFilePath);
+	void setInputMemorableQuotesFilePath(std::string memorableQuotesFilePath);
+
+	std::string getStopWordsFilePath() const;
+
+	void setStopWordsFilePath(std::string stopWordsFilePath);
 
 	unsigned int getNumberOfWords() const;
 
@@ -126,6 +139,12 @@ private:
 	Hash::DispersionEx* getMemorableQuotes();
 
 	IndiceArbol* getNotFoundWords();
+
+	bool isFirstRun() const;
+
+	void setFirstRun(bool firstRun);
+
+	void setSuccessfullInit(bool successfullInit);
 
 	//Metodo para cargar el estado del modulo desde un archivo.
 	void loadStatus();
@@ -160,10 +179,18 @@ private:
 	//Metodo para guardar el estado del modulo en un archivo.
 	void saveStatus();
 
-	void checkDirectoryStructure();
+	bool checkDirectoryStructure();
+
+	void clearDictionary();
+
+	void clearNotFoundWords();
+
+	void clearMemorableQuotes();
 public:
 	//Constructor.
 	StatisticsManager();
+
+	bool isSuccessfullInit() const;
 
 	//Metodo para procesar el comando recibido.
 	void processCommand(std::string& command, std::vector<std::string>& commandParams);

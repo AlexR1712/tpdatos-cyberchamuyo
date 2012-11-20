@@ -56,14 +56,16 @@ void DictionaryRandomizer::createRandomIds(std::string dictionaryPath) {
 	long random;
 
 	while (!dictionary.endOfFile()) {
-		random = generateRandomId();
 		inputRecord = dictionary.getRecord();
-		outputTextRecord.setId(random);
-		outputTextRecord.setWord(inputRecord.getData());
-		outputBinaryRecord.setId(random);
-		outputBinaryRecord.setWord(inputRecord.getData());
-		textRandomizedDiccionary.putRecord(outputTextRecord);
-		binaryRandomizedDiccionary.putRecord(outputBinaryRecord);
+		if (inputRecord.getData() != "") {
+			random = generateRandomId();
+			outputTextRecord.setId(random);
+			outputTextRecord.setWord(inputRecord.getData());
+			outputBinaryRecord.setId(random);
+			outputBinaryRecord.setWord(inputRecord.getData());
+			textRandomizedDiccionary.putRecord(outputTextRecord);
+			binaryRandomizedDiccionary.putRecord(outputBinaryRecord);
+		}
 	}
 }
 
