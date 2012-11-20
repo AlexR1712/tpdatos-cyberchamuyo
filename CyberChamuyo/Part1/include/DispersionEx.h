@@ -50,7 +50,7 @@ private:
 	void crearNuevoBloque(int nuevoBloque, unsigned int td);
 	void Borrar(unsigned int clave);
 	void Modificar(RegistroDato* r, unsigned int clave);
-
+	void inicializarDispersion(void);
 	void modificarTdBloques(void);
 	void cambiarTdBloque(int posTabla);
 public:
@@ -62,6 +62,7 @@ public:
 	void cargarFrases(const char* archFrases);
 	bool getFrase(unsigned int clave, std::string& frase);
 	void insert(std::string& phrase);
+	bool isEmpty();
 	void clear(void);
 	virtual ~DispersionEx();
 	friend std::ostream& operator<<(std::ostream& oss,
