@@ -36,21 +36,18 @@
 class ArchivoBloquesFijos {
 private:
     std::fstream path;
-    int cantidadBloques;
     long tamanoBloque;
     std::string dir;
     Bitmap map;
-    void setCantidadBloques(int cantidadBloques);
-    //void setCantidadBloquesLibres (int cantidad);
     void SetearBloqueLibre (unsigned int bloque);
 public:
     ArchivoBloquesFijos (const char* filename, long tamanoBloque);
-    int getCantidadBloques();
-    long getTamanoBloque();
-    int getCantidadBloquesLibres();
-    unsigned int ObtenerBloqueLibre ();
-    int Escribir (Bloque* elemento, long posicion);
-    int Leer (long posicion, Bloque* elemento);
+    int getCantidadBloques(void);
+    long getTamanoBloque(void);
+    int getCantidadBloquesLibres(void);
+    unsigned int ObtenerBloqueLibre(void);
+    int Escribir (Bloque* elemento, unsigned int posicion);
+    int Leer (unsigned int posicion, Bloque* elemento);
     void Borrar (long posicion);
     virtual ~ArchivoBloquesFijos();
     int VerificarBloqueLibre(unsigned int bloque);

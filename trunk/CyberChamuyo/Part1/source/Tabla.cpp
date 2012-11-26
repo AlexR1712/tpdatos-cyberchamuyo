@@ -90,9 +90,7 @@ void Tabla::ActualizarBloque(unsigned int pos, Data::ArrayBytes* dato) {
 }
 
 void Tabla::CrearBloqueTabla(Data::ArrayBytes* dato) {
-	int nuevoBloque = this->arch.ObtenerBloqueLibre();
-	if (nuevoBloque == ERR_BLOQUE_INEXISTENTE)
-		nuevoBloque = this->arch.getCantidadBloques();
+	unsigned int nuevoBloque = this->arch.ObtenerBloqueLibre();
 	BloqueTabla bl(this->arch.getTamanoBloque());
 	bl.setSiguiente(0);
 	VincularAnterior(POSTABLA, nuevoBloque);

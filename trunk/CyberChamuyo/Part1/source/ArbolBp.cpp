@@ -280,7 +280,7 @@ int ArbolBp::encontrarPrimero() {
 }
 
 void ArbolBp::exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& os) {
-	//imprimirNodos();
+	imprimirNodos();
 	BinaryDictionaryRecord<true> record;
 	int primero = encontrarPrimero();
 	NodoExterno* nE = new NodoExterno(0, this);
