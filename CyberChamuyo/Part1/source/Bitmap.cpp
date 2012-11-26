@@ -7,11 +7,35 @@
 
 #include "../include/Bitmap.h"
 
-Bitmap::Bitmap() {
+Bitmap::Bitmap(unsigned int bloqueInicial) {
+	this->bloqueTope = bloqueInicial;
+}
+
+Bitmap::Bitmap(void) {
+	this->bloqueTope = 0;
 }
 
 unsigned int Bitmap::getCantidadBloquesLibres(void) {
 	return this->listaBl.size();
+}
+
+bool Bitmap::agregarBloque(unsigned int posicion) {
+	 if (posicion > this->bloqueTope)
+		 return false;
+	 else if (posicion == this->bloqueTope) {
+		 ++this->bloqueTope;
+		 if (this->verificarBloqueLibre(posicion))
+			 this->setBloqueOcupado(posicion);
+	 }
+	  return true;
+}
+
+int Bitmap::verificarBloqueOcupado(unsigned int posicion) {
+	if (posicion >= bloqueTope)
+        return ERR_BLOQUE_INEXISTENTE;
+	else if (this->verificarBloqueLibre(posicion))
+		return ERR_BLOQUE_LIBRE;
+	return RES_OK;
 }
 
 void Bitmap::completarMapa(unsigned int numByte, Mapa& map) {
@@ -53,10 +77,17 @@ void Bitmap::setBloqueOcupado(unsigned int bloque) {
 }
 
 unsigned int Bitmap::getBloqueLibre(void) {
-	return this->listaBl.front();
+	if (this->listaBl.empty())
+		return this->bloqueTope;
+	else return this->listaBl.front();
+}
+
+unsigned int Bitmap::getCantidadBloques(void) {
+	return this->bloqueTope;
 }
 
 void Bitmap::ImprimirATexto(std::ostream& oss) {
+	oss << "CANTIDAD DE BLOQUES:" << "\t" << this->bloqueTope << std::endl;
 	oss << "CANTIDAD DE BLOQUES LIBRES:" << "\t" << this->listaBl.size() << std::endl;
 	itLista it;
 	/*for (it = this->listaBl.begin(); it != this->listaBl.end(); ++it) {
@@ -76,6 +107,7 @@ bool Bitmap::verificarBloqueLibre(unsigned int bloque) {
 std::ostream& operator<<(std::ostream& oss,	Bitmap &bm) {
 	Mapa map;
 	bm.serializar(map);
+	oss.write((char*)&(bm.bloqueTope), sizeof(unsigned int));
 	unsigned int N = map.size();
 	oss.write((char*)&(N), sizeof(unsigned int));
 	itMapa it;
@@ -101,6 +133,7 @@ void Bitmap::llenarListaBloques(unsigned char valor, unsigned int i) {
 
 std::istream& operator>>(std::istream& oss, Bitmap &bm) {
 	unsigned int N = 0;
+	oss.read((char*)&(bm.bloqueTope), sizeof(unsigned int));
 	oss.read((char*) (&N), sizeof(unsigned int));
 	for (unsigned int i = 0; i < N; ++i) {
 		unsigned char valor;

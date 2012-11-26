@@ -33,7 +33,7 @@ void DispersionEx::cargarFrases(const char* archFrases) {
 	std::string linea;
 	std::ifstream entradaTexto(archFrases);
 	getline(entradaTexto, linea);
-	//unsigned long int num = 1;
+	unsigned long int num = 1;
 	while(!entradaTexto.eof()) {
 		int posActual = linea.find("\t");
 		int posAnterior = 0;
@@ -44,7 +44,7 @@ void DispersionEx::cargarFrases(const char* archFrases) {
 		autor.append(nombre);
 		obtenerSiguientePosicion(posAnterior, posActual, linea);
 		std::string frase = linea.substr(posAnterior + 1, posActual - posAnterior - 1);
-		unsigned long int num = generateHash(frase.c_str(), frase.length());
+		//unsigned long int num = generateHash(frase.c_str(), frase.length());
 		Data::Frase* datoInsertar = new Data::Frase(autor, frase, num);
 		RegistroDato* reg = new Hash::RegistroDato(datoInsertar);
 		this->insertarRegistro(reg, num);
@@ -90,9 +90,7 @@ void DispersionEx::crearNuevoBloque(int nuevoBloque, unsigned int td) {
 // que aparece una sola vez en la tabla) esta se duplica.
 
 void DispersionEx::ActualizarTablaAlta(unsigned int td, int posTabla) {
-	long nuevoBloque = this->arch_disp.ObtenerBloqueLibre();
-	if (nuevoBloque == -1)
-		nuevoBloque = this->arch_disp.getCantidadBloques();
+	unsigned int nuevoBloque = this->arch_disp.ObtenerBloqueLibre();
 	if (td == this->tabla.getSize())
 		this->tabla.AumentarTabla();
 	this->tabla.RecorrerYReemplazar(posTabla, nuevoBloque, td*2);
@@ -177,8 +175,6 @@ void DispersionEx::insertarRegistro(RegistroDato* r, unsigned int clave) {
 		insertarRecursivo(r, clave);
 		this->tabla.GuardarTabla();
 }
-
-
 
 // FUNCIONAMIENTO MODIFICAR TD BLOQUES
 // Recorre el archivo de bloques modificando a la mitad
@@ -324,16 +320,15 @@ std::ostream& operator<<(std::ostream& oss, DispersionEx &disp) {
 
 }
 
-void DispersionEx::createIndex(std::string path) {
-
-}
-
 bool DispersionEx::isEmpty() {
 	if (this->arch_disp.getCantidadBloques() == 0)
 		return true;
 	else return false;
 }
 
+void DispersionEx::createIndex(std::string path) {
+
+}
 
 DispersionEx::~DispersionEx() {
 

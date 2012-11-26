@@ -383,6 +383,8 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 	if (this->isValidCommand(command,commandParams)) {
 		if (command == COMMAND_PRINT_AVG_WORDS_PER_QUOTE) {
 			this->printAverageWordsPerPhrase();
+			this->dictionary->exportar("/home/lucasj/workspace/TpDatos2012/outputFiles/out.txt");
+
 		}
 
 		if (command == COMMAND_PRINT_AVG_FAILURES) {
