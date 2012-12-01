@@ -12,6 +12,7 @@
 #include <string>
 #include "binaryInputSequentialFile.h"
 #include "binaryDictionaryRecord.h"
+#include "RegistroArbol.h"
 
 /*	IndiceArbol: Clase que se utiliza como una capa externa al arbol para ofrecer
  * 	cierta funcionalidad
@@ -31,6 +32,8 @@ public:
 	//  devuelve 1 si la palabra "word" esta en el arbol, 0 sino
 	bool find(std::string word);
 
+	RegistroArbol& textSearch(std::string term);
+
 	//  devuelve siguiente registro del arbol
 	BinaryDictionaryRecord<true> next();
 
@@ -39,6 +42,8 @@ public:
 
 	//  inserta la palabra "s" en el arbol
 	void insert(std::string& s);
+
+	void insert(unsigned int termId, std::string term, unsigned int invListId);
 
 	//  devuelve un archivo con todos registros del arbol
 	//  leer exportar(std::string) en arbol
@@ -53,6 +58,9 @@ public:
 
 	//  1 si esta vacio, 0 sino
 	bool isEmpty();
+
+	//	Para modificar un registro
+	void modify(unsigned int termId, std::string term, unsigned int invListId);
 
 	void mostrar();
 private:

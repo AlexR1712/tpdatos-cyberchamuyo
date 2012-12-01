@@ -5,6 +5,9 @@
 
 #include "../include/stringUtilities.h"
 #include "../include/statisticsManager.h"
+#include "../include/fixedLengthRecordSequentialFile.h"
+#include "../include/fixedLengthTextRecord.h"
+#include "../include/InvertedList.h"
 
 int main(int argc, char *argv[]){
 	std::string userInput;
@@ -40,4 +43,5 @@ std::string parseCommand(std::string userInput, std::vector<std::string>& comman
 	commandParams.erase(commandParams.begin());
 
 	return command;
+
 }

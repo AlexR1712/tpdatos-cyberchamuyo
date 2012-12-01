@@ -209,6 +209,7 @@ template<class T> unsigned int FixedLengthRecordSequentialFile<T>::putRecord(T& 
 	recordPosition = this->getBitMap().getBloqueLibre();
 	this->getFile().seekp(recordPosition * this->getRecordSize(),std::ios_base::beg);
 	this->getFile().write(recordAsCharArray,this->getRecordSize());
+	this->getFile().flush();
 	delete[] recordAsCharArray;
 
 	this->getBitMap().agregarBloque(recordPosition);

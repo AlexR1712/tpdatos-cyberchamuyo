@@ -4,6 +4,7 @@
 #include "../include/textInputSequentialFile.h"
 #include "../include/textOutputSequentialFile.h"
 #include "../include/binaryInputSequentialFile.h"
+#include "../include/binaryOutputSequentialFile.h"
 #include "../include/binaryDictionaryRecord.h"
 #include "../include/textRecord.h"
 #include "../include/externalSorter.h"
@@ -14,6 +15,8 @@
 #include "../include/DispersionEx.h"
 #include "../include/fileUtilities.h"
 #include "../include/outputTexts.h"
+#include "../include/FixedLengthTRecord.h"
+#include "../include/fixedLengthRecordSequentialFile.h"
 
 #define RANDOMIZED_ORDERED_PATH "outputFiles/dictionary_RANDOMIZED_ORDERED"
 
@@ -26,6 +29,7 @@ StatisticsManager::StatisticsManager() {
 		this->dictionary = new IndiceArbol(DICTIONARY_INDEX_FILE_PATH);
 		this->notFoundWords = new IndiceArbol(NOT_FOUND_WORDS_INDEX_FILE_PATH);
 		this->memorableQuotes = new Hash::DispersionEx(MEMORABLE_QUOTES_INDEX_FILE_PATH);
+		this->T = new FixedLengthRecordSequentialFile<FixedLengthTRecord>(20);
 		this->numberOfFailures = 0;
 		this->numberOfQuotes = 0;
 		this->numberOfWords = 0;
@@ -201,6 +205,12 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	ExternalSorter externalSorter(10,true);
 
 	if (memorableQuotesFile.exists()) {
+		//////////////////77 TEMPORAL /////////////////////
+		T->open("tFile.bin");
+		BinaryOutputSequentialFile<OcurrenceFileRecord> ocurrenceFile;
+		ocurrenceFilePath = "ocurrenceFile.bin";
+		ocurrenceFile.open(ocurrenceFilePath);
+		///////////
 		this->getDictionary()->rewind();
 		while (!memorableQuotesFile.endOfFile()) {
 			phrase = memorableQuotesFile.getRecord().getData();
@@ -216,6 +226,16 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 				StringUtilities::quitarPuntuacion(phraseWords[i]);
 				if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 					totalWords++;
+					///////////////////// TEMPORAL ////////////////
+					FixedLengthTRecord tRecord(20);
+					tRecord.setTerm(phraseWords[i]);
+					tRecord.setId(totalWords);
+					T->putRecord(tRecord);
+					OcurrenceFileRecord ocurrenceRecord;
+					ocurrenceRecord.setTermId(totalWords);
+					ocurrenceRecord.setDocId(totalQuotes);
+					ocurrenceFile.putRecord(ocurrenceRecord);
+					///////////////////////////////////////////////
 					//si no está en el índice de fallos ni en el diccionario, se inserta en el índice de fallos y se
 					//contabiliza.
 					if (this->getNotFoundWords()->find(phraseWords[i])) {
@@ -237,7 +257,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		this->setNumberOfWords(totalWords);
 		this->setNumberOfQuotes(totalQuotes);
 		this->setNumberOfFailures(totalFailures);
-
+		T->close();
 		//Se genera el ranking de palabras.
 		this->getDictionary()->exportar(RANKINGS_FILE_PATH);
 		externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);

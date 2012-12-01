@@ -85,7 +85,6 @@ int ArbolBp::insertarRegistro(Registro* r) {
 				delete *it;
 			}
 
-
 			nh2->setSiguiente(0);
 			dynamic_cast<NodoExterno*>(raiz)->setSiguiente(ni1_id);
 
@@ -292,7 +291,6 @@ void ArbolBp::exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >
 	reg = nE->getRegistro(0, reg);
 	while(reg != NULL) {
 		record.setId(reinterpret_cast<RegistroArbol*>(reg)->timesSearched());
-		std::cout << reinterpret_cast<RegistroArbol*>(reg)->timesSearched();
 		record.setWord(reinterpret_cast<CAlfa*>(reg->getClave())->getWord());
 		os.putRecord(record);
 		reg = siguiente();

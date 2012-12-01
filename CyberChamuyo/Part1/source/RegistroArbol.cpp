@@ -62,6 +62,14 @@ Registro* RegistroArbol::find() {
 	return (Registro*)this;
 }
 
+unsigned long RegistroArbol::getTermId() {
+	return termId;
+}
+
+unsigned short RegistroArbol::getListId() {
+	return s;
+}
+
 long RegistroArbol::timesSearched() {
 	return n;
 }

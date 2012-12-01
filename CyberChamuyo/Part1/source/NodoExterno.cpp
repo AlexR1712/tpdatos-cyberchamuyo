@@ -10,7 +10,7 @@
 #include "../include/RegistroArbol.h"
 
 NodoExterno::NodoExterno() {
-
+	siguiente = 0;
 }
 
 NodoExterno::NodoExterno(int lvl) {
