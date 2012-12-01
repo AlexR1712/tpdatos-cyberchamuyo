@@ -21,7 +21,6 @@ public:
 	InvertedList();
 	unsigned int size();
 	void setId(unsigned int docId);
-	unsigned int getId();
 	void push_back(unsigned int n);
 	std::vector<unsigned char> serialize();
 	unsigned int& operator[](unsigned int pos);

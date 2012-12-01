@@ -10,19 +10,19 @@
 #include "../include/RegistroArbol.h"
 
 NodoExterno::NodoExterno() {
-	siguiente = 0;
+	siguiente = NULL;
 }
 
 NodoExterno::NodoExterno(int lvl) {
 	nivel = lvl;
-	siguiente = 0;
+	siguiente = NULL;
 	tipo = TIPO_ARBOL;
 	libre = N_SIZE - 4 * sizeof(int);
 }
 
 NodoExterno::NodoExterno(int lvl, ArbolBp* arb) : arbol(arb) {
 	nivel = lvl;
-	siguiente = 0;
+	siguiente = NULL;
 	tipo = TIPO_ARBOL;
 	libre = N_SIZE - 4 * sizeof(int);
 }
