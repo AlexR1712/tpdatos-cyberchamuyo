@@ -54,6 +54,7 @@ int ArchivoBloquesFijos::getCantidadBloquesLibres(){
 // En caso de no existir devuelve ERR_BLOQUE_INEXISTENTE.
 
 unsigned int ArchivoBloquesFijos::ObtenerBloqueLibre(){
+
 	return this->map.getBloqueLibre();
 }
 

@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "externalSorter.h"
 
 // ARCHIVO BLOQUES FIJOS: Clase que administra el archivo binario
 // que posee bloques con registros variables. Determina la inserción
@@ -39,6 +40,7 @@ private:
     long tamanoBloque;
     std::string dir;
     Bitmap map;
+    unsigned int ultimoBloque;
     void SetearBloqueLibre (unsigned int bloque);
 public:
     ArchivoBloquesFijos (const char* filename, long tamanoBloque);

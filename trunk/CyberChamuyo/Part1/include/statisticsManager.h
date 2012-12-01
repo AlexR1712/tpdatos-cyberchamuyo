@@ -8,6 +8,11 @@
 #include "outputTexts.h"
 #include "IndiceArbol.h"
 #include "DispersionEx.h"
+#include "fixedLengthRecordSequentialFile.h"
+#include "fixedLengthTextRecord.h"
+#include "FixedLengthTRecord.h"
+#include "fixedLengthRecord.h"
+#include "OcurrenceFileRecord.h"
 
 #ifndef CONFIG_DIRECTORY_PATH
 #define CONFIG_DIRECTORY_PATH "config"
@@ -108,6 +113,10 @@ private:
 	//Indice de palabras no encontradas.
 	IndiceArbol* notFoundWords;
 
+	FixedLengthRecordSequentialFile<FixedLengthTRecord>* T;
+
+	std::string ocurrenceFilePath;
+
 	std::string getInputDictionaryFilePath() const;
 
 	void setInputDictionaryFilePath(std::string dictionaryFilePath);
@@ -186,6 +195,8 @@ private:
 	void clearNotFoundWords();
 
 	void clearMemorableQuotes();
+
+
 public:
 	//Constructor.
 	StatisticsManager();

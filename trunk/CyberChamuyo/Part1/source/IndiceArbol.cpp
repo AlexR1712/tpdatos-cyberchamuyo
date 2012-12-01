@@ -31,6 +31,10 @@ void IndiceArbol::clear() {
 	arbol.clear();
 }
 
+RegistroArbol& IndiceArbol::textSearch(std::string term) {
+	//	TODO
+}
+
 BinaryDictionaryRecord<true> IndiceArbol::next() {
 	BinaryDictionaryRecord<true> record;
 	Registro* reg = arbol.siguiente();
@@ -82,6 +86,14 @@ void IndiceArbol::rewind() {
 
 bool IndiceArbol::isEmpty() {
 	return arbol.isEmpty();
+}
+
+void IndiceArbol::insert(unsigned int termId, std::string term, unsigned int invListId) {
+	//	TODO
+}
+
+void IndiceArbol::modify(unsigned int termId, std::string term, unsigned int invListId) {
+	//	TODO
 }
 
 void IndiceArbol::mostrar() {

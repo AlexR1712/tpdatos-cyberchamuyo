@@ -27,6 +27,8 @@ int leerEntero(const std::vector<char>* vec, int& pos);
 std::string& leerString(const std::vector<char>* vec, std::string& s, int& pos, int size);
 std::vector<char>* insertarEntero(std::vector<char>* vec, const int j);
 std::vector<char>* insertarString(std::vector<char>* vec, const std::string& s);
+int leerEnteroU(const std::vector<unsigned char>& vec, int& pos);
+std::vector<unsigned char>& insertarEnteroU(std::vector<unsigned char>& vec, const int j);
 }
 
 #endif /* AUXILIAR_H_ */
