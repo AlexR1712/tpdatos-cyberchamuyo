@@ -22,11 +22,10 @@ unsigned int Bitmap::getCantidadBloquesLibres(void) {
 bool Bitmap::agregarBloque(unsigned int posicion) {
 	 if (posicion > this->bloqueTope)
 		 return false;
-	 else if (posicion == this->bloqueTope) {
+	 else if (posicion == this->bloqueTope)
 		 ++this->bloqueTope;
-		 if (this->verificarBloqueLibre(posicion))
-			 this->setBloqueOcupado(posicion);
-	 }
+	 if (this->verificarBloqueLibre(posicion))
+		 this->setBloqueOcupado(posicion);
 	  return true;
 }
 
@@ -62,6 +61,7 @@ void Bitmap::setBit(unsigned int bloque, Mapa& map) {
 
 void Bitmap::setBloqueLibre(unsigned int bloque) {
 	this->listaBl.push_back(bloque);
+	this->listaBl.sort();
 }
 
 void Bitmap::eliminarBloqueLista(unsigned int bloque) {
@@ -77,16 +77,9 @@ void Bitmap::setBloqueOcupado(unsigned int bloque) {
 }
 
 unsigned int Bitmap::getBloqueLibre(void) {
-	if (this->listaBl.empty()) {
-		eliminarBloqueLista(listaBl.front());
-		unsigned int bloque = this->bloqueTope;
-		++bloqueTope;
-		return bloque;
-	}
-	else {
-		eliminarBloqueLista(listaBl.front());
-		return this->listaBl.front();
-	}
+	if (this->listaBl.empty())
+		return this->bloqueTope;
+	else return this->listaBl.front();
 }
 
 unsigned int Bitmap::getCantidadBloques(void) {

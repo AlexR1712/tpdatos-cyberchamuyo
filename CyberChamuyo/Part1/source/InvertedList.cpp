@@ -15,7 +15,7 @@ unsigned int InvertedList::size() {
 	return this->vec.size();
 }
 
-unsigned int& InvertedList::operator[](unsigned int pos) {
+unsigned int& InvertedList::operator [](unsigned int pos) {
 	return this->vec[pos];
 }
 
@@ -39,10 +39,6 @@ std::vector<unsigned char> InvertedList::serialize() {
 	for(int i = 0; i < res.size(); ++i)
 		ret.push_back(res[i]);
 	return ret;
-}
-
-unsigned int InvertedList::getId() {
-	return id;
 }
 
 void InvertedList::deserialize(std::vector<unsigned char> data) {
