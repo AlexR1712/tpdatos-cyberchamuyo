@@ -57,7 +57,7 @@ template<class File,class Record> WriteBuffer<File,Record>::WriteBuffer(unsigned
 template<class File,class Record> void WriteBuffer<File,Record>::initialize(std::string outFilepath) {
 	this->flush();
 	this->getFile().close();
-	this->getFile().open(outFilepath);
+	this->getFile().open(outFilepath,true);
 }
 
 template<class File,class Record> std::queue<Record>& WriteBuffer<File,Record>::getQueue() {

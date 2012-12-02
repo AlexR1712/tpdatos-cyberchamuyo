@@ -25,9 +25,9 @@ public:
 
 	int getDocId();
 
-	virtual void deserialize(std::string string);
+	virtual void deserialize(std::vector<unsigned char>& recordAsCharVector);
 
-	virtual std::string serialize();
+	virtual void serialize(std::vector<unsigned char>& recordAsCharVector);
 
 	virtual ~OcurrenceFileRecord();
 };

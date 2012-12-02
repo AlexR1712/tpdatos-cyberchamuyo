@@ -19,6 +19,7 @@ public:
 	unsigned int getId();
 	std::vector<std::string> getTerms();
 	Phrase();
+	Phrase(std::vector<std::string> frases, unsigned int phraseId);
 	virtual ~Phrase();
 };
 

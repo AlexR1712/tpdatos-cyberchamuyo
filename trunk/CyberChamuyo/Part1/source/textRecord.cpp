@@ -6,6 +6,7 @@
 #include "../include/stringUtilities.h"
 
 TextRecord::TextRecord() {
+	this->setRecordSize(0);
 }
 
 std::string TextRecord::getData() const {
@@ -14,9 +15,11 @@ std::string TextRecord::getData() const {
 
 void TextRecord::setData(std::string data) {
 	this->data = data;
+	this->setRecordSize(data.size());
 }
 
 TextRecord& TextRecord::operator=(const TextRecord& other) {
+	this->setRecordSize(other.getRecordSize());
 	this->setData(other.getData());
 	return *this;
 }

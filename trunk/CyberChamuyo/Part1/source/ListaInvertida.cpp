@@ -71,11 +71,13 @@ void ListaInvertida::Imprimir(std::ostream& oss) {
 
 std::ostream& operator<<(std::ostream& oss, ListaInvertida &l) {
 	oss.write((char*)&l.id, sizeof(unsigned int));
-	int n = l.lista.size();
-	oss.write((char*)&n, sizeof(char));
-	itListInt it;
-	for (it = l.lista.begin(); it != l.lista.end(); ++it) {
-		oss.write((char*)&(*it), sizeof(unsigned int));
+	std::vector<unsigned char> vec;
+	vec = l.serialize();
+	int n = vec.size();
+	oss.write((char*)&n, sizeof(unsigned int));
+	std::vector<unsigned char>::iterator it;
+	for (it = vec.begin(); it != vec.end(); ++it) {
+		oss.write((char*)&(*it), sizeof(char));
 	}
 	return oss;
 }
@@ -86,15 +88,50 @@ std::ostream& operator<<(std::ostream& oss, ListaInvertida &l) {
 std::istream& operator>>(std::istream& oss, ListaInvertida &l) {
 	oss.read((char*)&l.id, sizeof(unsigned int));
 	int n = 0;
-	oss.read((char*)&n, sizeof(char));
+	oss.read((char*)&n, sizeof(unsigned int));
+	std::vector<unsigned char> vec;
+	std::vector<unsigned char>::iterator it;
 	for (int i = 0; i < n; ++i) {
-		unsigned int num = 0;
-		oss.read((char*)&num, sizeof(unsigned int));
-		l.lista.push_back(num);
+		unsigned char num = 0;
+		oss.read((char*)&num, sizeof(char));
+		vec.push_back(num);
 	}
+	l.deserialize(vec);
 	return oss;
 }
 
+std::vector<unsigned char> ListaInvertida::serialize() {
+	int last_pos = 0;
+	std::vector<unsigned char> vec_aux;
+	Auxiliar::insertarEnteroU(vec_aux, this->lista.size());
+	BinaryArray2 res(0);
+	for(itListInt it = this->lista.begin(); it != this->lista.end(); ++it) {
+		BinaryArray2 ba = TextRecoveryUtilities::gammaEncode(*it);
+		int gammaSize = TextRecoveryUtilities::gammaSize(*it);
+		res.append(ba, last_pos, gammaSize);
+		last_pos += gammaSize;
+	}
+	res.push_array_front(vec_aux);
+	std::vector<unsigned char> ret;
+	for(unsigned int i = 0; i < res.size(); ++i)
+		ret.push_back(res[i]);
+	return ret;
+}
+
+void ListaInvertida::deserialize(std::vector<unsigned char> data) {
+	int pos = 0;
+	unsigned int cant = Auxiliar::leerEnteroU(data, pos);
+	std::vector<unsigned char> vec_aux;
+	for(unsigned int i = 4; i < data.size(); ++i)
+		vec_aux.push_back(data[i]);
+	BinaryArray2 ba(vec_aux);
+	unsigned int offset = 0;
+	for(unsigned int i = 0; i < cant; ++i) {
+		unsigned int n = TextRecoveryUtilities::gammaDecode(ba, offset);
+		offset += TextRecoveryUtilities::gammaSize(n);
+		this->lista.push_back(n);
+	}
+}
 
 } /* namespace invertedList */
 

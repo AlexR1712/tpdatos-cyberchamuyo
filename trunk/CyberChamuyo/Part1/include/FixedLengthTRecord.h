@@ -8,9 +8,11 @@
 #ifndef FIXEDLENGTHTRECORD_H_
 #define FIXEDLENGTHTRECORD_H_
 
-#include "fixedLengthRecord.h"
+#include "record.h"
 
-class FixedLengthTRecord : public FixedLengthRecord {
+#include <string>
+
+class FixedLengthTRecord : public Record {
 private:
 	unsigned int termId;
 	std::string term;

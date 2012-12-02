@@ -20,7 +20,7 @@ void uintToString(char* buffer, unsigned int i) {
 
 #define HALF_MAX 2100000000
 
-void cargarArchivosTerminos(Hash::DispersionEx F, BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& T, BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& termInDocFile) {
+void cargarArchivosTerminos(Hash::DispersionEx F, VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >& T, VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >& termInDocFile) {
 	/*unsigned int totalPhrases = 0; //temporal
 	unsigned int processedPhrases = 0;
 	while(processedPhrases < totalPhrases) {
@@ -41,7 +41,7 @@ void cargarArchivosTerminos(Hash::DispersionEx F, BinaryOutputSequentialFile<Bin
 */
 }
 
-void cargarListasInvertidas(BinaryInputSequentialFile<BinaryDictionaryRecord<true> > termInDocFile) {
+void cargarListasInvertidas(VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> > termInDocFile) {
 	//	termInDocFile.reset();
 	/*
 	 *	RegisterTermFile reg = termInDocFile.getNext();			//	obtengo registros (termID, docId) secuencialmente
@@ -154,10 +154,11 @@ BinaryArray2 gammaEncode(unsigned long n) {
 }
 
 unsigned int gammaDecode(BinaryArray2 array, unsigned int pos) {
-	unsigned char bit = array[pos / 8];
-	bit = bit << (pos % 8);
-	bit = bit >> (pos % 8);
+	//unsigned char bit = array[pos / 8];
+	//bit = bit << (pos % 8);
+	//bit = bit >> (pos % 8);
 	unsigned int cant = 0;
+	bool bit = array.getBitAsBool(pos + cant);
 	while(bit) {
 		++cant;
 		bit = array.getBit(pos + cant);

@@ -49,6 +49,8 @@ public:
 	//  y devuelve 0
 	int buscar(Clave* c, Registro*& reg);
 
+	void modify(Registro* reg);
+
 	//  1 si esta vacio, 0 sino
 	bool isEmpty();
 

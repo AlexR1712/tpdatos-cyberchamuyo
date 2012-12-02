@@ -42,11 +42,11 @@ public:
 template<class Record> VariableLengthRecordSequentialFile<Record>::VariableLengthRecordSequentialFile() {
 }
 
-template<class Record> void VariableLengthRecordSequentialFile<Record>::open(std::string filePath, bool overwrite) {
+template<class Record> void VariableLengthRecordSequentialFile<Record>::open(std::string filePath, bool createOrOverwrite) {
 	if (this->getFile().is_open())
 		this->close();
 
-	if (overwrite) {
+	if (createOrOverwrite) {
 		this->getFile().open(filePath.c_str(),std::ios_base::in | std::ios_base::out | std::iostream::binary | std::ios_base::trunc);
 		this->setFileExists(true);
 	} else {
@@ -59,6 +59,7 @@ template<class Record> void VariableLengthRecordSequentialFile<Record>::open(std
 }
 
 template<class Record> const bool VariableLengthRecordSequentialFile<Record>::endOfFile() {
+	this->getFile().peek();
 	return this->getFile().eof();
 }
 

@@ -20,13 +20,18 @@ std::unordered_map<char,char>& WordNormalizer::getCharMap() {
 }
 
 void WordNormalizer::loadCharmap() {
-	VariableLengthRecordSequentialFile<TextRecord> charMapFile;
+	std::ifstream charMapFile;
 	std::vector<std::string> charMapContents;
+	std::string charMapLine;
 
-	charMapFile.open(this->getCharMapFilePath());
-	while (!charMapFile.endOfFile()) {
-		StringUtilities::splitString(charMapFile.getNextRecord().getData(),charMapContents,'=');
-		this->getCharMap().insert(std::pair<char,char>(charMapContents[0][0],charMapContents[1][0]));
+	charMapFile.open(this->getCharMapFilePath().c_str(),std::ios::in);
+	if (charMapFile.good()) {
+		std::getline(charMapFile,charMapLine);
+		while (!charMapFile.eof()) {
+			StringUtilities::splitString(charMapLine,charMapContents,'=');
+			this->getCharMap().insert(std::pair<char,char>(charMapContents[0][0],charMapContents[1][0]));
+			std::getline(charMapFile,charMapLine);
+		}
 	}
 }
 

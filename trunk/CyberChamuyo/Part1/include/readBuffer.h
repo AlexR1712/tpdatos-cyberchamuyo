@@ -58,7 +58,8 @@ template<class File,class Record> ReadBuffer<File,Record>::ReadBuffer(unsigned i
 template<class File,class Record> void ReadBuffer<File,Record>::Initialize(std::string inputFilepath) {
 	this->getFile().close();
 	this->getFile().open(inputFilepath);
-	this->load();
+	if (this->getFile().isFileExists())
+		this->load();
 }
 
 template<class File,class Record> std::queue<Record>& ReadBuffer<File,Record>::getQueue() {

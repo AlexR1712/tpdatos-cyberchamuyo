@@ -42,6 +42,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, NodoExterno& ne);
 	virtual int getNivel();
 	virtual int buscar(Clave* c, Registro* reg);
+	int modify(Registro* reg);
 	Registro* getRegistro(int pos, Registro* reg);
 	virtual int getCantElem();
 private:

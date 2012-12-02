@@ -10,6 +10,8 @@
 
 #include <list>
 #include <fstream>
+#include "../include/BinaryArray2.h"
+#include "../include/TextRecoveryUtilities.h"
 
 typedef std::list<unsigned int> listInt;
 typedef std::list<unsigned int>::iterator itListInt;
@@ -20,6 +22,8 @@ class ListaInvertida {
 private:
 	unsigned int id;
 	listInt lista;
+	std::vector<unsigned char> serialize();
+	void deserialize(std::vector<unsigned char> data);
 public:
 	ListaInvertida();
 	virtual ~ListaInvertida();

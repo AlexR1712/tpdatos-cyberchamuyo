@@ -202,7 +202,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	if (memorableQuotesFile.isFileExists()) {
 		//////////////////77 TEMPORAL /////////////////////
 		T->open("tFile.bin");
-		BinaryOutputSequentialFile<OcurrenceFileRecord> ocurrenceFile;
+		VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
 		ocurrenceFilePath = "ocurrenceFile.bin";
 		ocurrenceFile.open(ocurrenceFilePath);
 		///////////
@@ -526,6 +526,34 @@ void StatisticsManager::clearMemorableQuotes() {
 	delete this->getMemorableQuotes();
 	this->memorableQuotes = new Hash::DispersionEx(MEMORABLE_QUOTES_INDEX_FILE_PATH);
 }
+
+std::vector<std::string> StatisticsManager::tokenizePhrase(std::string phrase) {
+	std::vector<std::string> phraseWords;
+	std::vector<std::string> ret;
+	WordNormalizer normalizer;
+	StringUtilities::splitString(phrase,phraseWords,AUTHOR_QUOTE_SEPARATOR);
+	StringUtilities::splitString(phraseWords[phraseWords.size() - 1],phraseWords,QUOTES_WORDS_SEPARATOR);
+	for(int i = 0; i < phraseWords.size(); ++i) {
+		StringUtilities::sacarR(phraseWords[i]);
+		normalizer.normalizeWord(phraseWords[i]);
+		StringUtilities::quitarPuntuacion(phraseWords[i]);
+		if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end())
+			ret.push_back(phraseWords[i]);
+	}
+	return ret;
+}
+
+void StatisticsManager::insertPhrase(std::string phrase) {
+/*	unsigned int phraseId = (this->getMemorableQuotes())->insert(phrase);
+	std::vector<std::string> terms = tokenizePhrase(phrase);
+	Phrase normalizedPhrase(terms, phraseId);
+	BooleanIndex indice;
+	TermMap	mapaDeTerminos;
+	indice.insertPhrase(normalizedPhrase);
+	mapaDeTerminos.insertPhrase(normalizedPhrase);
+*/
+}
+
 
 StatisticsManager::~StatisticsManager() {
 	this->saveStatus();

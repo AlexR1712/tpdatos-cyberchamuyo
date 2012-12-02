@@ -10,7 +10,7 @@
 
 #include "ArbolBp.h"
 #include <string>
-#include "binaryInputSequentialFile.h"
+#include "variableLengthRecordSequentialFile.h"
 #include "binaryDictionaryRecord.h"
 #include "RegistroArbol.h"
 
@@ -32,7 +32,7 @@ public:
 	//  devuelve 1 si la palabra "word" esta en el arbol, 0 sino
 	bool find(std::string word);
 
-	RegistroArbol* textSearch(std::string term);
+	RegistroArbol& textSearch(std::string term);
 
 	//  devuelve siguiente registro del arbol
 	BinaryDictionaryRecord<true> next();
@@ -43,7 +43,7 @@ public:
 	//  inserta la palabra "s" en el arbol
 	void insert(std::string& s);
 
-	bool insert(unsigned int termId, std::string term, unsigned int invListId);
+	void insert(unsigned int termId, std::string term, unsigned int invListId);
 
 	//  devuelve un archivo con todos registros del arbol
 	//  leer exportar(std::string) en arbol

@@ -43,7 +43,7 @@ void InvertedListFile::crearBloque(invertedList::ListaInvertida* lista, unsigned
 void InvertedListFile::particionarLista(invertedList::ListaInvertida* lista, unsigned int offset) {
 	listInt linverted = lista->getParticion();
 	itListInt it = linverted.begin();
-	int cant = ((this->archList.getTamanoBloque() - 12)/sizeof(unsigned int));
+	int cant = ((this->archList.getTamanoBloque() - 16)/sizeof(unsigned int));
 	int j = 0;
 	invertedList::ListaInvertida* dato = new invertedList::ListaInvertida();
 	while (it != linverted.end()) {
@@ -65,8 +65,9 @@ void InvertedListFile::particionarLista(invertedList::ListaInvertida* lista, uns
 }
 
 unsigned int InvertedListFile::insertarLista(invertedList::ListaInvertida* lista) {
+	lista->setId(this->archList.getNuevoId());
 	unsigned int offset = this->archList.ObtenerBloqueLibre();
-	if (lista->getTamano() > this->archList.getTamanoBloque() - 12) {
+	if (lista->getTamano() > this->archList.getTamanoBloque() - 16) {
 		particionarLista(lista, offset);
 		return offset;
 	} else return guardarParticion(lista, offset, offset);
@@ -96,7 +97,7 @@ invertedList::ListaInvertida* InvertedListFile::getLista(unsigned int offset) {
 
 void InvertedListFile::actualizarLista(invertedList::ListaInvertida* lista, unsigned int offset) {
 	liberarBloquesLista(offset);
-	if (lista->getTamano() > this->archList.getTamanoBloque() - 12) {
+	if (lista->getTamano() > this->archList.getTamanoBloque() - 16) {
 		particionarLista(lista, offset);
 	} else guardarParticion(lista, offset, offset);
 }
@@ -122,6 +123,10 @@ InvertedListFile::~InvertedListFile() {
 
 void InvertedListFile::clear(void) {
 	this->archList.clear();
+}
+
+unsigned int InvertedListFile::getNuevoId(void) {
+	return this->archList.getNuevoId();
 }
 
 }

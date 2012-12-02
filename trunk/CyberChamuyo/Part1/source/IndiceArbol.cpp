@@ -31,8 +31,8 @@ void IndiceArbol::clear() {
 	arbol.clear();
 }
 
-RegistroArbol* IndiceArbol::textSearch(std::string term) {
-	return NULL;//	TODO
+RegistroArbol& IndiceArbol::textSearch(std::string term) {
+	//	TODO
 }
 
 BinaryDictionaryRecord<true> IndiceArbol::next() {
@@ -91,12 +91,17 @@ bool IndiceArbol::isEmpty() {
 	return arbol.isEmpty();
 }
 
-bool IndiceArbol::insert(unsigned int termId, std::string term, unsigned int invListId) {
-	return false;//	TODO
+void IndiceArbol::insert(unsigned int termId, std::string term, unsigned int invListId) {
 }
 
-void IndiceArbol::modify(unsigned int termId, std::string term, unsigned int invListId) {
-	//	TODO
+void IndiceArbol::modify(unsigned int termId, std::string word, unsigned int invListId) {
+	if(isEmpty())
+		return;
+	WordNormalizer normalizer;
+	normalizer.normalizeWord(word);
+	CAlfa* clave = new CAlfa(word);
+	RegistroArbol* ret_reg = new RegistroArbol(clave, termId, invListId);
+	arbol.modify(ret_reg);
 }
 
 void IndiceArbol::mostrar() {

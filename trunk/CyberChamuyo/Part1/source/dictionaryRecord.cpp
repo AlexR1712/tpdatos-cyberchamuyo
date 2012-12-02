@@ -8,6 +8,7 @@
 DictionaryRecord::DictionaryRecord(bool withId) {
 	this->id = 0;
 	this->idInFile = withId;
+	this->setRecordSize(sizeof(unsigned long int));
 }
 
 unsigned long int DictionaryRecord::getId() const {
@@ -24,6 +25,7 @@ const std::string DictionaryRecord::getWord() const {
 
 void DictionaryRecord::setWord(const std::string word) {
 	this->word = word;
+	this->setRecordSize(sizeof(unsigned long int) + word.size());
 }
 
 bool DictionaryRecord::getIdInFile() const {

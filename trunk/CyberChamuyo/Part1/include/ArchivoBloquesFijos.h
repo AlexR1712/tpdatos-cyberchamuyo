@@ -39,6 +39,7 @@ private:
     long tamanoBloque;
     std::string dir;
     Bitmap map;
+    unsigned int autoId;
     void SetearBloqueLibre (unsigned int bloque);
 public:
     ArchivoBloquesFijos (const char* filename, long tamanoBloque);
@@ -51,6 +52,7 @@ public:
     void Borrar (long posicion);
     virtual ~ArchivoBloquesFijos();
     int VerificarBloqueLibre(unsigned int bloque);
+    unsigned int getNuevoId(void);
     void clear(void);
     friend std::ostream& operator<<(std::ostream& oss,
 					  ArchivoBloquesFijos &arch);

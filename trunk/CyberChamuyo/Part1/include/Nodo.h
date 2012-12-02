@@ -30,6 +30,7 @@ public:
 	bool overflow();
 	int getTipoClave();
 	virtual int buscar(Clave* c, Registro* reg) = 0;
+	virtual int modify(Registro* reg) = 0;
 	virtual int getCantElem() = 0;
 };
 
