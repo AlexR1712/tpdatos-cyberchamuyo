@@ -7,7 +7,7 @@
 #include "Bitmap.h"
 
 //Clase que representa un archivo secuencial de registros de longitud fija.
-template<class T> class FixedLengthRecordSequentialFile {
+template<class Record> class FixedLengthRecordSequentialFile : public SequentialFile<Record> {
 private:
 	//File handler
 	std::fstream file;
@@ -25,6 +25,8 @@ private:
 
 	unsigned int getRecordSize() const;
 
+	void setRecordSize(unsigned int recordSize);
+
 	unsigned int getLastRecordPosition() const;
 
 	void setLastRecordPosition(unsigned int lastRecordPosition);
@@ -33,7 +35,7 @@ private:
 
 	void setGetSuccessfull(bool getSuccessfull);
 
-	T getRecord();
+	Record getRecord();
 
 	//Método para cargar el bitmap del archivo en memoria.
 	void loadMetaData();
@@ -43,10 +45,13 @@ private:
 
 public:
 	//Constructor.
+	FixedLengthRecordSequentialFile();
+
+	//Constructor.
 	FixedLengthRecordSequentialFile(unsigned int recordSize);
 
 	//Metodo para abir el archivo.
-	void open(std::string filePath);
+	void open(std::string filePath, bool overwrite = false);
 
 	bool isGetSuccessfull() const;
 
@@ -57,13 +62,13 @@ public:
 	void rewind();
 
 	//Metodo para insertar un registro en el archivo.
-	unsigned int putRecord(T& record);
+	unsigned int putRecord(Record& record);
 
 	//Metodo para leer el registro ubicado en la posición indicada.
-	T getRecord(unsigned int recordPosition);
+	Record getRecord(unsigned int recordPosition);
 
 	//Metodo para leer el registro próximo al puntero de lectura y avanzar el mismo para que apunte al próximo registro.
-	T getNextRecord();
+	Record getNextRecord();
 
 	void deleteRecord(unsigned int recordPosition);
 
@@ -74,43 +79,52 @@ public:
 	~FixedLengthRecordSequentialFile();
 };
 
-template<class T> FixedLengthRecordSequentialFile<T>::FixedLengthRecordSequentialFile(unsigned int recordSize) : bitMap(1) {
+template<class Record> FixedLengthRecordSequentialFile<Record>::FixedLengthRecordSequentialFile() : bitMap(1) {
+	this->recordSize = 0;
+	this->lastRecordPosition = 0;
+}
+
+template<class Record> FixedLengthRecordSequentialFile<Record>::FixedLengthRecordSequentialFile(unsigned int recordSize) : bitMap(1) {
 	this->recordSize = recordSize;
 	this->lastRecordPosition = 0;
 }
 
-template<class T> std::fstream& FixedLengthRecordSequentialFile<T>::getFile() {
+template<class Record> std::fstream& FixedLengthRecordSequentialFile<Record>::getFile() {
 	return this->file;
 }
 
-template<class T> unsigned int FixedLengthRecordSequentialFile<T>::getRecordSize() const {
+template<class Record> unsigned int FixedLengthRecordSequentialFile<Record>::getRecordSize() const {
 	return this->recordSize;
 }
 
-template<class T> unsigned int FixedLengthRecordSequentialFile<T>::getLastRecordPosition() const {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::setRecordSize(unsigned int recordSize) {
+	this->recordSize = recordSize;
+}
+
+template<class Record> unsigned int FixedLengthRecordSequentialFile<Record>::getLastRecordPosition() const {
 	return this->lastRecordPosition;
 }
 
-template<class T> void FixedLengthRecordSequentialFile<T>::setLastRecordPosition(unsigned int lastRecordPosition) {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::setLastRecordPosition(unsigned int lastRecordPosition) {
 	this->lastRecordPosition = lastRecordPosition;
 }
 
-template<class T> Bitmap& FixedLengthRecordSequentialFile<T>::getBitMap() {
+template<class Record> Bitmap& FixedLengthRecordSequentialFile<Record>::getBitMap() {
 	return this->bitMap;
 }
 
-template<class T> bool FixedLengthRecordSequentialFile<T>::isGetSuccessfull() const {
+template<class Record> bool FixedLengthRecordSequentialFile<Record>::isGetSuccessfull() const {
 	return this->getSuccessfull;
 }
 
-template<class T> void FixedLengthRecordSequentialFile<T>::setGetSuccessfull(bool getSuccessfull) {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::setGetSuccessfull(bool getSuccessfull) {
 	this->getSuccessfull = getSuccessfull;
 }
 
-template<class T> T FixedLengthRecordSequentialFile<T>::getRecord() {
+template<class Record> Record FixedLengthRecordSequentialFile<Record>::getRecord() {
 	char* recordAsCharArray;
 	std::vector<unsigned char> recordAsCharVector;
-	T fixedLengthRecord(this->getRecordSize());
+	Record fixedLengthRecord(this->getRecordSize());
 
 	if ( (this->isGetSuccessfull()) && (this->getFile().good()) ) {
 		recordAsCharArray = new char[this->getRecordSize()];
@@ -125,48 +139,59 @@ template<class T> T FixedLengthRecordSequentialFile<T>::getRecord() {
 	return fixedLengthRecord;
 }
 
-template<class T> void FixedLengthRecordSequentialFile<T>::loadMetaData() {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::loadMetaData() {
+	unsigned int recordSize;
 	unsigned int lastRecordPosition;
 
 	if (this->getFile().good()) {
 		this->getFile().seekg(0,std::ios_base::beg);
+		this->getFile().read(reinterpret_cast<char*>(&recordSize),sizeof(unsigned int));
+		this->recordSize = recordSize;
 		this->getFile().read(reinterpret_cast<char*>(&lastRecordPosition),sizeof(unsigned int));
 		this->setLastRecordPosition(lastRecordPosition);
 		this->getFile() >> this->getBitMap();
 	}
 }
 
-template<class T> void FixedLengthRecordSequentialFile<T>::saveMetaData() {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::saveMetaData() {
+	unsigned int recordSize = this->getRecordSize();
 	unsigned int lastRecordPosition = this->getLastRecordPosition();
 
 	if (this->getFile().good()) {
 		this->getFile().seekp(0,std::ios_base::beg);
+		this->getFile().write(reinterpret_cast<const char*>(&recordSize),sizeof(unsigned int));
 		this->getFile().write(reinterpret_cast<const char*>(&lastRecordPosition),sizeof(unsigned int));
 		this->getFile() << this->getBitMap();
 	}
 }
 
-template<class T> void FixedLengthRecordSequentialFile<T>::open(std::string filePath) {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::open(std::string filePath, bool createOrOverwrite) {
 	if (this->getFile().is_open())
 		this->close();
 
-	this->getFile().open(filePath.c_str(),std::ios_base::in | std::ios_base::out | std::iostream::binary);
-	if(this->getFile().is_open())
-		this->loadMetaData();
-	else
-		this->getFile().open(filePath.c_str(),std::ios_base::in | std::ios_base::out | std::ios_base::trunc | std::iostream::binary);
+	if (createOrOverwrite) {
+		this->getFile().open(filePath.c_str(),std::ios_base::in | std::ios_base::out | std::iostream::binary | std::ios_base::trunc);
+		this->setFileExists(true);
+	} else {
+		this->getFile().open(filePath.c_str(),std::ios_base::in | std::ios_base::out | std::iostream::binary);
+		if(this->getFile().is_open()) {
+			this->setFileExists(true);
+			this->loadMetaData();
+		} else
+			this->setFileExists(false);
+	}
 }
 
-template<class T> const bool FixedLengthRecordSequentialFile<T>::endOfFile() {
+template<class Record> const bool FixedLengthRecordSequentialFile<Record>::endOfFile() {
 	unsigned int position = this->getFile().tellg() / this->getRecordSize();
 	return (position > this->getLastRecordPosition());
 }
 
-template<class T> void FixedLengthRecordSequentialFile<T>::rewind() {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::rewind() {
 	this->getFile().seekg(this->getRecordSize(),std::ios_base::beg);
 }
 
-template<class T> T FixedLengthRecordSequentialFile<T>::getRecord(unsigned int recordPosition) {
+template<class Record> Record FixedLengthRecordSequentialFile<Record>::getRecord(unsigned int recordPosition) {
 	if ( (this->getBitMap().verificarBloqueOcupado(recordPosition) == -2) ||
 		 (recordPosition > this->getLastRecordPosition()) ||
 		 (recordPosition == 0) )
@@ -179,7 +204,7 @@ template<class T> T FixedLengthRecordSequentialFile<T>::getRecord(unsigned int r
 	return this->getRecord();
 }
 
-template<class T> T FixedLengthRecordSequentialFile<T>::getNextRecord() {
+template<class Record> Record FixedLengthRecordSequentialFile<Record>::getNextRecord() {
 	unsigned int recordPosition = this->getFile().tellg() / this->getRecordSize();
 
 	while (this->getBitMap().verificarBloqueLibre(recordPosition)) {
@@ -196,10 +221,13 @@ template<class T> T FixedLengthRecordSequentialFile<T>::getNextRecord() {
 	return this->getRecord();
 }
 
-template<class T> unsigned int FixedLengthRecordSequentialFile<T>::putRecord(T& fixedLengthRecord) {
+template<class Record> unsigned int FixedLengthRecordSequentialFile<Record>::putRecord(Record& fixedLengthRecord) {
 	char* recordAsCharArray;
 	std::vector<unsigned char> recordAsCharVector;
 	unsigned int recordPosition;
+
+	if ( (this->getRecordSize() == 0) && (this->getLastRecordPosition() == 0) )
+		this->setRecordSize(fixedLengthRecord.getRecordSize());
 
 	fixedLengthRecord.serialize(recordAsCharVector);
 	recordAsCharArray = new char[this->getRecordSize()];
@@ -220,7 +248,7 @@ template<class T> unsigned int FixedLengthRecordSequentialFile<T>::putRecord(T& 
 	return recordPosition;
 }
 
-template<class T> void FixedLengthRecordSequentialFile<T>::deleteRecord(unsigned int recordPosition) {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::deleteRecord(unsigned int recordPosition) {
 	this->getBitMap().setBloqueLibre(recordPosition);
 	if (recordPosition == this->getLastRecordPosition()) {
 		while ( (this->getBitMap().verificarBloqueLibre(recordPosition)) && (recordPosition != 0) ){
@@ -230,12 +258,12 @@ template<class T> void FixedLengthRecordSequentialFile<T>::deleteRecord(unsigned
 	}
 }
 
-template<class T> void FixedLengthRecordSequentialFile<T>::close() {
+template<class Record> void FixedLengthRecordSequentialFile<Record>::close() {
 	saveMetaData();
 	this->getFile().close();
 }
 
-template<class T> FixedLengthRecordSequentialFile<T>::~FixedLengthRecordSequentialFile() {
+template<class Record> FixedLengthRecordSequentialFile<Record>::~FixedLengthRecordSequentialFile() {
 	this->close();
 }
 

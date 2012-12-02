@@ -27,6 +27,7 @@ private:
 	void liberarBloquesLista(unsigned int offset);
 public:
 	InvertedListFile(const char* filename);
+	unsigned int getNuevoId(void);
 	unsigned int insertarLista(invertedList::ListaInvertida* lista);
 	void actualizarLista(invertedList::ListaInvertida* lista, unsigned int offset);
 	invertedList::ListaInvertida* getLista(unsigned int offset);

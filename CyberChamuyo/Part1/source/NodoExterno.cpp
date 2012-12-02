@@ -10,19 +10,19 @@
 #include "../include/RegistroArbol.h"
 
 NodoExterno::NodoExterno() {
-	siguiente = NULL;
+	siguiente = 0;
 }
 
 NodoExterno::NodoExterno(int lvl) {
 	nivel = lvl;
-	siguiente = NULL;
+	siguiente = 0;
 	tipo = TIPO_ARBOL;
 	libre = N_SIZE - 4 * sizeof(int);
 }
 
 NodoExterno::NodoExterno(int lvl, ArbolBp* arb) : arbol(arb) {
 	nivel = lvl;
-	siguiente = NULL;
+	siguiente = 0;
 	tipo = TIPO_ARBOL;
 	libre = N_SIZE - 4 * sizeof(int);
 }
@@ -312,6 +312,38 @@ int NodoExterno::buscar(Clave* c, Registro* reg) {
 	}
 	return 0;
 }
+
+int NodoExterno::modify(Registro* reg) {
+	std::list<Registro*>::iterator it;
+	Clave* c = reg->getClave();
+	int pos = 0;
+	int nReg = 0;
+	for(it = registros.begin(); it != registros.end() && *c > *((*it)->getClave()); ++it)
+		++nReg;
+	if(it == registros.end()) {
+		if(!siguiente) {
+			return 0;
+		}
+		std::vector<char>* nodo_data = arbol->leerNodo2(siguiente);
+		NodoExterno* nE = new NodoExterno(0, arbol);
+		nE->hidratar(nodo_data, pos);
+		**it = *reg;
+		arbol->setUltimoLeido(nE);
+		arbol->setUltimoRegistroLeido(0);
+		arbol->guardarNodo(nE, siguiente);
+		//delete nE;
+		delete nodo_data;
+		return 0;
+	}
+	**it = *reg;
+	arbol->setUltimoLeido(this); /// aca cambiar
+	arbol->setUltimoRegistroLeido(nReg);
+	if(*c == *((*it)->getClave())) {
+		return 1;
+	}
+	return 0;
+}
+
 
 Registro* NodoExterno::getRegistro(int pos, Registro* reg) {
 	std::list<Registro*>::iterator it;

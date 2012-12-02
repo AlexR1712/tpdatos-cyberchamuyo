@@ -254,6 +254,28 @@ int NodoInterno::buscar(Clave* c, Registro* reg) {
 	}
 }
 
+int NodoInterno::modify(Registro* reg) {
+	int hijo = getHijoCorrespondiente(reg->getClave());
+	std::vector<char>* nodo_data = arbol->leerNodo2(hijo);
+	int pos = 0;
+	int res = 0;
+	if((*nodo_data)[0] == 'H') {
+		NodoExterno* nodo_Externo = new NodoExterno(0, arbol);
+		nodo_Externo->hidratar(nodo_data, pos);
+		res = nodo_Externo->modify(reg);
+		if(res)
+			arbol->guardarNodo(nodo_Externo, hijo);
+		delete nodo_data;
+		return res;
+	} else {
+		NodoInterno* nodo_interno = new NodoInterno(nivel - 1, arbol);
+		nodo_interno->hidratar(nodo_data, pos);
+		res = nodo_interno->modify(reg);
+		delete nodo_data;
+		return res;
+	}
+}
+
 int NodoInterno::insertarRecursivo(Registro* r) {
 	Clave* c = r->getClave();
 	int hijo = getHijoCorrespondiente(c);

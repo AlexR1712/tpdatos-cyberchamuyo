@@ -33,6 +33,7 @@ public:
 	int getHijoMedio();
 	void aumentarNivel();
 	virtual int buscar(Clave* c, Registro* reg);
+	virtual int modify(Registro* reg);
 	int encontrarPrimero();
 	virtual int getCantElem();
 private:

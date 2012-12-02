@@ -26,7 +26,7 @@ public:
 	SequentialFile();
 
 	//Metodo para abir el archivo.
-	virtual void open(std::string filePath, bool overwrite) = 0;
+	virtual void open(std::string filePath, bool createOrOverwrite) = 0;
 
 	//Indica si el archivo existe.
 	const bool isFileExists();

@@ -9,7 +9,10 @@
 
 Phrase::Phrase() {
 	// TODO Auto-generated constructor stub
+}
 
+Phrase::Phrase(std::vector<std::string> frases, unsigned int phraseId) {
+	// TODO Auto-generated constructor stub
 }
 
 std::vector<std::string> Phrase::getTerms() {

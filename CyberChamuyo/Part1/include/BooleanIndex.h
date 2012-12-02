@@ -8,19 +8,22 @@
 #ifndef BOOLEANINDEX_H_
 #define BOOLEANINDEX_H_
 
+#include "ArchivoBloquesFijos.h"
 #include <list>
 #include <string>
 #include "Frase.h"
 #include "IndiceArbol.h"
 #include "fixedLengthRecordSequentialFile.h"
-#include "binaryInputSequentialFile.h"
+#include "variableLengthRecordSequentialFile.h"
 #include "OcurrenceFileRecord.h"
 #include "FixedLengthTRecord.h"
+#include "InvertedList.h"
 #include "RegistroArbol.h"
 #include "Phrase.h"
 #include "externalSorter.h"
 #include "InvertedListFile.h"
 #include "ListaInvertida.h"
+
 
 class BooleanIndex {
 private:
@@ -28,7 +31,7 @@ private:
 	IndiceArbol* vocabulary;
 public:
 	BooleanIndex();
-	void insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLengthRecordSequentialFile<FixedLengthTRecord>* T);
+	void insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, unsigned int totalTerms );
 	void load(FixedLengthRecordSequentialFile<FixedLengthTRecord>& T, std::string ocurrenceFilePath, IndiceArbol* vocabulary);
 	std::list<unsigned int> search(std::string term, IndiceArbol* vocabulary);
 	void erasePhrase(unsigned int phraseId);

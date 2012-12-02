@@ -38,6 +38,12 @@ ArbolBp::~ArbolBp() {
 	//delete ultimoNodoLeido;
 }
 
+void ArbolBp::modify(Registro* reg) {
+	int res = raiz->modify(reg);
+	if((this->max == 0) && res)
+		guardarNodo(raiz, 0);
+}
+
 int ArbolBp::buscar(Clave* c, Registro*& reg) {
 	//NodoExterno* anteriorUltimoLeido = ultimoNodoLeido;
 	int res = raiz->buscar(c, reg);

@@ -172,15 +172,13 @@ template<class File,class Record> void ExternalSorter<File,Record>::flushSortBuf
 }
 
 template<class File,class Record> void ExternalSorter<File,Record>::unfreezeRecords(File& freezeFile) {
-	File freezeInputFile;
-
 	freezeFile.open(this->getTempFolderName() + "/" + FREEZE_FILE_NAME);
 
-	while (!freezeInputFile.endOfFile()) {
-		this->getSortBuffer().insert(freezeInputFile.getNextRecord());
+	while (!freezeFile.endOfFile()) {
+		this->getSortBuffer().insert(freezeFile.getNextRecord());
 	}
 
-	freezeFile.open(this->getTempFolderName() + "/" + FREEZE_FILE_NAME);
+	freezeFile.open(this->getTempFolderName() + "/" + FREEZE_FILE_NAME,true);
 }
 
 template<class File,class Record> void ExternalSorter<File,Record>::createOrderedPartitions(std::string inputFilepath) {
@@ -202,7 +200,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::createOrdere
 	FileUtilities::createFolder(this->getTempFolderName() + "/" + PHASE_FOLDER_NAME_PREFIX + "0");
 	BinaryDictionaryRecord<true> record;
 	LogRecord logRecord("Particiones","particion");
-	freezeFile.open(this->getTempFolderName() + "/" + FREEZE_FILE_NAME);
+	freezeFile.open(this->getTempFolderName() + "/" + FREEZE_FILE_NAME,true);
 	writeBuffer->initialize(partitionOutputFilePath);
 	readBuffer->Initialize(inputFilepath);
 
@@ -327,7 +325,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 	}
 
 	writeBuffer->initialize(outputFilepath);
-	binaryInputSequentialFile.open(outputFileName);
+	binaryInputSequentialFile.open(outputFileName,true);
 
 	while ( !(binaryInputSequentialFile.endOfFile()) ) {
 		binaryRecord = binaryInputSequentialFile.getNextRecord();
@@ -341,7 +339,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 
 template<class File,class Record> void ExternalSorter<File,Record>::sort(std::string inputFilepath, std::string outputFilepath, bool leaveTraces) {
 	FileUtilities::createFolder(this->getTempFolderName());
-	this->getLog().open(this->getTempFolderName() + "/" + LOG_FILE_NAME);
+	this->getLog().open(this->getTempFolderName() + "/" + LOG_FILE_NAME,true);
 
 	this->createOrderedPartitions(inputFilepath);
 

@@ -1,9 +1,12 @@
 #ifndef BINARYDICTIONARYRECORD_H_
 #define BINARYDICTIONARYRECORD_H_
 
+#include "dictionaryRecord.h"
+
 #include <string>
 #include <ostream>
-#include "dictionaryRecord.h"
+#include <cstring>
+
 
 //Clase que representa un registro de diccionario que se almacena de forma binaria.
 template<bool withId> class BinaryDictionaryRecord : public DictionaryRecord {
@@ -44,19 +47,20 @@ template<bool withId> void BinaryDictionaryRecord<withId>::deserialize(std::vect
 }
 
 template<bool withId> void BinaryDictionaryRecord<withId>::serialize(std::vector<unsigned char>& recordAsCharVector) {
-	const char* idAsCharArray;
+	unsigned char idAsCharArray[sizeof(unsigned long int)];
+//	int int_size = sizeof(int);
+//	memcpy(buffer, reinterpret_cast<const unsigned char*>(&j), sizeof(int));
+
 	unsigned long int id;
 	std::string word;
 
 	recordAsCharVector.clear();
 	if (this->getIdInFile()) {
 		id = this->getId();
-		idAsCharArray = new char[sizeof(unsigned long int)];
-		idAsCharArray = reinterpret_cast<const char*>(&id);
+		memcpy(idAsCharArray,reinterpret_cast<const unsigned char*>(&id),sizeof(unsigned long int));
 		for (unsigned int i = 0; i < sizeof(unsigned long int); i++) {
 			recordAsCharVector.push_back(idAsCharArray[i]);
 		}
-		delete[] idAsCharArray;
 	}
 
 	word = this->getWord();

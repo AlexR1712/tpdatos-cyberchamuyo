@@ -13,6 +13,7 @@
 #include "FixedLengthTRecord.h"
 #include "fixedLengthRecord.h"
 #include "OcurrenceFileRecord.h"
+#include "BooleanIndex.h"
 
 #ifndef CONFIG_DIRECTORY_PATH
 #define CONFIG_DIRECTORY_PATH "config"
@@ -117,6 +118,8 @@ private:
 
 	std::string ocurrenceFilePath;
 
+	BooleanIndex* booleanIndex;
+
 	std::string getInputDictionaryFilePath() const;
 
 	void setInputDictionaryFilePath(std::string dictionaryFilePath);
@@ -196,6 +199,9 @@ private:
 
 	void clearMemorableQuotes();
 
+	void insertPhrase(std::string phrase);
+
+	std::vector<std::string> tokenizePhrase(std::string phrase);
 
 public:
 	//Constructor.

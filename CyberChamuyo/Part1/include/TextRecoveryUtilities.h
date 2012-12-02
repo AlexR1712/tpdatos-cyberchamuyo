@@ -10,15 +10,14 @@
 
 #include "../include/BinaryArray2.h"
 #include "../include/common.h"
-#include "../include/binaryInputSequentialFile.h"
-#include "../include/binaryOutputSequentialFile.h"
+#include "../include/variableLengthRecordSequentialFile.h"
 #include "../include/binaryDictionaryRecord.h"
 #include "../include/DispersionEx.h"
 #include "../include/Frase.h"
 
 namespace TextRecoveryUtilities {
 
-void cargarArchivosTerminos(Hash::DispersionEx F, BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& T, BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& termInDocFile);
+void cargarArchivosTerminos(Hash::DispersionEx F, VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >& T, VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >& termInDocFile);
 
 BinaryArray2 gammaEncode(unsigned long n);
 

@@ -7,9 +7,8 @@
 
 #include "../include/FixedLengthTRecord.h"
 
-FixedLengthTRecord::FixedLengthTRecord(unsigned int size) : FixedLengthRecord(size) {
-	// TODO Auto-generated constructor stub
-
+FixedLengthTRecord::FixedLengthTRecord(unsigned int size) {
+	this->setRecordSize(size);
 }
 
 void FixedLengthTRecord::setId(unsigned int id) {

@@ -20,9 +20,11 @@ ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque
         archivo.close();
         path.open(filename, std::fstream::in|std::fstream::out|std::fstream::binary);
         this->tamanoBloque=tamanoBloque;
+        this->autoId = 0;
     }else{ //probar
         path.seekg(0, std::ios::beg);
         path.read((char*)&(this->tamanoBloque),sizeof(long));
+        path.read((char*)&(this->autoId),sizeof(unsigned int));
         path >> this->map;
     }
     this->dir = filename;
@@ -117,6 +119,7 @@ void ArchivoBloquesFijos::Borrar(long posicion){
 ArchivoBloquesFijos::~ArchivoBloquesFijos(){
 	path.seekp(0, std::ios::beg);
 	path.write((char*)&(this->tamanoBloque),sizeof(long));
+	path.write((char*)&(this->autoId),sizeof(unsigned int));
 	path << this->map;
 	path.close();
 }
@@ -134,5 +137,8 @@ std::ostream& operator<<(std::ostream& oss, ArchivoBloquesFijos &arch) {
 	return oss;
 }
 
+unsigned int ArchivoBloquesFijos::getNuevoId(void) {
+	return this->autoId++;
+}
 
 

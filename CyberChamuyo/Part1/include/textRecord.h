@@ -28,7 +28,7 @@ public:
 	void serialize(std::vector<unsigned char>& recordAsCharVector);
 
 	//Destructor.
-	virtual ~TextRecord();
+	~TextRecord();
 };
 
 #endif /* TEXTRECORD_H_ */

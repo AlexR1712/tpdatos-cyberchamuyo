@@ -15,7 +15,7 @@ unsigned int InvertedList::size() {
 	return this->vec.size();
 }
 
-unsigned int& InvertedList::operator [](unsigned int pos) {
+unsigned int& InvertedList::operator[](unsigned int pos) {
 	return this->vec[pos];
 }
 
@@ -39,6 +39,30 @@ std::vector<unsigned char> InvertedList::serialize() {
 	for(int i = 0; i < res.size(); ++i)
 		ret.push_back(res[i]);
 	return ret;
+}
+
+
+/*
+std::vector<unsigned char> InvertedList::serialize() {
+	int last_pos = 0;
+	std::vector<unsigned char> vec_aux;
+	Auxiliar::insertarEnteroU(vec_aux, vec.size());
+	BinaryArray2 res(0);
+	for(int i = 0; i < vec.size(); ++i) {
+		BinaryArray2 ba = TextRecoveryUtilities::gammaEncode(vec[i]);
+		int gammaSize = TextRecoveryUtilities::gammaSize(vec[i]);
+		res.append(ba, last_pos, gammaSize);
+		last_pos += gammaSize;
+	}
+	res.push_array_front(vec_aux);
+	std::vector<unsigned char> ret;
+	for(int i = 0; i < res.size(); ++i)
+		ret.push_back(res[i]);
+	return ret;
+}
+*/
+unsigned int InvertedList::getId() {
+	return id;
 }
 
 void InvertedList::deserialize(std::vector<unsigned char> data) {
