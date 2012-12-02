@@ -278,7 +278,7 @@ int ArbolBp::encontrarPrimero() {
 	}
 }
 
-void ArbolBp::exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& os) {
+void ArbolBp::exportar(VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >& os) {
 	imprimirNodos();
 	BinaryDictionaryRecord<true> record;
 	int primero = encontrarPrimero();

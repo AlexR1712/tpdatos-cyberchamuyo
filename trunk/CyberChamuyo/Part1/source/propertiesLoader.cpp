@@ -1,8 +1,8 @@
 #include "../include/propertiesLoader.h"
 
 #include <iostream>
+#include <fstream>
 
-#include "../include/textInputSequentialFile.h"
 #include "../include/textRecord.h"
 #include "../include/stringUtilities.h"
 
@@ -15,14 +15,17 @@ std::unordered_map<std::string,std::string>& PropertiesLoader::getProperties() {
 }
 
 void PropertiesLoader::loadProperties(std::string propertiesFilePath) {
-	//TODO buffer por defecto debe ser configurable para el archivo
-	TextInputSequentialFile<TextRecord> propertiesFile(propertiesFilePath,10);
+	std::ifstream propertiesFile;
 	std::vector<std::string> propertiesContents;
+	std::string propertyLine;
 
-	if (propertiesFile.exists()) {
-		while (!propertiesFile.endOfFile()) {
-			StringUtilities::splitString(propertiesFile.getRecord().getData(),propertiesContents,'=');
+	propertiesFile.open(propertiesFilePath.c_str(),std::ios::in);
+	if (propertiesFile.good()) {
+		std::getline(propertiesFile,propertyLine);
+		while (!propertiesFile.eof()) {
+			StringUtilities::splitString(propertyLine,propertiesContents,'=');
 			this->getProperties().insert(std::pair<std::string,std::string>(propertiesContents[0],propertiesContents[1]));
+			std::getline(propertiesFile,propertyLine);
 		}
 	} else {
 		std::cout << TEXT_PROPERTIES_FILE_NOT_FOUND(propertiesFilePath) << std::endl;

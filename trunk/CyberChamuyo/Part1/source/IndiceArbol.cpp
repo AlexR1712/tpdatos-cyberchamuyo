@@ -56,26 +56,29 @@ void IndiceArbol::insert(std::string& word) {
 }
 
 void IndiceArbol::exportar(const char* path) {
-	BinaryOutputSequentialFile<BinaryDictionaryRecord<true> > file(path);
+	VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> > file;
+	file.open(path);
 	arbol.exportar(file);
 }
 
 void IndiceArbol::createIndex(std::string in_path) {
+	VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> > arch_sec;
 	BinaryDictionaryRecord<true> record;
-	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > arch_sec(in_path);
-	record = arch_sec.getRecord();
+
+	arch_sec.open(in_path);
+	record = arch_sec.getNextRecord();
 	while(!arch_sec.endOfFile()) {
 		std::string s = record.getWord();
 		if(s.size() > 1 && s != "\n") {
-		StringUtilities::sacarR(s);
-		StringUtilities::sacarN(s);
-		CAlfa* c = new CAlfa(s);
-		Registro* reg = new RegistroArbol(c);
-		arbol.insertarRegistro(reg);
-		delete reg;
-		record = arch_sec.getRecord();
+			StringUtilities::sacarR(s);
+			StringUtilities::sacarN(s);
+			CAlfa* c = new CAlfa(s);
+			Registro* reg = new RegistroArbol(c);
+			arbol.insertarRegistro(reg);
+			delete reg;
+			record = arch_sec.getNextRecord();
 		} else {
-			record = arch_sec.getRecord();
+			record = arch_sec.getNextRecord();
 		}
 	}
 }

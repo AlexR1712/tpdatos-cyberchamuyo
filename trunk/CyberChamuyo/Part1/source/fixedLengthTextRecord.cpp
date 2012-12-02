@@ -17,6 +17,7 @@ void FixedLengthTextRecord::setData(std::string data) {
 }
 
 FixedLengthTextRecord& FixedLengthTextRecord::operator=(const FixedLengthTextRecord& other) {
+	this->setRecordSize(other.getRecordSize());
 	this->setData(other.getData());
 	return *this;
 }
@@ -35,8 +36,8 @@ void FixedLengthTextRecord::deserialize(std::vector<unsigned char>& recordAsChar
 
 void FixedLengthTextRecord::serialize(std::vector<unsigned char>& recordAsCharVector) {
 	std::string dataAsString = this->getData();
-	unsigned char sizeAsChar;
 
+	recordAsCharVector.clear();
 	dataAsString = dataAsString.substr(0,this->getRecordSize() - 1);
 
 	recordAsCharVector.push_back(this->getData().size());

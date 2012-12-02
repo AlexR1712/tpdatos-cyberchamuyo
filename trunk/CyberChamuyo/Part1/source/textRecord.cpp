@@ -1,7 +1,7 @@
 #include "../include/textRecord.h"
 
-#include <stdlib.h>
-#include <iostream>
+//#include <stdlib.h>
+//#include <iostream>
 
 #include "../include/stringUtilities.h"
 
@@ -21,12 +21,24 @@ TextRecord& TextRecord::operator=(const TextRecord& other) {
 	return *this;
 }
 
-void TextRecord::deserialize(std::string string) {
-	this->setData(string);
+void TextRecord::deserialize(std::vector<unsigned char>& recordAsCharVector) {
+	std::string recordAsString;
+
+	for (unsigned int i = 0; i < recordAsCharVector.size(); i++) {
+		recordAsString += recordAsCharVector[i];
+	}
+	this->setData(recordAsString);
+	this->setRecordSize(recordAsCharVector.size());
 }
 
-std::string TextRecord::serialize() {
-	return this->getData();
+void TextRecord::serialize(std::vector<unsigned char>& recordAsCharVector) {
+	std::string recordAsString = this->getData();
+
+	recordAsCharVector.clear();
+	for (unsigned int i = 0; i < this->getRecordSize(); i++) {
+		recordAsCharVector.push_back(recordAsString[i]);
+	}
+	recordAsCharVector.push_back('\n');
 }
 
 TextRecord::~TextRecord() {
