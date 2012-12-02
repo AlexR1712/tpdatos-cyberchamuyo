@@ -1,89 +1,115 @@
 #ifndef READBUFFER_H_
 #define READBUFFER_H_
 
-#include "buffer.h"
-#include "record.h"
+#include <queue>
 
-#include <fstream>
-#include <iostream>
-
-#ifndef FILE_BUFFER_SIZE
-#define FILE_BUFFER_SIZE 25
-#endif /*FILE_BUFFER_SIZE*/
-
-template<class T> class ReadBuffer : public Buffer<T> {
+template<class File,class Record> class ReadBuffer {
 private:
+	std::queue<Record> queue;
+
+	File file;
+
+	unsigned int maxSize;
+
+	//Requerido para poder usar registros de longitud fija.
+	unsigned int recordSize;
+
+	std::queue<Record>& getQueue();
+
+	File& getFile();
+
+	unsigned int getMaxSize() const;
+
+	unsigned int getRecordSize() const;
+
+	void setRecordSize(unsigned int recordSize);
+
+	//Metodo para cargar en el buffer los proximos registros del archivo
 	void load();
+
 public:
-	ReadBuffer();
+	//Constructor para usar con archivos de registros de longitud variable.
+	ReadBuffer(unsigned int maxSize);
 
-	ReadBuffer(std::string filePath, unsigned int maxSize);
+	//Constructor para usar con archivos de registros de longitud fija.
+	ReadBuffer(unsigned int maxSize, unsigned int recordSize);
 
-	void initialize(std::string filePath, unsigned int maxSize);
+	void Initialize(std::string inputFilepath);
 
-	void finalize();
+	Record getRecord();
 
-	T getRecord();
+	Record peekRecord();
 
+	bool empty();
+
+	//Destructor.
 	~ReadBuffer();
 };
 
-template<class T> ReadBuffer<T>::ReadBuffer() {
+template<class File,class Record> ReadBuffer<File,Record>::ReadBuffer(unsigned int maxSize) {
+	this->maxSize = maxSize;
 }
 
-template<class T> ReadBuffer<T>::ReadBuffer(std::string filePath, unsigned int maxSize):Buffer<T>(maxSize) {
-	this->getFile().open(filePath.c_str(),std::iostream::in | std::iostream::binary);
+template<class File,class Record> ReadBuffer<File,Record>::ReadBuffer(unsigned int maxSize, unsigned int recordSize) : file(recordSize){
+	this->maxSize = maxSize;
+	this->recordSize = recordSize;
+}
+
+template<class File,class Record> void ReadBuffer<File,Record>::Initialize(std::string inputFilepath) {
+	this->getFile().close();
+	this->getFile().open(inputFilepath);
 	this->load();
 }
 
-template<class T> void ReadBuffer<T>:: ReadBuffer::load() {
-	std::string line;
-	char fileBuffer[FILE_BUFFER_SIZE];
-	Record* record = new T();
-
-	while ( (this->size() < this->getMaxSize()) && !(this->getFile().eof()) && !(this->getFile().fail())) {
-		line = "";
-		this->getFile().getline(fileBuffer,FILE_BUFFER_SIZE);
-		line += fileBuffer;
-		while (this->getFile().gcount() == FILE_BUFFER_SIZE) {
-			this->getFile().getline(fileBuffer,FILE_BUFFER_SIZE);
-			line += fileBuffer;
-		}
-		if (line.size() != 0) {
-			record->parseString(line);
-			this->push(*(static_cast<T*>(record)));
-		}
-	}
-	delete record;
+template<class File,class Record> std::queue<Record>& ReadBuffer<File,Record>::getQueue() {
+	return this->queue;
 }
 
-template<class T> T ReadBuffer<T>::getRecord() {
-	T record;
+template<class File,class Record> File& ReadBuffer<File,Record>::getFile() {
+	return this->file;
+}
 
-	record = this->getBuffer().front();
-	this->pop();
-	if (this->size() == 0)
+template<class File,class Record> unsigned int ReadBuffer<File,Record>::getMaxSize() const {
+	return this->maxSize;
+}
+
+template<class File,class Record> unsigned int ReadBuffer<File,Record>::getRecordSize() const {
+	return this->recordSize;
+}
+
+template<class File,class Record> void ReadBuffer<File,Record>::setRecordSize(unsigned int recordSize) {
+	this->recordSize = recordSize;
+}
+
+template<class File,class Record> void ReadBuffer<File,Record>::load() {
+	//TODO cuando se quite el buffer de los archivos cambiar a esta linea
+	//while ( !(this->getFile().good()) && (this->getQueue().size() < this->getMaxSize()) ) {
+	while ( !(this->getFile().endOfFile()) && (this->getQueue().size() < this->getMaxSize()) ) {
+		this->getQueue().push(this->getFile().getNextRecord());
+	}
+}
+
+template<class File,class Record> Record ReadBuffer<File,Record>::getRecord() {
+	Record record;
+
+	record = this->getQueue().front();
+	this->getQueue().pop();
+	if (this->empty()) {
 		this->load();
+	}
 
 	return record;
 }
 
-template<class T> void ReadBuffer<T>::initialize(std::string filePath, unsigned int maxSize) {
-	this->setMaxSize(maxSize);
-	this->finalize();
-	this->getFile().open(filePath.c_str(),std::iostream::in | std::iostream::binary);
-	this->load();
+template<class File,class Record> Record ReadBuffer<File,Record>::peekRecord() {
+	return this->getQueue().front();
 }
 
-template<class T> void ReadBuffer<T>::finalize() {
-	while (this->size() > 0) {
-		this->pop();
-	}
-	this->getFile().close();
+template<class File,class Record> bool ReadBuffer<File,Record>::empty() {
+	return this->getQueue().empty();
 }
 
-template<class T> ReadBuffer<T>::~ReadBuffer() {
-	this->finalize();
+template<class File,class Record> ReadBuffer<File,Record>::~ReadBuffer() {
 }
 
 #endif /* READBUFFER_H_ */
