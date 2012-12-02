@@ -13,5 +13,9 @@ unsigned int FixedLengthRecord::getRecordSize() const {
     return this->recordSize;
 }
 
+void FixedLengthRecord::setRecordSize(unsigned int recordSize) {
+	this->recordSize = recordSize;
+}
+
 FixedLengthRecord::~FixedLengthRecord() {
 }

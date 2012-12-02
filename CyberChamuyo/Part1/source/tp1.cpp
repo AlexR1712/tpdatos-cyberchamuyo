@@ -9,11 +9,16 @@
 #include "../include/fixedLengthTextRecord.h"
 #include "../include/InvertedList.h"
 
+#include "../include/fixedLengthRecordSequentialFile.h"
+#include "../include/fixedLengthTextRecord.h"
+
 int main(int argc, char *argv[]){
 	std::string userInput;
 	std::string command;
 	std::vector<std::string> commandParams;
 	StatisticsManager statisticsManager;
+
+	//cargaDiccionario inputFiles/dictionary2.txt
 
 	if (statisticsManager.isSuccessfullInit()) {
 		statisticsManager.printHelp();

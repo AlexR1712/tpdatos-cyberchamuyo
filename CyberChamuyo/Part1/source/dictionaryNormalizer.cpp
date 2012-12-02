@@ -1,8 +1,9 @@
 #include "../include/dictionaryNormalizer.h"
 
 #include "../include/propertiesLoader.h"
-#include "../include/textInputSequentialFile.h"
-#include "../include/textOutputSequentialFile.h"
+//#include "../include/textInputSequentialFile.h"
+//#include "../include/textOutputSequentialFile.h"
+#include "../include/variableLengthRecordSequentialFile.h"
 #include "../include/textRecord.h"
 #include "../include/wordNormalizer.h"
 
@@ -17,15 +18,22 @@ std::string DictionaryNormalizer::getOutputFilePath() const {
 
 void DictionaryNormalizer::normalize(std::string dictionaryPath) {
 	WordNormalizer wordNormalizer;
-	TextInputSequentialFile<TextRecord> dictionaryFile(dictionaryPath,10);
-	TextOutputSequentialFile<TextRecord> normalizedDictionaryFile(this->getOutputFilePath(),10);
+	//VariableLengthRecordSequentialFile<TextRecord> dictionaryFile;
+	std::ifstream dictionaryFile;
+	VariableLengthRecordSequentialFile<TextRecord> normalizedDictionaryFile;
+	std::string word;
 	TextRecord record;
 
-	while (!dictionaryFile.endOfFile()) {
-		record = dictionaryFile.getRecord();
-		if (record.getData() != "") {
-			record.setData(wordNormalizer.normalizeWord(record.getData()));
-			normalizedDictionaryFile.putRecord(record);
+	dictionaryFile.open(dictionaryPath.c_str(),std::ios::in);
+	normalizedDictionaryFile.open(this->getOutputFilePath(),true);
+	if (dictionaryFile.good()) {
+		std::getline(dictionaryFile,word);
+		while (!dictionaryFile.eof()) {
+			if (word != "") {
+				record.setData(wordNormalizer.normalizeWord(word));
+				normalizedDictionaryFile.putRecord(record);
+			}
+			std::getline(dictionaryFile,word);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 #include "../include/wordNormalizer.h"
 
 #include "../include/propertiesLoader.h"
-#include "../include/textInputSequentialFile.h"
+#include "../include/variableLengthRecordSequentialFile.h"
 #include "../include/textRecord.h"
 #include "../include/stringUtilities.h"
 
@@ -20,12 +20,12 @@ std::unordered_map<char,char>& WordNormalizer::getCharMap() {
 }
 
 void WordNormalizer::loadCharmap() {
-	//TODO usar una constante universal para el file buffer size
-	TextInputSequentialFile<TextRecord> charMapFile(this->getCharMapFilePath(),10);
+	VariableLengthRecordSequentialFile<TextRecord> charMapFile;
 	std::vector<std::string> charMapContents;
 
+	charMapFile.open(this->getCharMapFilePath());
 	while (!charMapFile.endOfFile()) {
-		StringUtilities::splitString(charMapFile.getRecord().getData(),charMapContents,'=');
+		StringUtilities::splitString(charMapFile.getNextRecord().getData(),charMapContents,'=');
 		this->getCharMap().insert(std::pair<char,char>(charMapContents[0][0],charMapContents[1][0]));
 	}
 }
@@ -46,7 +46,6 @@ std::string WordNormalizer::normalizeWord(const std::string string) {
 			normalizedWord += tolower(c);
 		}
 	};
-	//TODO ver porque esto no se devería usar StringUtilities::sacarR(normalizedWord);
 	return normalizedWord;
 }
 

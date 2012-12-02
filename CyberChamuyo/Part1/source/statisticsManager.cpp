@@ -1,10 +1,6 @@
 #include "../include/statisticsManager.h"
 
 #include "../include/propertiesLoader.h"
-#include "../include/textInputSequentialFile.h"
-#include "../include/textOutputSequentialFile.h"
-#include "../include/binaryInputSequentialFile.h"
-#include "../include/binaryOutputSequentialFile.h"
 #include "../include/binaryDictionaryRecord.h"
 #include "../include/textRecord.h"
 #include "../include/externalSorter.h"
@@ -17,8 +13,6 @@
 #include "../include/outputTexts.h"
 #include "../include/FixedLengthTRecord.h"
 #include "../include/fixedLengthRecordSequentialFile.h"
-
-#define RANDOMIZED_ORDERED_PATH "outputFiles/dictionary_RANDOMIZED_ORDERED"
 
 StatisticsManager::StatisticsManager() {
 	if (this->checkDirectoryStructure()) {
@@ -126,27 +120,27 @@ void StatisticsManager::setSuccessfullInit(bool successfullInit) {
 }
 
 void StatisticsManager::loadStatus() {
-	TextInputSequentialFile<TextRecord> statusFile(STATUS_FILE_PATH,10);
+	VariableLengthRecordSequentialFile<TextRecord> statusFile;
 	std::string errorMessage;
 
-	if (statusFile.exists()) {
-		this->setInputDictionaryFilePath(statusFile.getRecord().getData());
-		this->setInputMemorableQuotesFilePath(statusFile.getRecord().getData());
+	statusFile.open(STATUS_FILE_PATH);
+	if (statusFile.isFileExists()) {
+		this->setInputDictionaryFilePath(statusFile.getNextRecord().getData());
+		this->setInputMemorableQuotesFilePath(statusFile.getNextRecord().getData());
 
 		if ( (this->getInputDictionaryFilePath() != "") && (this->getDictionary()->isEmpty()) )
 			errorMessage = errorMessage + "No se pudo recuperar el archivo ubicado en " + DICTIONARY_INDEX_FILE_PATH + "\"\n";
 
-//		proveer un isEmpty
-//		if ( (this->getInputMemorableQuotesFilePath() != "") && (this->getMemorableQuotes()->isEmpty()) )
-//			errorMessage += "No se pudo recuperar el archivo ubicado en \"" + MEMORABLE_QUOTES_INDEX_FILE_PATH + "\"\n";
+		if ( (this->getInputMemorableQuotesFilePath() != "") && (this->getMemorableQuotes()->isEmpty()) )
+			errorMessage = errorMessage + "No se pudo recuperar el archivo ubicado en \"" + MEMORABLE_QUOTES_INDEX_FILE_PATH + "\"\n";
 
 		if ( (this->getInputMemorableQuotesFilePath() != "") && (this->getNotFoundWords()->isEmpty()) )
 			errorMessage = errorMessage + "No se pudo recuperar el archivo ubicado en " + NOT_FOUND_WORDS_INDEX_FILE_PATH + "\"\n";
 
 		if (errorMessage == "") {
-			this->setNumberOfWords(StringUtilities::stringToInt(statusFile.getRecord().getData()));
-			this->setNumberOfQuotes(StringUtilities::stringToInt(statusFile.getRecord().getData()));
-			this->setNumberOfFailures(StringUtilities::stringToInt(statusFile.getRecord().getData()));
+			this->setNumberOfWords(StringUtilities::stringToInt(statusFile.getNextRecord().getData()));
+			this->setNumberOfQuotes(StringUtilities::stringToInt(statusFile.getNextRecord().getData()));
+			this->setNumberOfFailures(StringUtilities::stringToInt(statusFile.getNextRecord().getData()));
 			this->setFirstRun(false);
 		} else {
 			this->setFirstRun(true);
@@ -160,17 +154,15 @@ void StatisticsManager::loadStatus() {
 }
 
 void StatisticsManager::loadStopWords() {
-	TextInputSequentialFile<TextRecord> stopWordsFile(this->getStopWordsFilePath(),10);
-	TextRecord stopWord;
+	std::ifstream stopWordsFile;
+	std::string stopWord;
 
-	if (stopWordsFile.exists()) {
-		while (!stopWordsFile.endOfFile()) {
-			stopWord = stopWordsFile.getRecord();
-			std::string stopWordString = stopWord.getData();
-//			StringUtilities::sacarR(stopWordString);
-//			StringUtilities::sacarN(stopWordString);
-			stopWord.setData(stopWordString);
-			this->getStopWords().insert(stopWord.getData());
+	stopWordsFile.open(this->getStopWordsFilePath().c_str(),std::ios::in);
+	if (stopWordsFile.good()) {
+		std::getline(stopWordsFile,stopWord);
+		while (!stopWordsFile.eof()) {
+			this->getStopWords().insert(stopWord);
+			std::getline(stopWordsFile,stopWord);
 		}
 	} else {
 		std::cout << "WARNING: Archivo de stop words no encontrado." << std::endl;
@@ -178,8 +170,10 @@ void StatisticsManager::loadStopWords() {
 }
 
 void StatisticsManager::createDictionary(bool force) {
-	TextInputSequentialFile<TextRecord> inputDictionaryFile(this->getInputDictionaryFilePath());
-	if (inputDictionaryFile.exists()) {
+	VariableLengthRecordSequentialFile<TextRecord> inputDictionaryFile;
+
+	inputDictionaryFile.open(this->getInputDictionaryFilePath());
+	if (inputDictionaryFile.isFileExists()) {
 		DictionaryNormalizer dictionaryNormalizer;
 		DictionaryRandomizer dictionaryRandomizer;
 
@@ -195,16 +189,17 @@ void StatisticsManager::createDictionary(bool force) {
 }
 
 void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
-	TextInputSequentialFile<TextRecord> memorableQuotesFile(this->getInputMemorableQuotesFilePath(),10);
+	VariableLengthRecordSequentialFile<TextRecord> memorableQuotesFile;
 	std::string phrase;
 	WordNormalizer normalizer;
 	std::vector<std::string> phraseWords;
 	unsigned int totalQuotes = 0;
 	unsigned int totalWords = 0;
 	unsigned int totalFailures = 0;
-	ExternalSorter externalSorter(10,true);
+	//ExternalSorter externalSorter(10,true);
 
-	if (memorableQuotesFile.exists()) {
+	memorableQuotesFile.open(this->getInputMemorableQuotesFilePath());
+	if (memorableQuotesFile.isFileExists()) {
 		//////////////////77 TEMPORAL /////////////////////
 		T->open("tFile.bin");
 		BinaryOutputSequentialFile<OcurrenceFileRecord> ocurrenceFile;
@@ -213,7 +208,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		///////////
 		this->getDictionary()->rewind();
 		while (!memorableQuotesFile.endOfFile()) {
-			phrase = memorableQuotesFile.getRecord().getData();
+			phrase = memorableQuotesFile.getNextRecord().getData();
 			//separo el autor de la frase
 			StringUtilities::splitString(phrase,phraseWords,AUTHOR_QUOTE_SEPARATOR);
 			//separo la frase en palabras
@@ -221,9 +216,9 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 			totalQuotes++;
 			for (unsigned int i = 0; i < phraseWords.size(); i++) {
 				//chequeo que no sea stopWord.
-				StringUtilities::sacarR(phraseWords[i]);
+				//StringUtilities::sacarR(phraseWords[i]);
 				normalizer.normalizeWord(phraseWords[i]);
-				StringUtilities::quitarPuntuacion(phraseWords[i]);
+				//StringUtilities::quitarPuntuacion(phraseWords[i]);
 				if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 					totalWords++;
 					///////////////////// TEMPORAL ////////////////
@@ -258,9 +253,10 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		this->setNumberOfQuotes(totalQuotes);
 		this->setNumberOfFailures(totalFailures);
 		T->close();
+		//TODO arreglar
 		//Se genera el ranking de palabras.
-		this->getDictionary()->exportar(RANKINGS_FILE_PATH);
-		externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
+		//this->getDictionary()->exportar(RANKINGS_FILE_PATH);
+		//externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
 	} else {
 		std::cout << "Archivo inexistente" << std::endl;
 	}
@@ -313,31 +309,31 @@ void StatisticsManager::printNotFoundWords() {
 }
 
 void StatisticsManager::printWordRanking(unsigned int rankingSize) {
-	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > wordRankingFile(RANKINGS_FILE_PATH_ORDERED,10);
-	BinaryDictionaryRecord<true> record;
-	std::list<BinaryDictionaryRecord<true> > ranking;
-	unsigned int i = 0;
-
-	if (rankingSize > 0) {
-		while(!wordRankingFile.endOfFile()) {
-			record = wordRankingFile.getRecord();
-			ranking.push_back(record);
-			if (ranking.size() > rankingSize)
-				ranking.pop_front();
-		}
-		ranking.reverse();
-
-		std::cout << TEXT_MOST_SEARCHED_WORDS_TITLE(StringUtilities::intToString(rankingSize)) << std::endl;
-		if (!ranking.empty()) {
-			for (std::list<BinaryDictionaryRecord<true> >::iterator it = ranking.begin(); it != ranking.end(); it++ ) {
-				i++;
-				std::cout << TEXT_MOST_SEARCHED_WORDS_ITEM(StringUtilities::intToString(i + 1),it->getWord(),StringUtilities::intToString(it->getId())) << std::endl;
-			}
-		} else
-			std::cout << "No hay palabras mas buscadas." << std::endl;
-	} else {
-		std::cout << ERROR_TEXT_INVALID_RANKING_SIZE << std::endl;
-	}
+//	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > wordRankingFile(RANKINGS_FILE_PATH_ORDERED,10);
+//	BinaryDictionaryRecord<true> record;
+//	std::list<BinaryDictionaryRecord<true> > ranking;
+//	unsigned int i = 0;
+//
+//	if (rankingSize > 0) {
+//		while(!wordRankingFile.endOfFile()) {
+//			record = wordRankingFile.getRecord();
+//			ranking.push_back(record);
+//			if (ranking.size() > rankingSize)
+//				ranking.pop_front();
+//		}
+//		ranking.reverse();
+//
+//		std::cout << TEXT_MOST_SEARCHED_WORDS_TITLE(StringUtilities::intToString(rankingSize)) << std::endl;
+//		if (!ranking.empty()) {
+//			for (std::list<BinaryDictionaryRecord<true> >::iterator it = ranking.begin(); it != ranking.end(); it++ ) {
+//				i++;
+//				std::cout << TEXT_MOST_SEARCHED_WORDS_ITEM(StringUtilities::intToString(i + 1),it->getWord(),StringUtilities::intToString(it->getId())) << std::endl;
+//			}
+//		} else
+//			std::cout << "No hay palabras mas buscadas." << std::endl;
+//	} else {
+//		std::cout << ERROR_TEXT_INVALID_RANKING_SIZE << std::endl;
+//	}
 }
 
 bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::string>& commandParams) {
@@ -359,9 +355,10 @@ bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::st
 }
 
 void StatisticsManager::saveStatus() {
-	TextOutputSequentialFile<TextRecord> statusFile(STATUS_FILE_PATH,10);
+	VariableLengthRecordSequentialFile<TextRecord> statusFile;
 	TextRecord statusRecord;
 
+	statusFile.open(STATUS_FILE_PATH);
 	statusRecord.setData(this->getInputDictionaryFilePath());
 	statusFile.putRecord(statusRecord);
 	statusRecord.setData(this->getInputMemorableQuotesFilePath());
@@ -403,7 +400,7 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 	if (this->isValidCommand(command,commandParams)) {
 		if (command == COMMAND_PRINT_AVG_WORDS_PER_QUOTE) {
 			this->printAverageWordsPerPhrase();
-			this->dictionary->exportar("/home/lucasj/workspace/TpDatos2012/outputFiles/out.txt");
+			//this->dictionary->exportar("/home/lucasj/workspace/TpDatos2012/outputFiles/out.txt");
 
 		}
 
@@ -472,7 +469,7 @@ bool StatisticsManager::checkDirectoryStructure() {
 		if(!FileUtilities::directoryExists(BIN_DIRECTORY_PATH))
 			FileUtilities::createFolder(BIN_DIRECTORY_PATH);
 
-		if(FileUtilities::directoryExists(OUTPUT_FILES_DIRECTORY_PATH))
+		if(!FileUtilities::directoryExists(OUTPUT_FILES_DIRECTORY_PATH))
 			FileUtilities::createFolder(OUTPUT_FILES_DIRECTORY_PATH);
 
 		return true;

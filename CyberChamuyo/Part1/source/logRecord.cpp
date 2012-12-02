@@ -4,6 +4,9 @@
 
 #include "../include/stringUtilities.h"
 
+LogRecord::LogRecord() {
+}
+
 LogRecord::LogRecord(std::string title, std::string itemName) {
 	this->title = title;
 	this->itemName = itemName;
@@ -29,7 +32,7 @@ std::vector<unsigned int>& LogRecord::getLogItems() {
 	return this->logItems;
 }
 
-std::string LogRecord::serialize() {
+void LogRecord::serialize(std::vector<unsigned char>& recordAsCharVector) {
 	std::string recordAsString = this->getTitle() + ": " + '\n';
 
 	if (this->getLogItems().size() == 0) {
@@ -40,10 +43,13 @@ std::string LogRecord::serialize() {
 		}
 	}
 
-	return recordAsString;
+	recordAsCharVector.clear();
+	for (unsigned int i = 0; i < recordAsString.size(); i++) {
+		recordAsCharVector.push_back(recordAsString[i]);
+	}
 }
 
-void LogRecord::deserialize(std::string string) {
+void LogRecord::deserialize(std::vector<unsigned char>& recordAsCharVector) {
 }
 
 LogRecord& LogRecord::operator=(LogRecord& other) {

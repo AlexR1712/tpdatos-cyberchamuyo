@@ -1,9 +1,10 @@
 #include "../include/dictionaryRandomizer.h"
 
 #include "../include/propertiesLoader.h"
-#include "../include/textInputSequentialFile.h"
-#include "../include/textOutputSequentialFile.h"
-#include "../include/binaryOutputSequentialFile.h"
+//#include "../include/textInputSequentialFile.h"
+//#include "../include/textOutputSequentialFile.h"
+//#include "../include/binaryOutputSequentialFile.h"
+#include "../include/variableLengthRecordSequentialFile.h"
 #include "../include/textDictionaryRecord.h"
 #include "../include/textRecord.h"
 #include "../include/binaryDictionaryRecord.h"
@@ -45,9 +46,12 @@ std::string DictionaryRandomizer::getOrderedRandomizedDictionaryFilePath() const
 }
 
 void DictionaryRandomizer::createRandomIds(std::string dictionaryPath) {
-	TextInputSequentialFile<TextRecord> dictionary(dictionaryPath,5);
-	TextOutputSequentialFile<TextDictionaryRecord<true> > textRandomizedDiccionary(this->getRandomizedDictionaryAsTextFilePath(),5);
-	BinaryOutputSequentialFile<BinaryDictionaryRecord<true> > binaryRandomizedDiccionary(this->getRandomizedDictionaryAsBinaryFilePath(),5);
+	//TextInputSequentialFile<TextRecord> dictionary(dictionaryPath,5);
+	VariableLengthRecordSequentialFile<TextRecord> dictionary;
+	//TextOutputSequentialFile<TextDictionaryRecord<true> > textRandomizedDiccionary(this->getRandomizedDictionaryAsTextFilePath(),5);
+	//BinaryOutputSequentialFile<BinaryDictionaryRecord<true> > binaryRandomizedDiccionary(this->getRandomizedDictionaryAsBinaryFilePath(),5);
+	VariableLengthRecordSequentialFile<TextDictionaryRecord<true> > textRandomizedDiccionary;
+	VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> > binaryRandomizedDiccionary;
 	TextRecord inputRecord;
 	TextDictionaryRecord<true> outputTextRecord;
 	BinaryDictionaryRecord<true> outputBinaryRecord;
@@ -55,8 +59,12 @@ void DictionaryRandomizer::createRandomIds(std::string dictionaryPath) {
 	std::string randomizedLine;
 	long random;
 
+	dictionary.open(dictionaryPath);
+	textRandomizedDiccionary.open(this->getRandomizedDictionaryAsTextFilePath());
+	binaryRandomizedDiccionary.open(this->getRandomizedDictionaryAsBinaryFilePath());
+
 	while (!dictionary.endOfFile()) {
-		inputRecord = dictionary.getRecord();
+		inputRecord = dictionary.getNextRecord();
 		if (inputRecord.getData() != "") {
 			random = generateRandomId();
 			outputTextRecord.setId(random);
@@ -75,7 +83,7 @@ long DictionaryRandomizer::generateRandomId() {
 }
 
 void DictionaryRandomizer::randomizeDictionary(std::string dictionaryPath, bool showId) {
-	ExternalSorter externalSorter(5,showId);
+	ExternalSorter<VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >,BinaryDictionaryRecord<true> > externalSorter(5,showId);
 
 	this->createRandomIds(dictionaryPath);
 
