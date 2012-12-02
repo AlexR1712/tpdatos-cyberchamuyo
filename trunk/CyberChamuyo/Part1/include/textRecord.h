@@ -1,8 +1,9 @@
 #ifndef TEXTRECORD_H_
 #define TEXTRECORD_H_
 
-#include <string>
 #include "record.h"
+
+#include <string>
 
 //Clase que representa un registro de texto.
 class TextRecord : public Record {
@@ -15,7 +16,7 @@ public:
 	TextRecord();
 
 	//Metodo para hidratar el objeto desde un string.
-	void deserialize(std::string string);
+	void deserialize(std::vector<unsigned char>& recordAsCharVector);
 
 	TextRecord& operator=(const TextRecord& other);
 
@@ -24,7 +25,7 @@ public:
 	void setData(std::string data);
 
 	//Metodo para serializar el objeto a un string.
-	std::string serialize();
+	void serialize(std::vector<unsigned char>& recordAsCharVector);
 
 	//Destructor.
 	virtual ~TextRecord();

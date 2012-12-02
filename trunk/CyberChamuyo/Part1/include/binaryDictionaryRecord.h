@@ -1,9 +1,9 @@
+#ifndef BINARYDICTIONARYRECORD_H_
+#define BINARYDICTIONARYRECORD_H_
+
 #include <string>
 #include <ostream>
 #include "dictionaryRecord.h"
-
-#ifndef BINARYDICTIONARYRECORD_H_
-#define BINARYDICTIONARYRECORD_H_
 
 //Clase que representa un registro de diccionario que se almacena de forma binaria.
 template<bool withId> class BinaryDictionaryRecord : public DictionaryRecord {
@@ -12,10 +12,10 @@ public:
 	BinaryDictionaryRecord();
 
 	//Metodo para hidratar el objeto desde un string.
-	void deserialize(std::string string);
+	void deserialize(std::vector<unsigned char>& recordAsCharVector);
 
 	//Metodo para serializar el objeto a un string.
-	std::string serialize();
+	void serialize(std::vector<unsigned char>& recordAsCharVector);
 
 	//Destructor.
 	virtual ~BinaryDictionaryRecord();
@@ -24,31 +24,45 @@ public:
 template<bool withId> BinaryDictionaryRecord<withId>::BinaryDictionaryRecord():DictionaryRecord(withId) {
 }
 
-template<bool withId> void BinaryDictionaryRecord<withId>::deserialize(std::string string) {
-	std::vector<std::string> recordParams;
+template<bool withId> void BinaryDictionaryRecord<withId>::deserialize(std::vector<unsigned char>& recordAsCharVector) {
+	std::string idAsString;
+	std::string word;
+
+	this->setRecordSize(recordAsCharVector.size());
 
 	if (this->getIdInFile()) {
-		this->setId(*(reinterpret_cast<const unsigned long int*>((string.substr(0,sizeof(unsigned long int))).c_str())));
-		this->setWord(string.substr(sizeof(unsigned long int)));
-	} else {
-		this->setWord(string);
+		for (unsigned int i = 0; i < sizeof(unsigned long int); i++) {
+			idAsString += recordAsCharVector[i];
+		}
+		this->setId(*(reinterpret_cast<const unsigned long int*>(idAsString.c_str())));
 	}
 
+	for (unsigned int i = sizeof(unsigned long int); i < recordAsCharVector.size(); i++) {
+		word += recordAsCharVector[i];
+	}
+	this->setWord(word);
 }
 
-template<bool withId> std::string BinaryDictionaryRecord<withId>::serialize() {
-	std::string recordAsString;
+template<bool withId> void BinaryDictionaryRecord<withId>::serialize(std::vector<unsigned char>& recordAsCharVector) {
 	const char* idAsCharArray;
 	unsigned long int id;
+	std::string word;
 
+	recordAsCharVector.clear();
 	if (this->getIdInFile()) {
 		id = this->getId();
+		idAsCharArray = new char[sizeof(unsigned long int)];
 		idAsCharArray = reinterpret_cast<const char*>(&id);
-		recordAsString.append(idAsCharArray,sizeof(unsigned long int));
+		for (unsigned int i = 0; i < sizeof(unsigned long int); i++) {
+			recordAsCharVector.push_back(idAsCharArray[i]);
+		}
+		delete[] idAsCharArray;
 	}
-	recordAsString += this->getWord();
 
-	return recordAsString;
+	word = this->getWord();
+	for (unsigned int i = 0; i < word.size(); i++) {
+		recordAsCharVector.push_back(word[i]);
+	}
 }
 
 template<bool withId> BinaryDictionaryRecord<withId>::~BinaryDictionaryRecord() {

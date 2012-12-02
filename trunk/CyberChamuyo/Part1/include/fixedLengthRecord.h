@@ -10,6 +10,9 @@ class FixedLengthRecord {
 private:
 	unsigned int recordSize;
 
+protected:
+	void setRecordSize(unsigned int recordSize);
+
 public:
 	//Constructor.
 	FixedLengthRecord(unsigned int recordSize);

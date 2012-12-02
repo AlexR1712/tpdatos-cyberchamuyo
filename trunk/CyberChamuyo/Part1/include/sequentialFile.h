@@ -2,73 +2,82 @@
 #define SEQUENTIALFILE_H_
 
 #include <fstream>
-#include <queue>
+//#include <queue>
 
 //Clase que representa un archivo secuencial.
-template<class T> class SequentialFile {
+template<class Record> class SequentialFile {
 private:
 	//File handler
 	std::fstream file;
 
-	//Buffer
-	std::queue<T> buffer;
+	bool getSuccessfull;
 
-	//Tamaño máximo para el buffer
-	unsigned int bufferMaxSize;
+	bool fileExists;
 
 protected:
 	std::fstream& getFile();
 
-	std::queue<T>& getBuffer();
+	void setGetSuccessfull(bool getSuccessfull);
 
-	const unsigned int getBufferMaxSize() const;
-
-	void setBufferMaxSize(unsigned int bufferMaxSize);
-
-	//Indica si el buffer está vacío.
-	const bool isBufferEmpty();
+	void setFileExists(bool fileExists);
 
 public:
 	//Constructor.
 	SequentialFile();
 
 	//Metodo para abir el archivo.
-	virtual void open(std::string filePath, unsigned int bufferMaxSize = 1) = 0;
+	virtual void open(std::string filePath, bool overwrite) = 0;
+
+	//Indica si el archivo existe.
+	const bool isFileExists();
+
+	//Indica si el archivo se inicializó correctamente.
+	const bool good();
+
+	bool isGetSuccessfull() const;
+
+	//Indica si se llegó al final del archivo.
+	virtual const bool endOfFile() = 0;
+
+	virtual void rewind() = 0;
+
+	virtual Record getNextRecord() = 0;
 
 	//Metodo para cerrar el archivo.
 	virtual void close() = 0;
-
-	//Indica si se llegó al final del archivo.
-	const bool endOfFile();
 
 	//Destructor.
 	virtual ~SequentialFile() = 0;
 };
 
-template<class T> SequentialFile<T>::SequentialFile(){
+template<class Record> SequentialFile<Record>::SequentialFile(){
 }
 
-template<class T> std::queue<T>& SequentialFile<T>::getBuffer() {
-	return this->buffer;
-}
-
-template<class T> std::fstream& SequentialFile<T>::getFile() {
+template<class Record> std::fstream& SequentialFile<Record>::getFile() {
 	return this->file;
 }
 
-template<class T> const unsigned int SequentialFile<T>::getBufferMaxSize() const {
-	return this->bufferMaxSize;
+template<class Record> bool SequentialFile<Record>::isGetSuccessfull() const {
+	return this->getSuccessfull;
 }
 
-template<class T> void SequentialFile<T>::setBufferMaxSize(unsigned int bufferMaxSize) {
-	this->bufferMaxSize = bufferMaxSize;
+template<class Record> void SequentialFile<Record>::setGetSuccessfull(bool getSuccessfull) {
+	this->getSuccessfull = getSuccessfull;
 }
 
-template<class T> const bool SequentialFile<T>::endOfFile() {
-	return this->getBuffer().empty();
+template<class Record> void SequentialFile<Record>::setFileExists(bool fileExists) {
+	this->fileExists = fileExists;
 }
 
-template<class T> SequentialFile<T>::~SequentialFile(){
+template<class Record> const bool SequentialFile<Record>::isFileExists() {
+	return this->fileExists;
+}
+
+template<class Record> const bool SequentialFile<Record>::good() {
+	return this->getFile().good();
+}
+
+template<class Record> SequentialFile<Record>::~SequentialFile(){
 }
 
 #endif /* SEQUENTIALFILE_H_ */

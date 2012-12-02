@@ -7,7 +7,7 @@
 #include "record.h"
 
 //Clase que representa un registro de log.
-class LogRecord : Record{
+class LogRecord : public Record {
 private:
 	//Titulo del registro.
 	std::string title;
@@ -28,17 +28,20 @@ private:
 
 public:
 	//Constructor.
+	LogRecord();
+
+	//Constructor.
 	LogRecord(std::string title, std::string itemName);
 
 	//Metodo para hidratar el objeto desde un string.
-	void deserialize(std::string string);
+	void deserialize(std::vector<unsigned char>& recordAsCharVector);
 
 	std::vector<unsigned int>& getLogItems();
 
 	LogRecord& operator=(LogRecord& other);
 
 	//Metodo para serializar el objeto a un string.
-	std::string serialize();
+	void serialize(std::vector<unsigned char>& recordAsCharVector);
 
 	//Destructor.
 	virtual ~LogRecord();
