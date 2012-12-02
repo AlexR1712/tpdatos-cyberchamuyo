@@ -26,10 +26,10 @@ public:
 	TextDictionaryRecord();
 
 	//Metodo para hidratar el objeto desde un string.
-	void deserialize(std::string string);
+	void deserialize(std::vector<unsigned char>& recordAsCharVector);
 
 	//Metodo para serializar el objeto a un string.
-	std::string serialize();
+	void serialize(std::vector<unsigned char>& recordAsCharVector);
 
 	//Destructor.
 	virtual ~TextDictionaryRecord();
@@ -38,8 +38,13 @@ public:
 template<bool withId> TextDictionaryRecord<withId>::TextDictionaryRecord():DictionaryRecord(withId) {
 }
 
-template<bool withId> void TextDictionaryRecord<withId>::deserialize(std::string string) {
+template<bool withId> void TextDictionaryRecord<withId>::deserialize(std::vector<unsigned char>& recordAsCharVector) {
 	std::vector<std::string> recordParams;
+	std::string string;
+
+	for (unsigned int i = 0; i < recordAsCharVector.size(); i++) {
+		string += recordAsCharVector[i];
+	}
 
 	if (this->getIdInFile()) {
 		StringUtilities::splitString(string,recordParams,SEPARATOR);
@@ -50,14 +55,17 @@ template<bool withId> void TextDictionaryRecord<withId>::deserialize(std::string
 	}
 }
 
-template<bool withId> std::string TextDictionaryRecord<withId>::serialize() {
+template<bool withId> void TextDictionaryRecord<withId>::serialize(std::vector<unsigned char>& recordAsCharVector) {
 	std::string recordAsString;
 
 	if (this->getIdInFile())
 		recordAsString += StringUtilities::padLeft(StringUtilities::intToString(this->getId()),ID_PADDING_CHAR,ID_LENGTH) + SEPARATOR;
 	recordAsString += this->getWord();
 
-	return recordAsString;
+	recordAsCharVector.clear();
+	for (unsigned int i = 0; i < recordAsString.size(); i++) {
+		recordAsCharVector.push_back(recordAsString[i]);
+	}
 }
 
 template<bool withId> TextDictionaryRecord<withId>::~TextDictionaryRecord() {

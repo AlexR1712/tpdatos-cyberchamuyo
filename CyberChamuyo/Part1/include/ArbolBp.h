@@ -14,7 +14,7 @@
 #include "Bloque.h"
 #include <stdexcept>
 #include "binaryDictionaryRecord.h"
-#include "binaryOutputSequentialFile.h"
+#include "variableLengthRecordSequentialFile.h"
 #include "DatoNodo.h"
 #include "RegistroVariable.h"
 #include "BloqueNodo.h"
@@ -78,7 +78,7 @@ public:
 	void aumentarUltimoRegistroLeido();
 
 	//  devuelve un archivo secuencial os con todos los registros(datos) del arbol
-	void exportar(BinaryOutputSequentialFile<BinaryDictionaryRecord<true> >& os);
+	void exportar(VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >& os);
 
 	//  devuelve el numero de nodo del primer nodo externo
 	int encontrarPrimero();
