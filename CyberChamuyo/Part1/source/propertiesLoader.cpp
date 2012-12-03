@@ -1,8 +1,8 @@
 #include "../include/propertiesLoader.h"
 
 #include <iostream>
-#include <fstream>
 
+#include "../include/textFile.h"
 #include "../include/textRecord.h"
 #include "../include/stringUtilities.h"
 
@@ -15,17 +15,20 @@ std::unordered_map<std::string,std::string>& PropertiesLoader::getProperties() {
 }
 
 void PropertiesLoader::loadProperties(std::string propertiesFilePath) {
-	std::ifstream propertiesFile;
+	TextFile<TextRecord> propertiesFile;
+	TextRecord record;
+//	std::ifstream propertiesFile;
 	std::vector<std::string> propertiesContents;
-	std::string propertyLine;
+//	std::string propertyLine;
 
-	propertiesFile.open(propertiesFilePath.c_str(),std::ios::in);
-	if (propertiesFile.good()) {
-		std::getline(propertiesFile,propertyLine);
-		while (!propertiesFile.eof()) {
-			StringUtilities::splitString(propertyLine,propertiesContents,'=');
+	propertiesFile.open(propertiesFilePath);
+	if (propertiesFile.isFileExists()) {
+//		std::getline(propertiesFile,propertyLine);
+		while (!propertiesFile.endOfFile()) {
+			record = propertiesFile.getNextRecord();
+			StringUtilities::splitString(record.getData(),propertiesContents,'=');
 			this->getProperties().insert(std::pair<std::string,std::string>(propertiesContents[0],propertiesContents[1]));
-			std::getline(propertiesFile,propertyLine);
+//			std::getline(propertiesFile,propertyLine);
 		}
 	} else {
 		std::cout << TEXT_PROPERTIES_FILE_NOT_FOUND(propertiesFilePath) << std::endl;

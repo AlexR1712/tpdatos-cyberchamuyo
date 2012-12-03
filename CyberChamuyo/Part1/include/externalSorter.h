@@ -4,11 +4,7 @@
 #include <string>
 #include <list>
 #include "heap.h"
-//#include "binaryInputSequentialFile.h"
-//#include "binaryOutputSequentialFile.h"
-//#include "variableLengthRecordSequentialFile.h"
-//#include "binaryDictionaryRecord.h"
-//#include "textOutputSequentialFile.h"
+#include "textFile.h"
 #include "logRecord.h"
 #include "fileUtilities.h"
 #include "stringUtilities.h"
@@ -58,7 +54,7 @@ private:
 	std::string tempFolderName;
 //
 	//Log donde se guardaran los datos del ordenamiento.
-	VariableLengthRecordSequentialFile<LogRecord> log;
+	TextFile<LogRecord> log;
 
 	Heap<Record >& getSortBuffer();
 
@@ -70,7 +66,7 @@ private:
 
 	std::string getTempFolderName() const;
 
-	VariableLengthRecordSequentialFile<LogRecord>& getLog();
+	TextFile<LogRecord>& getLog();
 
 	//Metodo para llenar el monticulo desde un archivo
 	void createSortBuffer(ReadBuffer<File,Record>& readBuffer);
@@ -146,7 +142,7 @@ template<class File,class Record> std::string ExternalSorter<File,Record>::getTe
 	return this->tempFolderName;
 }
 
-template<class File,class Record> VariableLengthRecordSequentialFile<LogRecord>& ExternalSorter<File,Record>::getLog() {
+template<class File,class Record> TextFile<LogRecord>& ExternalSorter<File,Record>::getLog() {
 	return this->log;
 }
 
@@ -246,6 +242,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::createOrdere
 
 	this->getLog().putRecord(logRecord);
 
+	FileUtilities::deleteFile(this->getTempFolderName() + "/" + FREEZE_FILE_NAME);
 	delete readBuffer;
 	delete writeBuffer;
 }
@@ -325,7 +322,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 	}
 
 	writeBuffer->initialize(outputFilepath);
-	binaryInputSequentialFile.open(outputFileName,true);
+	binaryInputSequentialFile.open(outputFileName);
 
 	while ( !(binaryInputSequentialFile.endOfFile()) ) {
 		binaryRecord = binaryInputSequentialFile.getNextRecord();
@@ -414,7 +411,6 @@ template<class File,class Record> void ExternalSorter<File,Record>::clearPhase(s
 
 template<class File,class Record> void ExternalSorter<File,Record>::clearTemp() {
 	this->clearPhase(this->getTempFolderName(),0);
-	FileUtilities::deleteFile(this->getTempFolderName() + "/" + FREEZE_FILE_NAME);
 	this->getLog().close();
 	FileUtilities::deleteFile(this->getTempFolderName() + "/" + LOG_FILE_NAME);
 	FileUtilities::deleteFolder(this->getTempFolderName());

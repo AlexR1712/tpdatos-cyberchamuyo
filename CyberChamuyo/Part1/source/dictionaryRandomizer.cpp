@@ -1,10 +1,8 @@
 #include "../include/dictionaryRandomizer.h"
 
 #include "../include/propertiesLoader.h"
-//#include "../include/textInputSequentialFile.h"
-//#include "../include/textOutputSequentialFile.h"
-//#include "../include/binaryOutputSequentialFile.h"
 #include "../include/variableLengthRecordSequentialFile.h"
+#include "../include/textFile.h"
 #include "../include/textDictionaryRecord.h"
 #include "../include/textRecord.h"
 #include "../include/binaryDictionaryRecord.h"
@@ -49,14 +47,14 @@ std::string DictionaryRandomizer::getOrderedRandomizedDictionaryFilePath() const
 
 void DictionaryRandomizer::createRandomIds(std::string dictionaryPath) {
 	//TODO especializar para texto puro.
-	VariableLengthRecordSequentialFile<TextRecord> dictionary;
-	VariableLengthRecordSequentialFile<TextDictionaryRecord<true> > textRandomizedDiccionary;
+	TextFile<TextRecord> dictionary;
+	TextFile<TextDictionaryRecord<true> > textRandomizedDiccionary;
 	VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> > binaryRandomizedDiccionary;
 	TextRecord inputRecord;
 	TextDictionaryRecord<true> outputTextRecord;
 	BinaryDictionaryRecord<true> outputBinaryRecord;
-	std::string line;
-	std::string randomizedLine;
+//	std::string line;
+//	std::string randomizedLine;
 	long random;
 
 	dictionary.open(dictionaryPath);

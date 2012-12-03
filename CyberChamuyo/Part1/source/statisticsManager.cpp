@@ -13,6 +13,8 @@
 #include "../include/outputTexts.h"
 #include "../include/FixedLengthTRecord.h"
 #include "../include/fixedLengthRecordSequentialFile.h"
+#include "../include/textFile.h"
+
 
 StatisticsManager::StatisticsManager() {
 	if (this->checkDirectoryStructure()) {
@@ -120,7 +122,7 @@ void StatisticsManager::setSuccessfullInit(bool successfullInit) {
 }
 
 void StatisticsManager::loadStatus() {
-	VariableLengthRecordSequentialFile<TextRecord> statusFile;
+	TextFile<TextRecord> statusFile;
 	std::string errorMessage;
 
 	statusFile.open(STATUS_FILE_PATH);
@@ -154,15 +156,12 @@ void StatisticsManager::loadStatus() {
 }
 
 void StatisticsManager::loadStopWords() {
-	std::ifstream stopWordsFile;
-	std::string stopWord;
+	TextFile<TextRecord> stopWordsFile;
 
-	stopWordsFile.open(this->getStopWordsFilePath().c_str(),std::ios::in);
-	if (stopWordsFile.good()) {
-		std::getline(stopWordsFile,stopWord);
-		while (!stopWordsFile.eof()) {
-			this->getStopWords().insert(stopWord);
-			std::getline(stopWordsFile,stopWord);
+	stopWordsFile.open(this->getStopWordsFilePath());
+	if (stopWordsFile.isFileExists()) {
+		while (!stopWordsFile.endOfFile()) {
+			this->getStopWords().insert(stopWordsFile.getNextRecord().getData());
 		}
 	} else {
 		std::cout << "WARNING: Archivo de stop words no encontrado." << std::endl;
@@ -355,10 +354,10 @@ bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::st
 }
 
 void StatisticsManager::saveStatus() {
-	VariableLengthRecordSequentialFile<TextRecord> statusFile;
+	TextFile<TextRecord> statusFile;
 	TextRecord statusRecord;
 
-	statusFile.open(STATUS_FILE_PATH);
+	statusFile.open(STATUS_FILE_PATH,true);
 	statusRecord.setData(this->getInputDictionaryFilePath());
 	statusFile.putRecord(statusRecord);
 	statusRecord.setData(this->getInputMemorableQuotesFilePath());
@@ -533,7 +532,7 @@ std::vector<std::string> StatisticsManager::tokenizePhrase(std::string phrase) {
 	WordNormalizer normalizer;
 	StringUtilities::splitString(phrase,phraseWords,AUTHOR_QUOTE_SEPARATOR);
 	StringUtilities::splitString(phraseWords[phraseWords.size() - 1],phraseWords,QUOTES_WORDS_SEPARATOR);
-	for(int i = 0; i < phraseWords.size(); ++i) {
+	for(unsigned int i = 0; i < phraseWords.size(); ++i) {
 		StringUtilities::sacarR(phraseWords[i]);
 		normalizer.normalizeWord(phraseWords[i]);
 		StringUtilities::quitarPuntuacion(phraseWords[i]);

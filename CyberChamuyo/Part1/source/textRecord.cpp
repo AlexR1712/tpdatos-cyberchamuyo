@@ -1,8 +1,5 @@
 #include "../include/textRecord.h"
 
-//#include <stdlib.h>
-//#include <iostream>
-
 #include "../include/stringUtilities.h"
 
 TextRecord::TextRecord() {
@@ -41,7 +38,7 @@ void TextRecord::serialize(std::vector<unsigned char>& recordAsCharVector) {
 	for (unsigned int i = 0; i < this->getRecordSize(); i++) {
 		recordAsCharVector.push_back(recordAsString[i]);
 	}
-	recordAsCharVector.push_back('\n');
+//	recordAsCharVector.push_back('\n');
 }
 
 TextRecord::~TextRecord() {
