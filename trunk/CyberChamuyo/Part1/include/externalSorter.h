@@ -6,8 +6,8 @@
 #include "heap.h"
 //#include "binaryInputSequentialFile.h"
 //#include "binaryOutputSequentialFile.h"
-#include "variableLengthRecordSequentialFile.h"
-#include "binaryDictionaryRecord.h"
+//#include "variableLengthRecordSequentialFile.h"
+//#include "binaryDictionaryRecord.h"
 //#include "textOutputSequentialFile.h"
 #include "logRecord.h"
 #include "fileUtilities.h"
@@ -44,7 +44,7 @@
 template<class File,class Record> class ExternalSorter {
 private:
 	//Monticulo para realizar el ordenamiento
-	Heap<BinaryDictionaryRecord<true> > sortBuffer;
+	Heap<Record> sortBuffer;
 
 	//Indica si se debe guardar el ID en el archivo final ordenado.
 	bool showId;
@@ -157,7 +157,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::createSortBu
 }
 
 template<class File,class Record> void ExternalSorter<File,Record>::flushSortBuffer(WriteBuffer<File,Record>& writeBuffer) {
-	BinaryDictionaryRecord<true> record;
+	Record record;
 
 	if (!this->getSortBuffer().empty()) {
 		while (this->getSortBuffer().size() > 1) {
@@ -198,7 +198,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::createOrdere
 
 	std::string partitionOutputFilePath = this->getTempFolderName() + "/" + PHASE_FOLDER_NAME_PREFIX + "0/" + ORDERED_FILE_PART_PREFIX + "_0_" + StringUtilities::intToString(outputFileNameCounter);
 	FileUtilities::createFolder(this->getTempFolderName() + "/" + PHASE_FOLDER_NAME_PREFIX + "0");
-	BinaryDictionaryRecord<true> record;
+	Record record;
 	LogRecord logRecord("Particiones","particion");
 	freezeFile.open(this->getTempFolderName() + "/" + FREEZE_FILE_NAME,true);
 	writeBuffer->initialize(partitionOutputFilePath);

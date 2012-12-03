@@ -41,20 +41,42 @@ void OcurrenceFileRecord::deserialize(std::vector<unsigned char>& recordAsCharVe
 	this->termId = Auxiliar::leerEnteroU(recordAsCharVector, pos);
 }
 
-int OcurrenceFileRecord::getDocId() {
+unsigned int OcurrenceFileRecord::getDocId() const {
 	return docId;
 }
 
-int OcurrenceFileRecord::getTermId() {
+unsigned int OcurrenceFileRecord::getTermId() const {
 	return termId;
 }
 
-void OcurrenceFileRecord::setDocId(int id) {
+void OcurrenceFileRecord::setDocId(unsigned int id) {
 	this->docId = id;
 }
 
-void OcurrenceFileRecord::setTermId(int id) {
+void OcurrenceFileRecord::setTermId(unsigned int id) {
 	this->termId = id;
+}
+
+OcurrenceFileRecord& OcurrenceFileRecord::operator=(const OcurrenceFileRecord& other) {
+	this->setTermId(other.getTermId());
+	this->setDocId(other.getDocId());
+	return *this;
+}
+
+bool OcurrenceFileRecord::operator>(const OcurrenceFileRecord& other) {
+	if (this->getTermId() > other.getTermId())
+		return true;
+	if ( (this->getTermId() == other.getTermId()) && (this->getDocId() > other.getDocId()) )
+		return true;
+	return false;
+}
+
+bool OcurrenceFileRecord::operator<(const OcurrenceFileRecord& other) {
+	if (this->getTermId() < other.getTermId())
+		return true;
+	if ( (this->getTermId() == other.getTermId()) && (this->getDocId() < other.getDocId()) )
+		return true;
+	return false;
 }
 
 OcurrenceFileRecord::~OcurrenceFileRecord() {

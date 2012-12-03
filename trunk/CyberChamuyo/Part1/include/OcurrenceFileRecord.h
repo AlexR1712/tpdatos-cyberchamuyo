@@ -12,20 +12,28 @@
 
 class OcurrenceFileRecord : public Record {
 private:
-	int termId;
-	int docId;
+	unsigned int termId;
+
+	unsigned int docId;
+
 public:
 	OcurrenceFileRecord();
 
-	int getTermId();
+	unsigned int getTermId() const;
 
-	void setTermId(int id);
+	void setTermId(unsigned int id);
 
-	void setDocId(int id);
+	unsigned int getDocId() const;
 
-	int getDocId();
+	void setDocId(unsigned int id);
 
 	virtual void deserialize(std::vector<unsigned char>& recordAsCharVector);
+
+	OcurrenceFileRecord& operator=(const OcurrenceFileRecord& other);
+
+	bool operator>(const OcurrenceFileRecord& other);
+
+	bool operator<(const OcurrenceFileRecord& other);
 
 	virtual void serialize(std::vector<unsigned char>& recordAsCharVector);
 

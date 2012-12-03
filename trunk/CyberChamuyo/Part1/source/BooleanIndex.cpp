@@ -15,14 +15,14 @@ BooleanIndex::BooleanIndex() : invertedListsFile("invertedLists.bin") {
 }
 
 void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>& T, std::string ocurrenceFilePath, IndiceArbol* vocabulary) {
-	//ExternalSorter sorter(100, false);	//	NI IDEA
+	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(5,false);
 	std::string orderedOcurrenceFilePath = "orderedOcurrenceFile.bin";
-	//sorter.sort(ocurrenceFilePath, orderedOcurrenceFilePath, false);
+	sorter.sort(ocurrenceFilePath,orderedOcurrenceFilePath,false);
 	VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
 	ocurrenceFile.open(orderedOcurrenceFilePath);
 	unsigned int inv_list_cont = 0;
 	while(!ocurrenceFile.endOfFile()) {
-		/*OcurrenceFileRecord ocurrenceRecord = ocurrenceFile.getRecord();
+		OcurrenceFileRecord ocurrenceRecord = ocurrenceFile.getNextRecord();
 		FixedLengthTRecord termRecord = T.getRecord(ocurrenceRecord.getTermId());
 		std::string term = termRecord.getTerm();
 		unsigned int previousTerm = ocurrenceRecord.getTermId();
@@ -35,9 +35,9 @@ void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>& T, 
 		while(ocurrenceRecord.getTermId() == previousTerm) {
 			unsigned int docId = ocurrenceRecord.getDocId();
 			inv_list->insertar(docId);
-			ocurrenceRecord = ocurrenceFile.getRecord();
+			ocurrenceRecord = ocurrenceFile.getNextRecord();
 		}
-		this->invertedListsFile.insertarLista(inv_list);*/
+		this->invertedListsFile.insertarLista(inv_list);
 	}
 }
 

@@ -22,7 +22,7 @@ public:
 
 	bool empty();
 
-	T& get(unsigned short int index);
+	T& get(unsigned int index);
 
 	void popBack();
 
@@ -49,8 +49,8 @@ template<class T> bool Heap<T>::empty() {
 }
 
 template<class T> void Heap<T>::replaceRoot(const T& record) {
-	unsigned short int parentIndex;
-	unsigned short int childIndex;
+	unsigned int parentIndex;
+	unsigned int childIndex;
 	bool swaped;
 
 	this->getHeap()[0] = record;
@@ -69,8 +69,8 @@ template<class T> void Heap<T>::replaceRoot(const T& record) {
 }
 
 template<class T> void Heap<T>::insert(const T& record) {
-	unsigned short int parentIndex;
-	unsigned short int childIndex;
+	unsigned int parentIndex;
+	unsigned int childIndex;
 	bool swaped;
 
 	this->getHeap().push_back(record);
@@ -112,7 +112,7 @@ template<class T> void Heap<T>::popBack() {
 	this->getHeap().pop_back();
 }
 
-template<class T> T& Heap<T>::get(unsigned short int index) {
+template<class T> T& Heap<T>::get(unsigned int index) {
 	return this->getHeap()[index];
 }
 
