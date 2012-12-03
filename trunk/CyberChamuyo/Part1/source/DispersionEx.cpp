@@ -16,7 +16,7 @@ namespace Hash {
 
 DispersionEx::DispersionEx(std::string archDir) :
 		arch_disp(archDir.c_str(), TAM_BLOQUE),tabla(arch_disp) {
-	this->numRandom = 1;
+
 }
 
 // FUNCIONAMIENTO CLEAR
@@ -33,7 +33,6 @@ void DispersionEx::cargarFrases(const char* archFrases) {
 	std::string linea;
 	std::ifstream entradaTexto(archFrases);
 	getline(entradaTexto, linea);
-	unsigned long int num = 1;
 	while(!entradaTexto.eof()) {
 		int posActual = linea.find("\t");
 		int posAnterior = 0;
@@ -45,11 +44,10 @@ void DispersionEx::cargarFrases(const char* archFrases) {
 		obtenerSiguientePosicion(posAnterior, posActual, linea);
 		std::string frase = linea.substr(posAnterior + 1, posActual - posAnterior - 1);
 		//unsigned long int num = generateHash(frase.c_str(), frase.length());
-		Data::Frase* datoInsertar = new Data::Frase(autor, frase, num);
+		Data::Frase* datoInsertar = new Data::Frase(autor, frase, this->arch_disp.getNuevoId());
 		RegistroDato* reg = new Hash::RegistroDato(datoInsertar);
-		this->insertarRegistro(reg, num);
+		this->insertarRegistro(reg, datoInsertar->getClave());
 		getline(entradaTexto, linea);
-		++num;
 	}
 	entradaTexto.close();
 }
@@ -67,10 +65,9 @@ void DispersionEx::insert(std::string& phrase) {
 	autor.append(nombre);
 	obtenerSiguientePosicion(posAnterior, posActual, phrase);
 	std::string frase = phrase.substr(posAnterior + 1, posActual - posAnterior - 1);
-	Data::Frase* datoInsertar = new Data::Frase(autor, frase, this->numRandom);
+	Data::Frase* datoInsertar = new Data::Frase(autor, frase, this->arch_disp.getNuevoId());
 	RegistroDato* reg = new Hash::RegistroDato(datoInsertar);
-	this->insertarRegistro(reg, this->numRandom);
-	++this->numRandom;
+	this->insertarRegistro(reg, datoInsertar->getClave());
 }
 
 // FUNCIONAMIENTO CREAR NUEVO BLOQUE

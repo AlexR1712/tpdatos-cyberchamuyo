@@ -1,4 +1,4 @@
-#include "../include/tp1.h"
+/*#include "../include/tp1.h"
 
 #include <stdlib.h>
 #include <iostream>
@@ -46,4 +46,4 @@ std::string parseCommand(std::string userInput, std::vector<std::string>& comman
 
 	return command;
 
-}
+}*/

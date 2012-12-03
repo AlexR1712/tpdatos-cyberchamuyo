@@ -39,7 +39,6 @@ class DispersionEx {
 private:
 	ArchivoBloquesFijos arch_disp;
 	Tabla tabla;
-	unsigned int numRandom;
 	int insertarRecursivo(RegistroDato* r, unsigned int clave);
 	void redistribuir(listReg& list);
 	void ActualizarTablaAlta(unsigned int td, int posTabla);
