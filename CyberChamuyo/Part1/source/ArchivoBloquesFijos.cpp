@@ -20,7 +20,7 @@ ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque
         archivo.close();
         path.open(filename, std::fstream::in|std::fstream::out|std::fstream::binary);
         this->tamanoBloque=tamanoBloque;
-        this->autoId = 0;
+        this->autoId = 1;
     }else{ //probar
         path.seekg(0, std::ios::beg);
         path.read((char*)&(this->tamanoBloque),sizeof(long));
@@ -133,6 +133,7 @@ std::ostream& operator<<(std::ostream& oss, ArchivoBloquesFijos &arch) {
 	oss << "ARCHIVO BLOQUES FIJOS: " << std::endl;
 	oss << "***********************" << std::endl;
 	oss << "TAMAÑO BLOQUE:" << "\t" << arch.tamanoBloque << std::endl;
+	oss << "PRÓXIMO NRO. ALEATORIO:" << "\t" << arch.autoId << std::endl;
 	arch.map.ImprimirATexto(oss);
 	return oss;
 }
