@@ -30,10 +30,8 @@ private:
 	void flush();
 
 public:
-	//Constructor para usar con archivos de registros de longitud variable.
+	//Constructor
 	WriteBuffer(unsigned int maxSize);
-
-	WriteBuffer(unsigned int maxSize, unsigned int recordSize);
 
 	void initialize(std::string outFilepath);
 
@@ -47,11 +45,6 @@ public:
 
 template<class File,class Record> WriteBuffer<File,Record>::WriteBuffer(unsigned int maxSize) {
 	this->maxSize = maxSize;
-}
-
-template<class File,class Record> WriteBuffer<File,Record>::WriteBuffer(unsigned int maxSize, unsigned int recordSize) {
-	this->maxSize = maxSize;
-	this->recordSize = recordSize;
 }
 
 template<class File,class Record> void WriteBuffer<File,Record>::initialize(std::string outFilepath) {
@@ -77,8 +70,6 @@ template<class File,class Record> void WriteBuffer<File,Record>::setMaxSize(unsi
 }
 
 template<class File,class Record> void WriteBuffer<File,Record>::flush() {
-	Record record;
-
 	while (!this->empty()) {
 		this->getFile().putRecord(this->getQueue().front());
 		this->getQueue().pop();

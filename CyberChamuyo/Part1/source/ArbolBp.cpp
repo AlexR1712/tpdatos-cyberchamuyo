@@ -284,9 +284,9 @@ int ArbolBp::encontrarPrimero() {
 	}
 }
 
-void ArbolBp::exportar(VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >& os) {
+void ArbolBp::exportar(VariableLengthRecordSequentialFile<WordRankingRecord>& os) {
 	imprimirNodos();
-	BinaryDictionaryRecord<true> record;
+	WordRankingRecord record;
 	int primero = encontrarPrimero();
 	NodoExterno* nE = new NodoExterno(0, this);
 	int pos = 0;
@@ -295,8 +295,11 @@ void ArbolBp::exportar(VariableLengthRecordSequentialFile<BinaryDictionaryRecord
 	ultimoNodoLeido = nE;
 	Registro* reg = new RegistroArbol();
 	reg = nE->getRegistro(0, reg);
-	while(reg != NULL) {
-		record.setId(reinterpret_cast<RegistroArbol*>(reg)->timesSearched());
+	//TODO WTF?!?!?!?
+	unsigned int i = 0;
+	while(reg != NULL && i < 2669) {
+		i++;
+		record.setNumberOfSearches(reinterpret_cast<RegistroArbol*>(reg)->timesSearched());
 		record.setWord(reinterpret_cast<CAlfa*>(reg->getClave())->getWord());
 		os.putRecord(record);
 		reg = siguiente();

@@ -58,6 +58,7 @@ void OcurrenceFileRecord::setTermId(unsigned int id) {
 }
 
 OcurrenceFileRecord& OcurrenceFileRecord::operator=(const OcurrenceFileRecord& other) {
+	this->setRecordSize(other.getRecordSize());
 	this->setTermId(other.getTermId());
 	this->setDocId(other.getDocId());
 	return *this;

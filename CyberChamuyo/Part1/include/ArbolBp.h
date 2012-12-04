@@ -13,11 +13,11 @@
 #include "ArchivoBloquesFijos.h"
 #include "Bloque.h"
 #include <stdexcept>
-#include "binaryDictionaryRecord.h"
 #include "variableLengthRecordSequentialFile.h"
 #include "DatoNodo.h"
 #include "RegistroVariable.h"
 #include "BloqueNodo.h"
+#include "wordRankingRecord.h"
 
 #define N_SIZE 480		//  tamaño de los nodos
 #define OK 0			//  si insercion OK
@@ -80,7 +80,7 @@ public:
 	void aumentarUltimoRegistroLeido();
 
 	//  devuelve un archivo secuencial os con todos los registros(datos) del arbol
-	void exportar(VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> >& os);
+	void exportar(VariableLengthRecordSequentialFile<WordRankingRecord>& os);
 
 	//  devuelve el numero de nodo del primer nodo externo
 	int encontrarPrimero();
