@@ -12,6 +12,7 @@
 #include "../include/RegistroArbol.h"
 #include "../include/stringUtilities.h"
 #include "../include/wordNormalizer.h"
+#include "../include/wordRankingRecord.h"
 
 IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), N_SIZE) {
 }
@@ -56,8 +57,8 @@ void IndiceArbol::insert(std::string& word) {
 }
 
 void IndiceArbol::exportar(const char* path) {
-	VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> > file;
-	file.open(path);
+	VariableLengthRecordSequentialFile<WordRankingRecord> file;
+	file.open(path,true);
 	arbol.exportar(file);
 }
 

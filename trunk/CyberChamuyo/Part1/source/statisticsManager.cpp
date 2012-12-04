@@ -14,6 +14,7 @@
 #include "../include/FixedLengthTRecord.h"
 #include "../include/fixedLengthRecordSequentialFile.h"
 #include "../include/textFile.h"
+#include "../include/wordRankingRecord.h"
 
 
 StatisticsManager::StatisticsManager() {
@@ -34,11 +35,6 @@ StatisticsManager::StatisticsManager() {
 	} else {
 		successfullInit = false;
 	}
-
-//	this->createDictionary(false);
-//	this->getMemorableQuotes()->createIndex(this->getInputMemorableQuotesFilePath());
-//	if (this->getNumberOfWords() == 0)
-//		this->loadMemorableQuotes(true);
 }
 
 std::string StatisticsManager::getInputDictionaryFilePath() const {
@@ -188,22 +184,22 @@ void StatisticsManager::createDictionary(bool force) {
 }
 
 void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
-	VariableLengthRecordSequentialFile<TextRecord> memorableQuotesFile;
+	TextFile<TextRecord> memorableQuotesFile;
 	std::string phrase;
 	WordNormalizer normalizer;
 	std::vector<std::string> phraseWords;
 	unsigned int totalQuotes = 0;
 	unsigned int totalWords = 0;
 	unsigned int totalFailures = 0;
-	//ExternalSorter externalSorter(10,true);
+	ExternalSorter<VariableLengthRecordSequentialFile<WordRankingRecord>,WordRankingRecord > externalSorter(10,true);
 
 	memorableQuotesFile.open(this->getInputMemorableQuotesFilePath());
 	if (memorableQuotesFile.isFileExists()) {
 		//////////////////77 TEMPORAL /////////////////////
-		T->open("tFile.bin");
+		T->open("tFile.bin",true);
 		VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
 		ocurrenceFilePath = "ocurrenceFile.bin";
-		ocurrenceFile.open(ocurrenceFilePath);
+		ocurrenceFile.open(ocurrenceFilePath,true);
 		///////////
 		this->getDictionary()->rewind();
 		while (!memorableQuotesFile.endOfFile()) {
@@ -213,10 +209,17 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 			//separo la frase en palabras
 			StringUtilities::splitString(phraseWords[phraseWords.size() - 1],phraseWords,QUOTES_WORDS_SEPARATOR);
 			totalQuotes++;
+
+
+			std::cout << StringUtilities::intToString(totalQuotes) << std::endl;
+			if (totalQuotes == 129)
+				std::cout << "...IT'S GONNA BLOW!" << std::endl;
+
 			for (unsigned int i = 0; i < phraseWords.size(); i++) {
 				//chequeo que no sea stopWord.
 				//StringUtilities::sacarR(phraseWords[i]);
-				normalizer.normalizeWord(phraseWords[i]);
+				phraseWords[i] = normalizer.normalizeWord(phraseWords[i]);
+				std::cout << phraseWords[i] << std::endl;
 				//StringUtilities::quitarPuntuacion(phraseWords[i]);
 				if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 					totalWords++;
@@ -242,6 +245,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 					}
 				}
 			}
+
 			if (insertInHash) {
 				this->getMemorableQuotes()->insert(phrase);
 			}
@@ -252,10 +256,10 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		this->setNumberOfQuotes(totalQuotes);
 		this->setNumberOfFailures(totalFailures);
 		T->close();
-		//TODO arreglar
+
 		//Se genera el ranking de palabras.
-		//this->getDictionary()->exportar(RANKINGS_FILE_PATH);
-		//externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
+		this->getDictionary()->exportar(RANKINGS_FILE_PATH);
+		externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
 	} else {
 		std::cout << "Archivo inexistente" << std::endl;
 	}
@@ -308,8 +312,25 @@ void StatisticsManager::printNotFoundWords() {
 }
 
 void StatisticsManager::printWordRanking(unsigned int rankingSize) {
-//	BinaryInputSequentialFile<BinaryDictionaryRecord<true> > wordRankingFile(RANKINGS_FILE_PATH_ORDERED,10);
-//	BinaryDictionaryRecord<true> record;
+	VariableLengthRecordSequentialFile<WordRankingRecord> wordRankingFile;
+	WordRankingRecord record;
+	unsigned int i = 0;
+
+	if (rankingSize > 0) {
+		wordRankingFile.open(RANKINGS_FILE_PATH_ORDERED);
+		if (wordRankingFile.isFileExists()) {
+			std::cout << TEXT_MOST_SEARCHED_WORDS_TITLE(StringUtilities::intToString(rankingSize)) << std::endl;
+			while(!wordRankingFile.endOfFile()) {
+				i++;
+				record = wordRankingFile.getNextRecord();
+				std::cout << TEXT_MOST_SEARCHED_WORDS_ITEM(StringUtilities::intToString(i + 1),record.getWord(),StringUtilities::intToString(record.getNumberOfSearches())) << std::endl;
+			}
+		} else {
+			std::cout << "Error al intentar reportar el ranking de palabras" << std::endl;
+		}
+	} else {
+		std::cout << ERROR_TEXT_INVALID_RANKING_SIZE << std::endl;
+	}
 //	std::list<BinaryDictionaryRecord<true> > ranking;
 //	unsigned int i = 0;
 //

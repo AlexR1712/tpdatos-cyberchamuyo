@@ -1,4 +1,4 @@
-/*#include "../include/tp1.h"
+#include "../include/tp1.h"
 
 #include <stdlib.h>
 #include <iostream>
@@ -16,6 +16,7 @@ int main(int argc, char *argv[]){
 	StatisticsManager statisticsManager;
 
 	//cargaDiccionario inputFiles/dictionary2.txt
+	//cargaFrases inputFiles/frases-celebres.txt
 
 	if (statisticsManager.isSuccessfullInit()) {
 		statisticsManager.printHelp();
@@ -46,4 +47,4 @@ std::string parseCommand(std::string userInput, std::vector<std::string>& comman
 
 	return command;
 
-}*/
+}

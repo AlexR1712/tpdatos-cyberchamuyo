@@ -1,4 +1,4 @@
-Anonimo		Arbil Arbil arbil arbil perro, y por pan, si se lo dan.
+Anonimo		Por dinero baila el perro, y por pan, si se lo dan.
 Anonimo		Una vez al año no hace daño.
 Anonimo		A palabras necias, oídos sordos.
 Anonimo		Cuando las barbas de tu vecino veas pelar, pon las tuyas a remojar.
@@ -9,7 +9,7 @@ Anonimo		La dicha de la fea, la hermosa la desea.
 Anonimo		Del dicho al hecho hay mucho trecho.
 Anonimo		De noche todos los gatos son pardos.
 Anonimo		Genio y figura hasta la sepultura.
-Anonimo		El que no llora, no mama ababol.
+Anonimo		El que no llora, no mama.
 Anonimo		Quien a hierro mata, a hierro muere.
 Anonimo		A río revuelto, ganancia de pescadores.
 Anonimo		Mal de muchos, consuelo de tontos.
@@ -74,7 +74,7 @@ Casona	Alejandro	Si eres feliz, escóndete. No se puede andar cargado de joyas po
 Casona	Alejandro	Llorar, sí; pero llorar de pie, trabajando; vale más sembrar una cosecha que llorar por lo que se perdió.
 Casona	Alejandro	Hablar poco, pero mal, ya es mucho hablar.
 Castelao	Alfonso	El verdadero heroísmo está en transformar los deseos en realidades y las ideas en hechos.
-Castells	Manuel	[Internet] es mucho más que una tecnología. Es un medio de comunicación, de interacción y de organización social.
+Castells	Manuel	Internet es mucho más que una tecnología. Es un medio de comunicación, de interacción y de organización social.
 Castiglione	Baldassare	No hay maldad tan mala como la que nace de la semilla del bien.
 Chesterton	Gilbert	La aventura podrá ser loca, pero el aventurero ha de ser cuerdo.
 Chesterton	Gilbert	El optimista cree en los demás y el pesimista sólo cree en sí mismo.
@@ -248,7 +248,7 @@ Ovidio		Ofrecer amistad al que pide amor es como dar pan al que muere de sed.
 Ovidio		La gota horada la roca, no por su fuerza sino por su constancia.
 Pablo VI		No desprecies el recuerdo del camino recorrido. Ello no retrasa vuestra carrera, sino que la dirige; el que olvida el punto de partida pierde fácilmente la meta.
 Pablo VI		Si quieres la paz, lucha por la justicia.
-Paine	Thomas	 Si ha de haber conflictos que sea mientras yo viva, que mi hijo pueda vivir en paz.
+Paine	Thomas	Si ha de haber conflictos que sea mientras yo viva, que mi hijo pueda vivir en paz.
 Palacio Valdés	Armando	Cuando bordeamos un abismo y la noche es tenebrosa, el jinete sabio suelta las riendas y se entrega al instinto del caballo.
 Papini	Giovanni	Hay quien tiene el deseo de amar, pero no la capacidad de amar.
 Papini	Giovanni	El amor no es capaz de ver los lados malos de un ser; el odio no es capaz de ver los lados buenos.
@@ -269,16 +269,16 @@ Pasteur	Louis	Sorprendernos por algo es el primer paso de la mente hacia el desc
 Paz	Octavio	La mucha luz es como la mucha sombra: no deja ver.
 Perich	Jaume	La gente joven está convencida de que posee la verdad. Desgraciadamente, cuando logran imponerla ya ni son jóvenes ni es verdad.
 Perich	Jaume	Todo el mundo desea ser feliz, pero no que lo sea todo el mundo.
-Proverbio		 No puedes evitar que el pájaro de la tristeza vuele sobre tu cabeza, pero sí puedes evitar que anide en tu cabellera.
-Proverbio		 Es una locura amar, a menos de que se ame con locura.
-Proverbio		 La sonrisa cuesta menos que la electricidad y da más luz.
-Proverbio		 Cuando te inunde una enorme alegría, no prometas nada a nadie. Cuando te domine un gran enojo, no contestes ninguna carta.
-Proverbio		 Duerme con el pensamiento de la muerte y levántate con el pensamiento de que la vida es corta.
-Proverbio		 Estaba furioso de no tener zapatos; entonces encontré a un hombre que no tenía píes, y me sentí contento de mi mismo.
-Proverbio		 El sabio puede sentarse en un hormiguero, pero sólo el necio se queda sentado en él.
-Proverbio		 El corazón es un niño: espera lo que desea.
-Proverbio		 Antes de poner en duda el buen juicio de tu mujer, fíjate con quien se ha casado ella.
-Proverbio		 ­Caer está permitido. Levantarse es obligatorio!.
+Proverbio		No puedes evitar que el pájaro de la tristeza vuele sobre tu cabeza, pero sí puedes evitar que anide en tu cabellera.
+Proverbio		Es una locura amar, a menos de que se ame con locura.
+Proverbio		La sonrisa cuesta menos que la electricidad y da más luz.
+Proverbio		Cuando te inunde una enorme alegría, no prometas nada a nadie. Cuando te domine un gran enojo, no contestes ninguna carta.
+Proverbio		Duerme con el pensamiento de la muerte y levántate con el pensamiento de que la vida es corta.
+Proverbio		Estaba furioso de no tener zapatos; entonces encontré a un hombre que no tenía píes, y me sentí contento de mi mismo.
+Proverbio		El sabio puede sentarse en un hormiguero, pero sólo el necio se queda sentado en él.
+Proverbio		El corazón es un niño: espera lo que desea.
+Proverbio		Antes de poner en duda el buen juicio de tu mujer, fíjate con quien se ha casado ella.
+Proverbio		­¡Caer está permitido. Levantarse es obligatorio!.
 Proverbio americano	Coherencia	Si quieres miel no des puntapiés sobre la colmena.
 Proverbio árabe	Comprensión	Quien no comprende una mirada tampoco comprenderá una larga explicación.
 Proverbio árabe	Comprensión	Quien no comprende una mirada tampoco comprenderá una larga explicación
@@ -291,14 +291,14 @@ Proverbio árabe		Castiga a los que tienen envidia haciéndoles bien.
 Proverbio chino	Comprensión	Si te caes siete veces, levántate ocho
 Proverbio chino	Grandeza	Las grandes almas tienen voluntades; las débiles tan solo deseos
 Proverbio chino	Gratitud	Cuando bebas agua, recuerda la fuente.
-Proverbio chino	Hacer	 Si quieres que algo se haga, encárgaselo a una persona ocupada.
+Proverbio chino	Hacer	Si quieres que algo se haga, encárgaselo a una persona ocupada.
 Proverbio chino		El trabajo del pensamiento se parece a la perforación de un pozo: el agua es turbia al principio, mas luego se clarifica.
 Proverbio griego		Mientras el tímido reflexiona, el valiente va, triunfa y vuelve.
-Proverbio hindú	 Libros	Un libro abierto es un cerebro que habla; cerrado un amigo que espera; olvidado, un alma que perdona; destruido, un corazón que llora
+Proverbio hindú	Libros	Un libro abierto es un cerebro que habla; cerrado un amigo que espera; olvidado, un alma que perdona; destruido, un corazón que llora
 Proverbio hindú		Con mis maestros he aprendido mucho; con mis colegas, más; con mis alumnos todavía más.
 Proverbio hindú		Cuando hables, procura que tus palabras sean mejores que el silencio.
 Proverbio holandés	Adaptabilidad	No puede impedirse el viento. Pero pueden construirse molinos.
-Proverbio indio	Amigos	 Recorre a menudo la senda que lleva al huerto de tu amigo, no sea que la maleza te impida ver el camino.
+Proverbio indio	Amigos	Recorre a menudo la senda que lleva al huerto de tu amigo, no sea que la maleza te impida ver el camino.
 Proverbio irlandés		Las lágrimas derramadas son amargas, pero más amargas son las que no se derraman.
 Proverbio italiano	Amor	El amor y la tos no pueden ocultarse.
 Proverbio italiano	Vida	Una vez terminado el juego el rey y el peón vuelven a la misma caja.
@@ -306,9 +306,9 @@ Proverbio italiano		El amor hace pasar el tiempo; el tiempo hace pasar el amor
 Proverbio japonés		Es mejor viajar lleno de esperanza que llegar.
 Proverbio judío		Con una mentira suele irse muy lejos, pero sin esperanzas de volver.
 Proverbio oriental		Gobierna tu casa y sabrás cuánto cuesta la leña y el arroz; cría a tus hijos, y sabrás cuánto debes a tus padres.
-Proverbio persa	 Paciencia	La primera vez que me engañes, será culpa tuya; la segunda vez, la culpa será mía
+Proverbio persa	Paciencia	La primera vez que me engañes, será culpa tuya; la segunda vez, la culpa será mía
 Proverbio persa	Silencio	La arena del desierto es para el viajero fatigado lo mismo que la conversación incesante para el amante del silencio.
-Proverbio turco	 Amistad	El que busca un amigo sin defectos se queda sin amigos
+Proverbio turco	Amistad	El que busca un amigo sin defectos se queda sin amigos
 Proverbio turco		El que busca un amigo sin defectos se queda sin amigos
 Renard	Jules	De vez en cuando di la verdad para que te crean cuando mientes.
 Renard	Jules	Hay momentos en los que todo va bien: no te asustes, no duran.

@@ -28,16 +28,16 @@ template<bool withId> BinaryDictionaryRecord<withId>::BinaryDictionaryRecord():D
 }
 
 template<bool withId> void BinaryDictionaryRecord<withId>::deserialize(std::vector<unsigned char>& recordAsCharVector) {
-	std::string idAsString;
+	unsigned char idAsCharArray[sizeof(unsigned long int)];
 	std::string word;
 
 	this->setRecordSize(recordAsCharVector.size());
 
 	if (this->getIdInFile()) {
 		for (unsigned int i = 0; i < sizeof(unsigned long int); i++) {
-			idAsString += recordAsCharVector[i];
+			idAsCharArray[i] = recordAsCharVector[i];
 		}
-		this->setId(*(reinterpret_cast<const unsigned long int*>(idAsString.c_str())));
+		this->setId(*(reinterpret_cast<const unsigned long int*>(idAsCharArray)));
 	}
 
 	for (unsigned int i = sizeof(unsigned long int); i < recordAsCharVector.size(); i++) {
@@ -48,9 +48,6 @@ template<bool withId> void BinaryDictionaryRecord<withId>::deserialize(std::vect
 
 template<bool withId> void BinaryDictionaryRecord<withId>::serialize(std::vector<unsigned char>& recordAsCharVector) {
 	unsigned char idAsCharArray[sizeof(unsigned long int)];
-//	int int_size = sizeof(int);
-//	memcpy(buffer, reinterpret_cast<const unsigned char*>(&j), sizeof(int));
-
 	unsigned long int id;
 	std::string word;
 

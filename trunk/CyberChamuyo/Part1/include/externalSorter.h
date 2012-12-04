@@ -48,8 +48,6 @@ private:
 	//Tamaño del buffer de los archivos.
 	unsigned int buffersSize;
 
-	unsigned int recordSize;
-
 	//Nombre de la carpeta temporal en la que se guardarán los archivos de trabajo.
 	std::string tempFolderName;
 //
@@ -61,8 +59,6 @@ private:
 	bool isShowId() const;
 
 	unsigned int getBuffersSize() const;
-
-	unsigned int getRecordSize() const;
 
 	std::string getTempFolderName() const;
 
@@ -99,8 +95,6 @@ public:
 	//Constructor
 	ExternalSorter(unsigned int filesBufferSize, bool showId);
 
-	ExternalSorter(unsigned int filesBufferSize, bool showId, unsigned int recordSize);
-
 	//Metodo para ordenar un archivo desordenado.
 	void sort(std::string inputFilepath, std::string outputFilepath, bool leaveTraces);
 
@@ -111,14 +105,6 @@ public:
 template<class File,class Record> ExternalSorter<File,Record>::ExternalSorter(unsigned int filesBufferSize, bool showId) {
 	this->showId = showId;
 	this->buffersSize = filesBufferSize;
-	this->recordSize = 0;
-	this->tempFolderName = this->generateTempFolderName();
-}
-
-template<class File,class Record> ExternalSorter<File,Record>::ExternalSorter(unsigned int filesBufferSize, bool showId, unsigned int recordSize) {
-	this->showId = showId;
-	this->buffersSize = filesBufferSize;
-	this->recordSize = recordSize;
 	this->tempFolderName = this->generateTempFolderName();
 }
 
@@ -132,10 +118,6 @@ template<class File,class Record> bool ExternalSorter<File,Record>::isShowId() c
 
 template<class File,class Record> unsigned int ExternalSorter<File,Record>::getBuffersSize() const {
     return this->buffersSize;
-}
-
-template<class File,class Record> unsigned int ExternalSorter<File,Record>::getRecordSize() const {
-	return this->recordSize;
 }
 
 template<class File,class Record> std::string ExternalSorter<File,Record>::getTempFolderName() const {
@@ -181,28 +163,21 @@ template<class File,class Record> void ExternalSorter<File,Record>::createOrdere
 	unsigned int outputFileNameCounter = 0;
 	unsigned int freezedRegisters = 0;
 	unsigned int outputFileRegisterCounter = 0;
-	ReadBuffer<File,Record>* readBuffer;
-	WriteBuffer<File,Record>* writeBuffer;
+	ReadBuffer<File,Record> readBuffer(5);
+	WriteBuffer<File,Record> writeBuffer(5);
 	File freezeFile;
-	if (this->getRecordSize() != 0) {
-//		readBuffer = new ReadBuffer<File,Record>(5,256);
-//		writeBuffer = new WriteBuffer<File,Record>(5,256);
-	} else {
-		readBuffer = new ReadBuffer<File,Record>(5);
-		writeBuffer = new WriteBuffer<File,Record>(5);
-	}
 
 	std::string partitionOutputFilePath = this->getTempFolderName() + "/" + PHASE_FOLDER_NAME_PREFIX + "0/" + ORDERED_FILE_PART_PREFIX + "_0_" + StringUtilities::intToString(outputFileNameCounter);
 	FileUtilities::createFolder(this->getTempFolderName() + "/" + PHASE_FOLDER_NAME_PREFIX + "0");
 	Record record;
 	LogRecord logRecord("Particiones","particion");
 	freezeFile.open(this->getTempFolderName() + "/" + FREEZE_FILE_NAME,true);
-	writeBuffer->initialize(partitionOutputFilePath);
-	readBuffer->Initialize(inputFilepath);
+	readBuffer.Initialize(inputFilepath);
+	writeBuffer.initialize(partitionOutputFilePath);
 
-	this->createSortBuffer(*readBuffer);
-	while ( !(readBuffer->empty()) ) {
-		record = readBuffer->getRecord();
+	this->createSortBuffer(readBuffer);
+	while ( !(readBuffer.empty()) ) {
+		record = readBuffer.getRecord();
 		if (record < this->getSortBuffer().get(0)) {
 			freezeFile.putRecord(record);
 			freezedRegisters++;
@@ -211,15 +186,15 @@ template<class File,class Record> void ExternalSorter<File,Record>::createOrdere
 				outputFileRegisterCounter += this->getSortBuffer().size();
 				logRecord.getLogItems().push_back(outputFileRegisterCounter);
 				outputFileRegisterCounter = 0;
-				this->flushSortBuffer(*writeBuffer);
+				this->flushSortBuffer(writeBuffer);
 				outputFileNameCounter++;
 				partitionOutputFilePath = this->getTempFolderName() + "/" + PHASE_FOLDER_NAME_PREFIX + "0/" + ORDERED_FILE_PART_PREFIX + "_0_" + StringUtilities::intToString(outputFileNameCounter);
-				writeBuffer->initialize(partitionOutputFilePath);
+				writeBuffer.initialize(partitionOutputFilePath);
 				this->unfreezeRecords(freezeFile);
 				freezedRegisters = 0;
 			}
 		} else {
-			writeBuffer->putRecord(this->getSortBuffer().get(0));
+			writeBuffer.putRecord(this->getSortBuffer().get(0));
 			outputFileRegisterCounter++;
 			this->getSortBuffer().replaceRoot(record);
 		}
@@ -228,23 +203,21 @@ template<class File,class Record> void ExternalSorter<File,Record>::createOrdere
 	outputFileRegisterCounter += this->getSortBuffer().size();
 	logRecord.getLogItems().push_back(outputFileRegisterCounter);
 	outputFileRegisterCounter = 0;
-	this->flushSortBuffer(*writeBuffer);
+	this->flushSortBuffer(writeBuffer);
 
 	if (freezedRegisters != 0) {
 		outputFileNameCounter++;
 		partitionOutputFilePath = this->getTempFolderName() + "/" + PHASE_FOLDER_NAME_PREFIX + "0/" + ORDERED_FILE_PART_PREFIX + "_0_" + StringUtilities::intToString(outputFileNameCounter);
-		writeBuffer->initialize(partitionOutputFilePath);
+		writeBuffer.initialize(partitionOutputFilePath);
 		this->unfreezeRecords(freezeFile);
 		outputFileRegisterCounter += this->getSortBuffer().size();
 		logRecord.getLogItems().push_back(outputFileRegisterCounter);
-		this->flushSortBuffer(*writeBuffer);
+		this->flushSortBuffer(writeBuffer);
 	}
 
 	this->getLog().putRecord(logRecord);
 
 	FileUtilities::deleteFile(this->getTempFolderName() + "/" + FREEZE_FILE_NAME);
-	delete readBuffer;
-	delete writeBuffer;
 }
 
 template<class File,class Record> void ExternalSorter<File,Record>::merge(std::string outputFilepath) {
@@ -254,7 +227,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 	typename std::list<ReadBuffer<File,Record>*>::iterator readBuffersIt;
 	typename std::list<ReadBuffer<File,Record>*>::iterator smallerRecordIt;
 	File binaryInputSequentialFile;
-	WriteBuffer<File,Record>* writeBuffer;
+	WriteBuffer<File,Record> writeBuffer(5);
 	Record binaryRecord;
 	unsigned int inputFileLevelCounter = 0;
 	unsigned int inputFileFileCounter;
@@ -265,11 +238,6 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 	std::string outputDirectoryName = this->getTempFolderName() + "/" + PHASE_FOLDER_NAME_PREFIX + "0/";
 	LogRecord logRecord("Etapas","Etapa");
 
-	if (this->getRecordSize() != 0) {
-		//writeBuffer = new WriteBuffer<File,Record>(5,256);
-	} else {
-		writeBuffer = new WriteBuffer<File,Record>(5);
-	}
 
 	while(levelFinished && directoryCreated) {
 		inputFileFileCounter = 0;
@@ -288,7 +256,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 					}
 
 					outputFileName = outputDirectoryName + ORDERED_FILE_PART_PREFIX + "_" + StringUtilities::intToString(inputFileLevelCounter + 1) + "_" + StringUtilities::intToString(outputFileFileCounter);
-					writeBuffer->initialize(outputFileName);
+					writeBuffer.initialize(outputFileName);
 					outputFileFileCounter++;
 
 					while ( (!readBuffers.empty()) ) {
@@ -298,7 +266,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 								smallerRecordIt = readBuffersIt;
 						}
 
-						writeBuffer->putRecord((*smallerRecordIt)->getRecord());
+						writeBuffer.putRecord((*smallerRecordIt)->getRecord());
 						outputFileRegisterCounter++;
 						if ((*smallerRecordIt)->empty()) {
 							delete (*smallerRecordIt);
@@ -321,17 +289,15 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 		}
 	}
 
-	writeBuffer->initialize(outputFilepath);
+	writeBuffer.initialize(outputFilepath);
 	binaryInputSequentialFile.open(outputFileName);
 
 	while ( !(binaryInputSequentialFile.endOfFile()) ) {
 		binaryRecord = binaryInputSequentialFile.getNextRecord();
-		writeBuffer->putRecord(binaryRecord);
+		writeBuffer.putRecord(binaryRecord);
 	}
 
 	this->getLog().putRecord(logRecord);
-
-	delete writeBuffer;
 }
 
 template<class File,class Record> void ExternalSorter<File,Record>::sort(std::string inputFilepath, std::string outputFilepath, bool leaveTraces) {

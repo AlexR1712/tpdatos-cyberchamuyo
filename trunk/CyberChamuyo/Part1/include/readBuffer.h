@@ -28,11 +28,8 @@ private:
 	void load();
 
 public:
-	//Constructor para usar con archivos de registros de longitud variable.
+	//Constructor
 	ReadBuffer(unsigned int maxSize);
-
-	//Constructor para usar con archivos de registros de longitud fija.
-	ReadBuffer(unsigned int maxSize, unsigned int recordSize);
 
 	void Initialize(std::string inputFilepath);
 
@@ -48,11 +45,6 @@ public:
 
 template<class File,class Record> ReadBuffer<File,Record>::ReadBuffer(unsigned int maxSize) {
 	this->maxSize = maxSize;
-}
-
-template<class File,class Record> ReadBuffer<File,Record>::ReadBuffer(unsigned int maxSize, unsigned int recordSize) : file(recordSize){
-	this->maxSize = maxSize;
-	this->recordSize = recordSize;
 }
 
 template<class File,class Record> void ReadBuffer<File,Record>::Initialize(std::string inputFilepath) {
@@ -83,8 +75,6 @@ template<class File,class Record> void ReadBuffer<File,Record>::setRecordSize(un
 }
 
 template<class File,class Record> void ReadBuffer<File,Record>::load() {
-	//TODO cuando se quite el buffer de los archivos cambiar a esta linea
-	//while ( !(this->getFile().good()) && (this->getQueue().size() < this->getMaxSize()) ) {
 	while ( !(this->getFile().endOfFile()) && (this->getQueue().size() < this->getMaxSize()) ) {
 		this->getQueue().push(this->getFile().getNextRecord());
 	}
