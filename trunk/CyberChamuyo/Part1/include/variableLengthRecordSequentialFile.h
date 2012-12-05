@@ -76,6 +76,12 @@ template<class Record> Record VariableLengthRecordSequentialFile<Record>::getNex
 	if (this->getFile().good()) {
 		this->getFile().read(reinterpret_cast<char*>(&recordSize),sizeof(unsigned int));
 		record.setRecordSize(recordSize);
+		//////////////////////////////////	TEMPORAL	////////////////////////
+		if(recordSize > 10000) {
+			record.setRecordSize(255);
+			recordSize = 255;
+		}
+		/////////////////////////////////////////////////////////////////////
 		recordAsCharArray = new char[recordSize];
 		this->getFile().read(recordAsCharArray,recordSize);
 		for (unsigned int i = 0; i < recordSize; i++) {

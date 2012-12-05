@@ -65,8 +65,9 @@ void InvertedListFile::particionarLista(invertedList::ListaInvertida* lista, uns
 }
 
 unsigned int InvertedListFile::insertarLista(invertedList::ListaInvertida* lista) {
-	lista->setId(this->archList.getNuevoId());
+	//lista->setId(this->archList.getNuevoId());
 	unsigned int offset = this->archList.ObtenerBloqueLibre();
+	lista->setId(offset);
 	if (lista->getTamano() > this->archList.getTamanoBloque() - 16) {
 		particionarLista(lista, offset);
 		return offset;
@@ -127,6 +128,10 @@ void InvertedListFile::clear(void) {
 
 unsigned int InvertedListFile::getNuevoId(void) {
 	return this->archList.getNuevoId();
+}
+
+unsigned int InvertedListFile::getId() {
+	return this->archList.getId();
 }
 
 }

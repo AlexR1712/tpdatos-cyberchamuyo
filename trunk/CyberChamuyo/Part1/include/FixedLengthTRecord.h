@@ -9,7 +9,7 @@
 #define FIXEDLENGTHTRECORD_H_
 
 #include "record.h"
-
+#include "common.h"
 #include <string>
 
 class FixedLengthTRecord : public Record {

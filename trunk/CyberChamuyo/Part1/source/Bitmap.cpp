@@ -77,10 +77,18 @@ void Bitmap::setBloqueOcupado(unsigned int bloque) {
 }
 
 unsigned int Bitmap::getBloqueLibre(void) {
-	if (this->listaBl.empty())
-		return this->bloqueTope;
-	else return this->listaBl.front();
+	if (this->listaBl.empty()) {
+		eliminarBloqueLista(listaBl.front());
+		unsigned int bloque = this->bloqueTope;
+		++bloqueTope;
+		return bloque;
+	}
+	else {
+		eliminarBloqueLista(listaBl.front());
+		return this->listaBl.front();
+	}
 }
+
 
 unsigned int Bitmap::getCantidadBloques(void) {
 	return this->bloqueTope;

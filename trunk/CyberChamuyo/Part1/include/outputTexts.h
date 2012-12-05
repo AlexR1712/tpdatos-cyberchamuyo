@@ -27,6 +27,14 @@
 #define COMMAND_LOAD_MEMORABLE_QUOTES "cargaFrases"
 #endif /*COMMAND_LOAD_MEMORABLE_QUOTES*/
 
+#ifndef COMMAND_LOAD_INDEXES
+#define COMMAND_LOAD_INDEXES "cargaIndices"
+#endif	/*COMMAND_LOAD_INDEXES*/
+
+#ifndef COMMAND_BOOLEAN_SEARCH
+#define COMMAND_BOOLEAN_SEARCH "busquedaBooleano"
+#endif
+
 #ifndef COMMAND_PRINT_HELP
 #define COMMAND_PRINT_HELP "ayuda"
 #endif /*COMMAND_PRINT_HELP*/

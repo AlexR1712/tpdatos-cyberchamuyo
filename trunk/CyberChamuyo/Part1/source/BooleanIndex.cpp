@@ -12,32 +12,33 @@
 #define MAX_TERM_SIZE 20
 
 BooleanIndex::BooleanIndex() : invertedListsFile("invertedLists.bin") {
+	vocabulary = NULL;
 }
 
-void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>& T, std::string ocurrenceFilePath, IndiceArbol* vocabulary) {
+void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string ocurrenceFilePath, IndiceArbol* vocabulary) {
 	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(5,false);
 	std::string orderedOcurrenceFilePath = "orderedOcurrenceFile.bin";
-	sorter.sort(ocurrenceFilePath,orderedOcurrenceFilePath,false);
+	sorter.sort(ocurrenceFilePath,orderedOcurrenceFilePath,true);
 	VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
-	ocurrenceFile.open(orderedOcurrenceFilePath);
-	unsigned int inv_list_cont = 0;
+	ocurrenceFile.open(orderedOcurrenceFilePath, false);
+	OcurrenceFileRecord ocurrenceRecord = ocurrenceFile.getNextRecord();
 	while(!ocurrenceFile.endOfFile()) {
-		OcurrenceFileRecord ocurrenceRecord = ocurrenceFile.getNextRecord();
-		FixedLengthTRecord termRecord = T.getRecord(ocurrenceRecord.getTermId());
+		FixedLengthTRecord termRecord = T->getRecord(ocurrenceRecord.getTermId());
 		std::string term = termRecord.getTerm();
+		unsigned int inv_list_id;
 		unsigned int previousTerm = ocurrenceRecord.getTermId();
 		invertedList::ListaInvertida* inv_list = new invertedList::ListaInvertida;
-		inv_list->setId(inv_list_cont++);
-		if(!vocabulary->find(term))
-			vocabulary->insert(ocurrenceRecord.getTermId(), term, inv_list_cont);
-		else
-			vocabulary->modify(ocurrenceRecord.getTermId(), term, inv_list_cont);
 		while(ocurrenceRecord.getTermId() == previousTerm) {
 			unsigned int docId = ocurrenceRecord.getDocId();
 			inv_list->insertar(docId);
 			ocurrenceRecord = ocurrenceFile.getNextRecord();
 		}
-		this->invertedListsFile.insertarLista(inv_list);
+		if(!ocurrenceFile.endOfFile())
+			inv_list_id = this->invertedListsFile.insertarLista(inv_list);
+		if(!vocabulary->find(term))
+			vocabulary->insert(ocurrenceRecord.getTermId(), term, inv_list_id);
+		else
+			vocabulary->modify(ocurrenceRecord.getTermId(), term, inv_list_id);
 	}
 }
 

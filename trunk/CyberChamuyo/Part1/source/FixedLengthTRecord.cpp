@@ -9,6 +9,7 @@
 
 FixedLengthTRecord::FixedLengthTRecord(unsigned int size) {
 	this->setRecordSize(size);
+	termId = 0;
 }
 
 void FixedLengthTRecord::setId(unsigned int id) {
@@ -28,11 +29,17 @@ std::string FixedLengthTRecord::getTerm() {
 }
 
 void FixedLengthTRecord::deserialize(std::vector<unsigned char>& data) {
-
+	int pos = 0;
+	unsigned int termSize = 0;
+	termId = Auxiliar::leerEnteroU(data, pos);
+	termSize = Auxiliar::leerEnteroU(data, pos);
+	term = Auxiliar::leerStringU(data, term, pos, termSize);
 }
 
 void FixedLengthTRecord::serialize(std::vector<unsigned char>& data) {
-
+	Auxiliar::insertarEnteroU(data, this->termId);
+	Auxiliar::insertarEnteroU(data, term.size());
+	Auxiliar::insertarStringU(data, this->term);
 }
 
 FixedLengthTRecord::~FixedLengthTRecord() {

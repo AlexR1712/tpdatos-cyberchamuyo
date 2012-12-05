@@ -15,6 +15,7 @@
 #include "../include/wordRankingRecord.h"
 
 IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), N_SIZE) {
+	totalTerms = 1;
 }
 
 bool IndiceArbol::find(std::string word) {
@@ -33,7 +34,12 @@ void IndiceArbol::clear() {
 }
 
 RegistroArbol& IndiceArbol::textSearch(std::string term) {
-	//	TODO
+	if(isEmpty())
+		throw(1);
+	CAlfa* clave = new CAlfa(term);
+	RegistroArbol* ret_reg = new RegistroArbol();
+	bool resultado = arbol.buscar(clave, ret_reg);
+	return *ret_reg;
 }
 
 BinaryDictionaryRecord<true> IndiceArbol::next() {
@@ -52,7 +58,8 @@ bool IndiceArbol::hasNext() {
 void IndiceArbol::insert(std::string& word) {
 	CAlfa* clave = new CAlfa(word);
 	Registro* reg = new RegistroArbol(clave);
-	arbol.insertarRegistro(reg);
+	if(arbol.insertarRegistro(reg) == OK)
+		totalTerms++;
 	//delete reg;
 }
 
@@ -75,7 +82,8 @@ void IndiceArbol::createIndex(std::string in_path) {
 			StringUtilities::sacarN(s);
 			CAlfa* c = new CAlfa(s);
 			Registro* reg = new RegistroArbol(c);
-			arbol.insertarRegistro(reg);
+			if(arbol.insertarRegistro(reg) == OK)
+				totalTerms++;
 			delete reg;
 			record = arch_sec.getNextRecord();
 		} else {
@@ -93,11 +101,19 @@ bool IndiceArbol::isEmpty() {
 }
 
 void IndiceArbol::insert(unsigned int termId, std::string term, unsigned int invListId) {
+	CAlfa* clave = new CAlfa(term);
+	RegistroArbol* reg = new RegistroArbol(clave, termId, invListId);
+	if(arbol.insertarRegistro(reg) == OK)
+		totalTerms++;
+}
+
+unsigned int IndiceArbol::getTotalTerms() {
+	return totalTerms;
 }
 
 void IndiceArbol::modify(unsigned int termId, std::string word, unsigned int invListId) {
 	if(isEmpty())
-		return;
+		return;	//  CAMBIAR POR EXCEPCION DESPUES
 	WordNormalizer normalizer;
 	normalizer.normalizeWord(word);
 	CAlfa* clave = new CAlfa(word);

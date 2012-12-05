@@ -32,7 +32,7 @@ private:
 public:
 	BooleanIndex();
 	void insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, unsigned int totalTerms );
-	void load(FixedLengthRecordSequentialFile<FixedLengthTRecord>& T, std::string ocurrenceFilePath, IndiceArbol* vocabulary);
+	void load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string ocurrenceFilePath, IndiceArbol* vocabulary);
 	std::list<unsigned int> search(std::string term, IndiceArbol* vocabulary);
 	void erasePhrase(unsigned int phraseId);
 	void insertTerm(std::string term);

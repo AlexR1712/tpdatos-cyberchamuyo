@@ -54,6 +54,16 @@ int ArbolBp::buscar(Clave* c, Registro*& reg) {
 	return res;
 }
 
+int ArbolBp::buscar(Clave* c, RegistroArbol*& reg) {
+	//NodoExterno* anteriorUltimoLeido = ultimoNodoLeido;
+	int res = raiz->buscar(c, reg);
+	if((this->max == 0) && res)
+		guardarNodo(raiz, 0);
+	//if((ultimoNodoLeido != anteriorUltimoLeido) && (anteriorUltimoLeido != NULL) && anteriorUltimoLeido != raiz);
+	//		delete anteriorUltimoLeido;
+	return res;
+}
+
 void ArbolBp::setUltimoLeido(NodoExterno* nE) {
 	this->ultimoNodoLeido = nE;
 }
@@ -295,10 +305,7 @@ void ArbolBp::exportar(VariableLengthRecordSequentialFile<WordRankingRecord>& os
 	ultimoNodoLeido = nE;
 	Registro* reg = new RegistroArbol();
 	reg = nE->getRegistro(0, reg);
-	//TODO WTF?!?!?!?
-	unsigned int i = 0;
-	while(reg != NULL && i < 2669) {
-		i++;
+	while(reg != NULL) {
 		record.setNumberOfSearches(reinterpret_cast<RegistroArbol*>(reg)->timesSearched());
 		record.setWord(reinterpret_cast<CAlfa*>(reg->getClave())->getWord());
 		os.putRecord(record);

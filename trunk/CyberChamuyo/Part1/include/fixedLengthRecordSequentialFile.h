@@ -231,6 +231,9 @@ template<class Record> unsigned int FixedLengthRecordSequentialFile<Record>::put
 
 	fixedLengthRecord.serialize(recordAsCharVector);
 	recordAsCharArray = new char[this->getRecordSize()];
+	for (unsigned int i = 0; i < this->getRecordSize(); ++i) {
+		recordAsCharArray[i] = 0;
+	}
 	for (unsigned int i = 0; i < recordAsCharVector.size(); i++) {
 		recordAsCharArray[i] = recordAsCharVector[i];
 	}

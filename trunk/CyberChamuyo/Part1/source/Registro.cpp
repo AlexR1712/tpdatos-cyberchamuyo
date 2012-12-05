@@ -193,6 +193,7 @@ Registro& Registro::operator=(Registro& r) {
 	}
 	*clave = *(r.getClave());
 	dato = r.getDato();
+	return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const Registro& r) {

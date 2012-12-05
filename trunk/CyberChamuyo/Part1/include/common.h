@@ -25,8 +25,10 @@ std::string int_to_dec( int i );
 std::string float_to_dec(float f);
 int leerEntero(const std::vector<char>* vec, int& pos);
 std::string& leerString(const std::vector<char>* vec, std::string& s, int& pos, int size);
+std::string& leerStringU(const std::vector<unsigned char>& vec, std::string& s, int& pos, int size);
 std::vector<char>* insertarEntero(std::vector<char>* vec, const int j);
 std::vector<char>* insertarString(std::vector<char>* vec, const std::string& s);
+std::vector<unsigned char>& insertarStringU(std::vector<unsigned char>& vec, std::string s);
 int leerEnteroU(const std::vector<unsigned char>& vec, int& pos);
 std::vector<unsigned char>& insertarEnteroU(std::vector<unsigned char>& vec, const int j);
 }
