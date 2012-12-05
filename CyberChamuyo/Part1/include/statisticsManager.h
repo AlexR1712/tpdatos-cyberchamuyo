@@ -47,6 +47,14 @@
 #define RANKINGS_FILE_PATH_ORDERED "bin/rankings_ordered.bin"
 #endif /*RANKINGS_FILE_PATH_ORDERED*/
 
+#ifndef OCURRENCE_FILE_PATH
+#define OCURRENCE_FILE_PATH "bin/ocurrenceFile.bin"
+#endif /*OCURRENCE_FILE_PATH*/
+
+#ifndef OCURRENCE_FILE_PATH_ORDERED
+#define OCURRENCE_FILE_PATH_ORDERED "bin/ocurrenceFile_ordered.bin"
+#endif /*OCURRENCE_FILE_PATH_ORDERED*/
+
 #ifndef DICTIONARY_INDEX_FILE_PATH
 #define DICTIONARY_INDEX_FILE_PATH "bin/dic.bin"
 #endif /*DICTIONARY_INDEX_FILE_PATH*/
@@ -202,6 +210,12 @@ private:
 	void insertPhrase(std::string phrase);
 
 	std::vector<std::string> tokenizePhrase(std::string phrase);
+
+	void index();
+
+	void erasePhrase(unsigned int idPhrase);
+
+	void addPhrase(std::string phrase);
 
 public:
 	//Constructor.

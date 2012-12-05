@@ -191,6 +191,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	unsigned int totalQuotes = 0;
 	unsigned int totalWords = 0;
 	unsigned int totalFailures = 0;
+	unsigned int idTermino = 0;
 	ExternalSorter<VariableLengthRecordSequentialFile<WordRankingRecord>,WordRankingRecord > externalSorter(10,true);
 
 	memorableQuotesFile.open(this->getInputMemorableQuotesFilePath());
@@ -198,8 +199,9 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		//////////////////77 TEMPORAL /////////////////////
 		T->open("tFile.bin",true);
 		VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
-		ocurrenceFilePath = "ocurrenceFile.bin";
-		ocurrenceFile.open(ocurrenceFilePath,true);
+		//TODO quitar esta variable, es un path interno de un archivo temporal, puede estar harcodeada en una constante.
+		ocurrenceFilePath = OCURRENCE_FILE_PATH;
+		ocurrenceFile.open(OCURRENCE_FILE_PATH,true);
 		///////////
 		this->getDictionary()->rewind();
 		while (!memorableQuotesFile.endOfFile()) {
@@ -223,16 +225,6 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 				//StringUtilities::quitarPuntuacion(phraseWords[i]);
 				if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 					totalWords++;
-					///////////////////// TEMPORAL ////////////////
-					FixedLengthTRecord tRecord(20);
-					tRecord.setTerm(phraseWords[i]);
-					tRecord.setId(totalWords);
-					T->putRecord(tRecord);
-					OcurrenceFileRecord ocurrenceRecord;
-					ocurrenceRecord.setTermId(totalWords);
-					ocurrenceRecord.setDocId(totalQuotes);
-					ocurrenceFile.putRecord(ocurrenceRecord);
-					///////////////////////////////////////////////
 					//si no está en el índice de fallos ni en el diccionario, se inserta en el índice de fallos y se
 					//contabiliza.
 					if (this->getNotFoundWords()->find(phraseWords[i])) {
@@ -241,6 +233,18 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 						if (!this->getDictionary()->find(phraseWords[i])) {
 							this->getNotFoundWords()->insert(phraseWords[i]);
 							totalFailures++;
+						} else {
+							idTermino++;
+							///////////////////// TEMPORAL ////////////////
+							FixedLengthTRecord tRecord(20);
+							tRecord.setTerm(phraseWords[i]);
+							tRecord.setId(idTermino);
+							T->putRecord(tRecord);
+							OcurrenceFileRecord ocurrenceRecord;
+							ocurrenceRecord.setTermId(idTermino);
+							ocurrenceRecord.setDocId(totalQuotes);
+							ocurrenceFile.putRecord(ocurrenceRecord);
+							///////////////////////////////////////////////
 						}
 					}
 				}
@@ -331,29 +335,90 @@ void StatisticsManager::printWordRanking(unsigned int rankingSize) {
 	} else {
 		std::cout << ERROR_TEXT_INVALID_RANKING_SIZE << std::endl;
 	}
-//	std::list<BinaryDictionaryRecord<true> > ranking;
-//	unsigned int i = 0;
-//
-//	if (rankingSize > 0) {
-//		while(!wordRankingFile.endOfFile()) {
-//			record = wordRankingFile.getRecord();
-//			ranking.push_back(record);
-//			if (ranking.size() > rankingSize)
-//				ranking.pop_front();
-//		}
-//		ranking.reverse();
-//
-//		std::cout << TEXT_MOST_SEARCHED_WORDS_TITLE(StringUtilities::intToString(rankingSize)) << std::endl;
-//		if (!ranking.empty()) {
-//			for (std::list<BinaryDictionaryRecord<true> >::iterator it = ranking.begin(); it != ranking.end(); it++ ) {
-//				i++;
-//				std::cout << TEXT_MOST_SEARCHED_WORDS_ITEM(StringUtilities::intToString(i + 1),it->getWord(),StringUtilities::intToString(it->getId())) << std::endl;
-//			}
-//		} else
-//			std::cout << "No hay palabras mas buscadas." << std::endl;
-//	} else {
-//		std::cout << ERROR_TEXT_INVALID_RANKING_SIZE << std::endl;
-//	}
+}
+
+void StatisticsManager::index() {
+	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(5,false);
+	VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFileOrdered;
+	OcurrenceFileRecord ocurrenceRecord;
+	unsigned int idTermino = 0;
+	unsigned int idListaInvertida = 0;
+
+	sorter.sort(OCURRENCE_FILE_PATH,OCURRENCE_FILE_PATH_ORDERED,false);
+	ocurrenceFileOrdered.open(OCURRENCE_FILE_PATH_ORDERED);
+
+	//asumo que el ID de la lista invertida es incremental.
+	if (ocurrenceFileOrdered.isFileExists()) {
+		while(!ocurrenceFileOrdered.endOfFile()) {
+			ocurrenceRecord = ocurrenceFileOrdered.getNextRecord();
+			if (idTermino != ocurrenceRecord.getTermId()) {
+				idTermino = ocurrenceRecord.getTermId();
+				//idListaInvertida = cosaQueHaceListasInvertidas.create(idTermino);
+				this->getDictionary()->insert(ocurrenceRecord.getTermId(),this->T->getRecord(ocurrenceRecord.getTermId()).getTerm(),idListaInvertida);
+				//cosaQueHacePorcionesDeFirmas.create(idTermino);
+			}
+			//cosaQueHaceListasInvertidas.add(idListaInvertida,idTermino,ocurrenceRecord.getDocId());
+			//cosaQueHacePorcionesDeFirmas.add(idTermino,ocurrenceRecord.getDocId());
+		}
+	} else {
+		//TODO este error debe estar en el open del archivo.
+		std::cout << "Error al intentar abrir el archivo" << std::endl;
+	}
+
+}
+
+void StatisticsManager::erasePhrase(unsigned int idPhrase) {
+	WordNormalizer wordNormalizer;
+	std::vector<std::string> phraseWords;
+	std::string phrase;
+
+	this->getMemorableQuotes()->getFrase(idPhrase,phrase);
+	StringUtilities::splitString(phrase,phraseWords,QUOTES_WORDS_SEPARATOR);
+
+	for (unsigned int i = 0; i < phraseWords[i].size(); i++) {
+		phraseWords[i] = wordNormalizer.normalizeWord(phraseWords[i]);
+		if ( (this->getStopWords().find(phraseWords[i]) != this->getStopWords().end()) && !(this->getNotFoundWords()->find(phraseWords[i])) ) {
+			//habria que tener un find que devuelva el id de la frase y el id de la lista invertida en un objeto o similar.
+			this->getDictionary()->find(phraseWords[i]);
+			//cosaQueHaceListasInvertidas.delete(idListaInvertida,idTermino,docId);
+			//cosaQueHacePorcionesDeFirmas.delete(idTermino,ocurrenceRecord.getDocId());
+			//this->getDictionary()->erase(phraseWords[i]);
+			this->setNumberOfWords(this->getNumberOfWords() - 1);
+		}
+	}
+	this->setNumberOfQuotes(this->getNumberOfQuotes() - 1);
+}
+
+void StatisticsManager::addPhrase(std::string phrase) {
+	WordNormalizer wordNormalizer;
+	std::vector<std::string> phraseWords;
+
+	StringUtilities::splitString(phrase,phraseWords,QUOTES_WORDS_SEPARATOR);
+
+	for (unsigned int i = 0; i < phraseWords.size(); i++) {
+		phraseWords[i] = wordNormalizer.normalizeWord(phraseWords[i]);
+		if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
+			this->setNumberOfWords(this->getNumberOfWords() + 1);
+			if (this->getNotFoundWords()->find(phraseWords[i])) {
+				//this->getNotFoundWords()->erase(phraseWords[i]));
+			}
+			if (!this->getDictionary()->find(phraseWords[i])) {
+				this->setNumberOfFailures(this->getNumberOfFailures() + 1);
+				this->getDictionary()->insert(phraseWords[i]);
+				//cosaQueHaceListasInvertidas.add(idListaInvertida,idTermino,docId);
+				//cosaQueHacePorcionesDeFirmas.add(idTermino,ocurrenceRecord.getDocId());
+				///////////////////// TEMPORAL ////////////////
+				FixedLengthTRecord tRecord(20);
+				tRecord.setTerm(phraseWords[i]);
+				//se necesita tener el ultimo id de termino
+				//tRecord.setId(T->getLastRecordPosition() + 1);
+				T->putRecord(tRecord);
+				///////////////////////////////////////////////
+			}
+		}
+	}
+
+	this->getMemorableQuotes()->insert(phrase);
 }
 
 bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::string>& commandParams) {
