@@ -18,6 +18,7 @@
 #include "RegistroVariable.h"
 #include "BloqueNodo.h"
 #include "wordRankingRecord.h"
+#include "RegistroArbol.h"
 
 #define N_SIZE 480		//  tamaño de los nodos
 #define OK 0			//  si insercion OK
@@ -48,6 +49,8 @@ public:
 	//  1, o si no lo encuentra coloca en reg el primero encontrado mayor al buscado
 	//  y devuelve 0
 	int buscar(Clave* c, Registro*& reg);
+
+	int buscar(Clave* c, RegistroArbol*& reg);
 
 	void modify(Registro* reg);
 

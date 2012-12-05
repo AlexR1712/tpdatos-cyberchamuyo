@@ -112,6 +112,15 @@ std::string& leerString(const std::vector<char>* vec, std::string& s, int& pos, 
 	return s;
 }
 
+std::string& leerStringU(const std::vector<unsigned char>& vec, std::string& s, int& pos, int size) {
+	std::vector<unsigned char>::iterator it;
+	for(int i = pos; i < pos + size; ++i) {
+		s.push_back((vec)[i]);
+	}
+	pos += size;
+	return s;
+}
+
 std::vector<char>* insertarEntero(std::vector<char>* vec, const int j) {
 	char buffer[4];
 	int int_size = sizeof(int);
@@ -134,12 +143,19 @@ int leerEnteroU(const std::vector<unsigned char>& vec, int& pos) {
 	int int_size = sizeof(int);
 	unsigned char buffer[4];
 	for(int i = 0; i < int_size; ++i) {
-		buffer[i] = (vec)[i];
+		buffer[i] = (vec)[pos + i];
 	}
 	pos += sizeof(int);
 	int ret = -1;
 	memcpy(&ret, buffer, sizeof(int));
 	return ret;
+}
+
+std::vector<unsigned char>& insertarStringU(std::vector<unsigned char>& vec, std::string s) {
+	for(unsigned int i = 0; i < s.size(); ++i) {
+		vec.push_back(s[i]);
+	}
+	return vec;
 }
 
 

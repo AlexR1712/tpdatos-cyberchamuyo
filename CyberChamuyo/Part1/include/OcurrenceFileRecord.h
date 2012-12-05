@@ -27,7 +27,7 @@ public:
 
 	void setDocId(unsigned int id);
 
-	void deserialize(std::vector<unsigned char>& recordAsCharVector);
+	virtual void deserialize(std::vector<unsigned char>& recordAsCharVector);
 
 	OcurrenceFileRecord& operator=(const OcurrenceFileRecord& other);
 
@@ -35,9 +35,9 @@ public:
 
 	bool operator<(const OcurrenceFileRecord& other);
 
-	void serialize(std::vector<unsigned char>& recordAsCharVector);
+	virtual void serialize(std::vector<unsigned char>& recordAsCharVector);
 
-	~OcurrenceFileRecord();
+	virtual ~OcurrenceFileRecord();
 };
 
 #endif /* OCURRENCEFILERECORD_H_ */

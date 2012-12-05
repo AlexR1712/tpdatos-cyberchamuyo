@@ -11,32 +11,38 @@
 RegistroArbol::RegistroArbol() : Registro() {
 	n = 0;
 	s = 0;
+	termId = 0;
 }
 
 RegistroArbol::RegistroArbol(Clave* c) : Registro(c) {
 	n = 0;
 	s = 0;
+	termId = 0;
 }
 
-RegistroArbol::RegistroArbol(Clave* c, long ne, short se) : Registro(c) {
-	n = ne;
+RegistroArbol::RegistroArbol(Clave* c, long tId, unsigned int se) : Registro(c) {
+	n = 0;
 	s = se;
+	termId = tId;
 }
 
 
 RegistroArbol::RegistroArbol(Clave* c, std::string dat) : Registro(c, dat) {
 	n = 0;
 	s = 0;
+	termId = 0;
 }
 
-RegistroArbol::RegistroArbol(Clave* c, std::string dat, long ne, short se) : Registro(c, dat) {
-	n = ne;
+RegistroArbol::RegistroArbol(Clave* c, std::string dat, long tId, unsigned int se) : Registro(c, dat) {
+	n = 0;
 	s = se;
+	termId = tId;
 }
 
 RegistroArbol::RegistroArbol(RegistroArbol& reg) : Registro(reg) {
 	n = reg.n;
 	s = reg.s;
+	termId = reg.termId;
 }
 
 
@@ -47,6 +53,7 @@ std::vector<char>* RegistroArbol::serializar(FrontCoding& encoder) {
 	std::vector<char>* ret = Registro::serializar(encoder);
 	ret = Auxiliar::insertarEntero(ret, n);
 	ret = Auxiliar::insertarEntero(ret, s);
+	ret = Auxiliar::insertarEntero(ret, termId);
 	return ret;
 }
 
@@ -55,6 +62,7 @@ void RegistroArbol::hidratar(const std::vector<char>* vec, FrontCoding& decoder,
 	Registro::hidratar(vec, decoder, pos);
 	n = Auxiliar::leerEntero(vec, pos);
 	s = Auxiliar::leerEntero(vec, pos);
+	termId = Auxiliar::leerEntero(vec, pos);
 }
 
 Registro* RegistroArbol::find() {
@@ -66,7 +74,7 @@ unsigned long RegistroArbol::getTermId() {
 	return termId;
 }
 
-unsigned short RegistroArbol::getListId() {
+unsigned int RegistroArbol::getListId() {
 	return s;
 }
 
@@ -83,8 +91,10 @@ Registro& RegistroArbol::operator=(Registro& r) {
 		switch(tipo) {
 		case 0:
 			clave = new C_Entero();
+			break;
 		case 1:
 			clave = new CAlfa();
+			break;
 		}
 	}
 	*clave = *(r.getClave());
@@ -92,6 +102,8 @@ Registro& RegistroArbol::operator=(Registro& r) {
 	Registro::setDato(r.getDato());
 	n = reinterpret_cast<RegistroArbol&>(r).n;
 	s = reinterpret_cast<RegistroArbol&>(r).s;
+	termId = reinterpret_cast<RegistroArbol&>(r).termId;
+	return *this;
 }
 
 Registro& RegistroArbol::operator=(RegistroArbol& r) {
@@ -103,8 +115,10 @@ Registro& RegistroArbol::operator=(RegistroArbol& r) {
 		switch(tipo) {
 		case 0:
 			clave = new C_Entero();
+			break;
 		case 1:
 			clave = new CAlfa();
+			break;
 		}
 	}
 	*clave = *(r.getClave());
@@ -112,6 +126,8 @@ Registro& RegistroArbol::operator=(RegistroArbol& r) {
 	Registro::setDato(r.getDato());
 	n = r.n;
 	s = r.s;
+	termId = r.termId;
+	return *this;
 }
 
 std::ostream& operator<<(std::ostream& os, const RegistroArbol& r) {
@@ -123,9 +139,10 @@ std::ostream& operator<<(std::ostream& os, const RegistroArbol& r) {
 void RegistroArbol::setReg(Registro& reg) {
 	n = dynamic_cast<RegistroArbol&>(reg).n;
 	s = dynamic_cast<RegistroArbol&>(reg).s;
+	termId = dynamic_cast<RegistroArbol&>(reg).termId;
 }
 
 int RegistroArbol::totalSize() {
 	int regSize = Registro::totalSize();
-	return regSize + 2 * sizeof(int);
+	return regSize + 3 * sizeof(int);
 }

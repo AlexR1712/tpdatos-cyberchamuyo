@@ -321,24 +321,11 @@ int NodoExterno::modify(Registro* reg) {
 	for(it = registros.begin(); it != registros.end() && *c > *((*it)->getClave()); ++it)
 		++nReg;
 	if(it == registros.end()) {
-		if(!siguiente) {
-			return 0;
-		}
-		std::vector<char>* nodo_data = arbol->leerNodo2(siguiente);
-		NodoExterno* nE = new NodoExterno(0, arbol);
-		nE->hidratar(nodo_data, pos);
-		**it = *reg;
-		arbol->setUltimoLeido(nE);
-		arbol->setUltimoRegistroLeido(0);
-		arbol->guardarNodo(nE, siguiente);
-		//delete nE;
-		delete nodo_data;
-		return 0;
+		throw(1);
 	}
-	**it = *reg;
-	arbol->setUltimoLeido(this); /// aca cambiar
-	arbol->setUltimoRegistroLeido(nReg);
 	if(*c == *((*it)->getClave())) {
+		delete *it;
+		*it = reg;
 		return 1;
 	}
 	return 0;

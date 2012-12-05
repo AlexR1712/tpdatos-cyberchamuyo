@@ -15,6 +15,8 @@
 #include "OcurrenceFileRecord.h"
 #include "BooleanIndex.h"
 
+#define T_RECORD_SIZE 50
+
 #ifndef CONFIG_DIRECTORY_PATH
 #define CONFIG_DIRECTORY_PATH "config"
 #endif /*CONFIG_DIRECTORY_PATH*/
@@ -46,14 +48,6 @@
 #ifndef RANKINGS_FILE_PATH_ORDERED
 #define RANKINGS_FILE_PATH_ORDERED "bin/rankings_ordered.bin"
 #endif /*RANKINGS_FILE_PATH_ORDERED*/
-
-#ifndef OCURRENCE_FILE_PATH
-#define OCURRENCE_FILE_PATH "bin/ocurrenceFile.bin"
-#endif /*OCURRENCE_FILE_PATH*/
-
-#ifndef OCURRENCE_FILE_PATH_ORDERED
-#define OCURRENCE_FILE_PATH_ORDERED "bin/ocurrenceFile_ordered.bin"
-#endif /*OCURRENCE_FILE_PATH_ORDERED*/
 
 #ifndef DICTIONARY_INDEX_FILE_PATH
 #define DICTIONARY_INDEX_FILE_PATH "bin/dic.bin"
@@ -211,11 +205,7 @@ private:
 
 	std::vector<std::string> tokenizePhrase(std::string phrase);
 
-	void index();
-
-	void erasePhrase(unsigned int idPhrase);
-
-	void addPhrase(std::string phrase);
+	void search(std::vector<std::string> terms);
 
 public:
 	//Constructor.

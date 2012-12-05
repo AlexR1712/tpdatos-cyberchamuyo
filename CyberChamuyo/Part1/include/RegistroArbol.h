@@ -16,10 +16,10 @@ public:
 	RegistroArbol();
 	RegistroArbol(Clave* c);
 	RegistroArbol(Clave* c, std::string s);
-	RegistroArbol(Clave* c, long ne, short se);
-	RegistroArbol(Clave* c, std::string s,long ne, short se);
+	RegistroArbol(Clave* c, long ne, unsigned int se);
+	RegistroArbol(Clave* c, std::string s,long ne, unsigned int se);
 	RegistroArbol(RegistroArbol& reg);
-	unsigned short getListId();
+	unsigned int getListId();
 	unsigned long getTermId();
 	virtual std::vector<char>* serializar(FrontCoding& encoder);
 	virtual void hidratar(const std::vector<char>* vec, FrontCoding& decoder,int& pos);
@@ -33,7 +33,7 @@ public:
 	virtual int totalSize();
 private:
 	long n;
-	unsigned short s;
+	unsigned int s;
 	unsigned int termId;
 };
 

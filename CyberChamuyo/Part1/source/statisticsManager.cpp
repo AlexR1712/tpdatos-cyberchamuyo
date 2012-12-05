@@ -17,6 +17,40 @@
 #include "../include/wordRankingRecord.h"
 
 
+std::list<unsigned int> lAnd(std::vector<std::list<unsigned int> > searchResultLists) {
+	int unsigned max = 100000000;
+	for(int i = 0; i < searchResultLists.size(); ++i) {
+		searchResultLists[i].push_back(max);
+	}
+	std::list<unsigned int>::iterator current_it = searchResultLists[0].begin();
+	std::list<unsigned int> current_list = searchResultLists[0];
+	std::list<unsigned int>::iterator next_it;
+	std::list<unsigned int> totalRes;
+	for(int i = 1; i < searchResultLists.size(); ++i) {
+		std::list<unsigned int> res;
+		next_it = searchResultLists[i].begin();
+		std::list<unsigned int> next_list = searchResultLists[i];
+		while(*current_it != max && *next_it != max) {
+			if(*current_it == *next_it) {
+				res.push_back(*current_it);
+				current_it++;
+				next_it++;
+			} else {
+				if(*current_it > *next_it)
+					++next_it;
+				else {
+					++current_it;
+				}
+			}
+		}
+		current_list = res;
+		current_it = current_list.begin();
+		totalRes = res;
+	}
+	return totalRes;
+}
+
+
 StatisticsManager::StatisticsManager() {
 	if (this->checkDirectoryStructure()) {
 		PropertiesLoader propertiesLoader("config/statisticsManager.properties");
@@ -26,7 +60,8 @@ StatisticsManager::StatisticsManager() {
 		this->dictionary = new IndiceArbol(DICTIONARY_INDEX_FILE_PATH);
 		this->notFoundWords = new IndiceArbol(NOT_FOUND_WORDS_INDEX_FILE_PATH);
 		this->memorableQuotes = new Hash::DispersionEx(MEMORABLE_QUOTES_INDEX_FILE_PATH);
-		this->T = new FixedLengthRecordSequentialFile<FixedLengthTRecord>(20);
+		this->T = new FixedLengthRecordSequentialFile<FixedLengthTRecord>(T_RECORD_SIZE);
+		this->booleanIndex = new BooleanIndex();
 		this->numberOfFailures = 0;
 		this->numberOfQuotes = 0;
 		this->numberOfWords = 0;
@@ -191,65 +226,64 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	unsigned int totalQuotes = 0;
 	unsigned int totalWords = 0;
 	unsigned int totalFailures = 0;
-	unsigned int idTermino = 0;
 	ExternalSorter<VariableLengthRecordSequentialFile<WordRankingRecord>,WordRankingRecord > externalSorter(10,true);
 
 	memorableQuotesFile.open(this->getInputMemorableQuotesFilePath());
 	if (memorableQuotesFile.isFileExists()) {
-		//////////////////77 TEMPORAL /////////////////////
+		////////////////// TEMPORAL /////////////////////
 		T->open("tFile.bin",true);
 		VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
-		//TODO quitar esta variable, es un path interno de un archivo temporal, puede estar harcodeada en una constante.
-		ocurrenceFilePath = OCURRENCE_FILE_PATH;
-		ocurrenceFile.open(OCURRENCE_FILE_PATH,true);
+		ocurrenceFilePath = "ocurrenceFile.bin";
+		ocurrenceFile.open(ocurrenceFilePath,true);
 		///////////
 		this->getDictionary()->rewind();
 		while (!memorableQuotesFile.endOfFile()) {
+			std::vector<std::string> terminosYaInsertados;
 			phrase = memorableQuotesFile.getNextRecord().getData();
 			//separo el autor de la frase
 			StringUtilities::splitString(phrase,phraseWords,AUTHOR_QUOTE_SEPARATOR);
 			//separo la frase en palabras
 			StringUtilities::splitString(phraseWords[phraseWords.size() - 1],phraseWords,QUOTES_WORDS_SEPARATOR);
 			totalQuotes++;
-
-
-			std::cout << StringUtilities::intToString(totalQuotes) << std::endl;
-			if (totalQuotes == 129)
-				std::cout << "...IT'S GONNA BLOW!" << std::endl;
-
 			for (unsigned int i = 0; i < phraseWords.size(); i++) {
 				//chequeo que no sea stopWord.
-				//StringUtilities::sacarR(phraseWords[i]);
+				bool enc = false;
+				unsigned int termId = 1;
 				phraseWords[i] = normalizer.normalizeWord(phraseWords[i]);
-				std::cout << phraseWords[i] << std::endl;
-				//StringUtilities::quitarPuntuacion(phraseWords[i]);
 				if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 					totalWords++;
-					//si no está en el índice de fallos ni en el diccionario, se inserta en el índice de fallos y se
-					//contabiliza.
 					if (this->getNotFoundWords()->find(phraseWords[i])) {
 						totalFailures++;
+					}
+					if (!this->getDictionary()->find(phraseWords[i])) {
+						termId = this->getDictionary()->getTotalTerms();
+						this->getNotFoundWords()->insert(phraseWords[i]);
+						totalFailures++;
+						this->getDictionary()->insert(termId,phraseWords[i], 0);
+						FixedLengthTRecord tRecord(T_RECORD_SIZE);
+						tRecord.setTerm(phraseWords[i]);
+						tRecord.setId(termId);
+						T->putRecord(tRecord);
 					} else {
-						if (!this->getDictionary()->find(phraseWords[i])) {
-							this->getNotFoundWords()->insert(phraseWords[i]);
-							totalFailures++;
-						} else {
-							idTermino++;
-							///////////////////// TEMPORAL ////////////////
-							FixedLengthTRecord tRecord(20);
-							tRecord.setTerm(phraseWords[i]);
-							tRecord.setId(idTermino);
-							T->putRecord(tRecord);
-							OcurrenceFileRecord ocurrenceRecord;
-							ocurrenceRecord.setTermId(idTermino);
-							ocurrenceRecord.setDocId(totalQuotes);
-							ocurrenceFile.putRecord(ocurrenceRecord);
-							///////////////////////////////////////////////
-						}
+						RegistroArbol reg;
+						reg = this->getDictionary()->textSearch(phraseWords[i]);
+						termId = reg.getTermId();
+					}
+					for(int j = 0; j < terminosYaInsertados.size(); ++j) {
+						if(phraseWords[i] == terminosYaInsertados[j])
+							enc = true;
+					}
+				///////////////////// TEMPORAL ////////////////
+					if(!enc) {
+						terminosYaInsertados.push_back(phraseWords[i]);
+						OcurrenceFileRecord ocurrenceRecord;
+						ocurrenceRecord.setTermId(termId);
+						ocurrenceRecord.setDocId(totalQuotes);
+						ocurrenceFile.putRecord(ocurrenceRecord);
+						///////////////////////////////////////////////
 					}
 				}
 			}
-
 			if (insertInHash) {
 				this->getMemorableQuotes()->insert(phrase);
 			}
@@ -260,7 +294,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		this->setNumberOfQuotes(totalQuotes);
 		this->setNumberOfFailures(totalFailures);
 		T->close();
-
+		ocurrenceFile.close();
 		//Se genera el ranking de palabras.
 		this->getDictionary()->exportar(RANKINGS_FILE_PATH);
 		externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
@@ -335,7 +369,9 @@ void StatisticsManager::printWordRanking(unsigned int rankingSize) {
 	} else {
 		std::cout << ERROR_TEXT_INVALID_RANKING_SIZE << std::endl;
 	}
+//	}
 }
+
 
 void StatisticsManager::index() {
 	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(5,false);
@@ -427,7 +463,9 @@ bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::st
 		  (command != COMMAND_PRINT_NOT_FOUND_WORDS) &&
 		  (command != COMMAND_PRINT_WORD_RANKING) &&
 		  (command != COMMAND_LOAD_DICTIONARY) &&
+		  (command != COMMAND_LOAD_INDEXES) &&
 		  (command != COMMAND_LOAD_MEMORABLE_QUOTES) &&
+		  (command != COMMAND_BOOLEAN_SEARCH) &&
 		  (command != COMMAND_PRINT_HELP)) ||
 		 (((command == COMMAND_PRINT_WORD_RANKING) ||
 		   (command == COMMAND_LOAD_DICTIONARY) ||
@@ -536,6 +574,30 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 //			delete notFoundWords;
 //			notFoundWords = new IndiceArbol(NOTFOUND_NAME);
 			this->loadMemorableQuotes(true);
+		}
+
+		if (command == COMMAND_LOAD_INDEXES) {
+			T->open("tFile.bin", false);
+			this->booleanIndex->load(this->T, this->ocurrenceFilePath, this->getDictionary());
+		}
+
+		if (command == COMMAND_BOOLEAN_SEARCH) {
+			std::string word = commandParams[0];
+			std::list<unsigned int> res;
+			std::vector<std::list<unsigned int> > res_lists;
+			for(int i = 0; i < commandParams.size(); ++i) {
+				res_lists.push_back(this->booleanIndex->search(word, this->getDictionary()));
+			}
+			if(res_lists.size() > 1)
+				res = lAnd(res_lists);
+			else
+				res = res_lists[0];
+			std::list<unsigned int>::iterator it;
+			for(it = res.begin(); it != res.end(); ++it) {
+				std::string frase;
+				this->getMemorableQuotes()->getFrase(*it, frase);
+				std::cout << frase << std::endl;
+			}
 		}
 
 		if (command == COMMAND_PRINT_HELP) {

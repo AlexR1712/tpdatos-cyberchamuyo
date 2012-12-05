@@ -63,9 +63,12 @@ public:
 	void modify(unsigned int termId, std::string term, unsigned int invListId);
 
 	void mostrar();
+
+	unsigned int getTotalTerms();
 private:
 	void crearIndice(std::ifstream& arch);
 	ArbolBp arbol;
+	unsigned int totalTerms;
 };
 
 #endif /* INDICEARBOL_H_ */

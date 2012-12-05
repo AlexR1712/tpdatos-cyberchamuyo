@@ -10,7 +10,8 @@
 
 OcurrenceFileRecord::OcurrenceFileRecord() {
 	// TODO Auto-generated constructor stub
-
+	docId = 0;
+	termId = 0;
 }
 
 void OcurrenceFileRecord::serialize(std::vector<unsigned char>& recordAsCharVector) {

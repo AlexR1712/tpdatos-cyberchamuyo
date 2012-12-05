@@ -142,4 +142,6 @@ unsigned int ArchivoBloquesFijos::getNuevoId(void) {
 	return this->autoId++;
 }
 
-
+unsigned int ArchivoBloquesFijos::getId() {
+	return this->autoId;
+}

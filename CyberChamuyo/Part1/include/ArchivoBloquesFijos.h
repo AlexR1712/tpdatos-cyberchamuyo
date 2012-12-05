@@ -53,6 +53,7 @@ public:
     virtual ~ArchivoBloquesFijos();
     int VerificarBloqueLibre(unsigned int bloque);
     unsigned int getNuevoId(void);
+    unsigned int getId();
     void clear(void);
     friend std::ostream& operator<<(std::ostream& oss,
 					  ArchivoBloquesFijos &arch);
