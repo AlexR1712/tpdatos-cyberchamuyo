@@ -35,6 +35,10 @@
 #define COMMAND_BOOLEAN_SEARCH "busquedaBooleano"
 #endif
 
+#ifndef COMMAND_ADD_PHRASE
+#define COMMAND_ADD_PHRASE "agregarFrase"
+#endif
+
 #ifndef COMMAND_PRINT_HELP
 #define COMMAND_PRINT_HELP "ayuda"
 #endif /*COMMAND_PRINT_HELP*/

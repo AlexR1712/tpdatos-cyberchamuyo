@@ -42,12 +42,34 @@ void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, 
 	}
 }
 
+unsigned int BooleanIndex::addTerm(std::string term, unsigned int docId) {
+	invertedList::ListaInvertida* list = new invertedList::ListaInvertida;
+	list->insertar(docId);	//  TODO asegurarme de q inserte ordenado
+	unsigned int inv_list_id = invertedListsFile.insertarLista(list);
+	return inv_list_id;
+}
+
+void BooleanIndex::addDocToTerm(std::string term, unsigned int docId, IndiceArbol* vocabulary) {
+	RegistroArbol reg(vocabulary->textSearch(term));
+	unsigned int listId = reg.getListId();
+	invertedList::ListaInvertida* inv_list = new invertedList::ListaInvertida;
+	inv_list = this->invertedListsFile.getLista(listId);
+	inv_list->insertar(docId);
+	invertedListsFile.actualizarLista(inv_list, listId);
+}
+
 std::list<unsigned int> BooleanIndex::search(std::string term, IndiceArbol* vocabulary) {
 	RegistroArbol reg(vocabulary->textSearch(term));
 	unsigned int listId = reg.getListId();
 	invertedList::ListaInvertida* inv_list = new invertedList::ListaInvertida;
 	inv_list = this->invertedListsFile.getLista(listId);
 	std::list<unsigned int> res = inv_list->getParticion();
+
+	//std::list<unsigned int>::iterator it;
+	//for(it = res.begin(); it != res.end(); ++it) {
+	//	std::cout << *it;
+	//}
+	//std::cout << std::endl;
 	return res;
 }
 
@@ -79,9 +101,6 @@ void BooleanIndex::insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLeng
 	}
 }
 
-void insertTerm(std::string term) {
-	//  Hace falta esto realmente??
-}
 
 BooleanIndex::~BooleanIndex() {
 	// TODO Auto-generated destructor stub

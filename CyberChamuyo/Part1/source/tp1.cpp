@@ -18,7 +18,8 @@ int main(int argc, char *argv[]){
 	//cargaDiccionario inputFiles/dictionary2.txt
 	//cargaFrases inputFiles/frases-celebres.txt
 
-	if (statisticsManager.isSuccessfullInit()) {
+	if
+	(statisticsManager.isSuccessfullInit()) {
 		statisticsManager.printHelp();
 		do {
 			std::cout << "Ingrese un comando: " << std::endl;
