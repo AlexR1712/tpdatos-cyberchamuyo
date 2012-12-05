@@ -12,7 +12,7 @@
 #include "ListaInvertida.h"
 #include "BloqueListaInvertida.h"
 
-#define TAM_BLOQUE_LINV_FILE 24
+#define TAM_BLOQUE_LINV_FILE 64
 
 namespace invertedList {
 

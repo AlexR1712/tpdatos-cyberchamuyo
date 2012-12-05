@@ -15,7 +15,7 @@
 #include "../include/fixedLengthRecordSequentialFile.h"
 #include "../include/textFile.h"
 #include "../include/wordRankingRecord.h"
-
+#include <time.h>
 
 std::list<unsigned int> lAnd(std::vector<std::list<unsigned int> > searchResultLists) {
 	int unsigned max = 100000000;
@@ -231,7 +231,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	memorableQuotesFile.open(this->getInputMemorableQuotesFilePath());
 	if (memorableQuotesFile.isFileExists()) {
 		////////////////// TEMPORAL /////////////////////
-		T->open("tFile.bin",true);
+		T->open(T_FILE_PATH,true);
 		VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
 		ocurrenceFilePath = "ocurrenceFile.bin";
 		ocurrenceFile.open(ocurrenceFilePath,true);
@@ -256,7 +256,8 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 						totalFailures++;
 					}
 					if (!this->getDictionary()->find(phraseWords[i])) {
-						termId = this->getDictionary()->getTotalTerms();
+						//termId = this->getDictionary()->getTotalTerms();
+						termId = T->getLastRecordPosition() + 1;
 						this->getNotFoundWords()->insert(phraseWords[i]);
 						totalFailures++;
 						this->getDictionary()->insert(termId,phraseWords[i], 0);
@@ -380,8 +381,8 @@ void StatisticsManager::index() {
 	unsigned int idTermino = 0;
 	unsigned int idListaInvertida = 0;
 
-	sorter.sort(OCURRENCE_FILE_PATH,OCURRENCE_FILE_PATH_ORDERED,false);
-	ocurrenceFileOrdered.open(OCURRENCE_FILE_PATH_ORDERED);
+	//sorter.sort(OCURRENCE_FILE_PATH,OCURRENCE_FILE_PATH_ORDERED,false);
+	//ocurrenceFileOrdered.open(OCURRENCE_FILE_PATH_ORDERED);
 
 	//asumo que el ID de la lista invertida es incremental.
 	if (ocurrenceFileOrdered.isFileExists()) {
@@ -428,32 +429,35 @@ void StatisticsManager::erasePhrase(unsigned int idPhrase) {
 void StatisticsManager::addPhrase(std::string phrase) {
 	WordNormalizer wordNormalizer;
 	std::vector<std::string> phraseWords;
-
 	StringUtilities::splitString(phrase,phraseWords,QUOTES_WORDS_SEPARATOR);
-
+	numberOfQuotes++;
+	T->open(T_FILE_PATH, false);
 	for (unsigned int i = 0; i < phraseWords.size(); i++) {
 		phraseWords[i] = wordNormalizer.normalizeWord(phraseWords[i]);
-		if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
+		if(this->getStopWords().find(phraseWords[i]) == this->getStopWords().end() && phraseWords[i].size() > 0) {
 			this->setNumberOfWords(this->getNumberOfWords() + 1);
-			if (this->getNotFoundWords()->find(phraseWords[i])) {
+			if (!this->getNotFoundWords()->find(phraseWords[i])) {
 				//this->getNotFoundWords()->erase(phraseWords[i]));
 			}
+			unsigned int termId = 0;
+			unsigned int docId = this->getNumberOfQuotes();
 			if (!this->getDictionary()->find(phraseWords[i])) {
+				termId = this->T->getLastRecordPosition() + 1;
 				this->setNumberOfFailures(this->getNumberOfFailures() + 1);
-				this->getDictionary()->insert(phraseWords[i]);
-				//cosaQueHaceListasInvertidas.add(idListaInvertida,idTermino,docId);
-				//cosaQueHacePorcionesDeFirmas.add(idTermino,ocurrenceRecord.getDocId());
-				///////////////////// TEMPORAL ////////////////
-				FixedLengthTRecord tRecord(20);
-				tRecord.setTerm(phraseWords[i]);
-				//se necesita tener el ultimo id de termino
-				//tRecord.setId(T->getLastRecordPosition() + 1);
-				T->putRecord(tRecord);
+				///////// Especifico indice Booleano //////////
+				unsigned int listId = this->booleanIndex->addTerm(phraseWords[i], docId);
 				///////////////////////////////////////////////
+				this->getDictionary()->insert(termId, phraseWords[i], listId);
+				//cosaQueHacePorcionesDeFirmas.add(idTermino,ocurrenceRecord.getDocId());
+				FixedLengthTRecord tRecord(T_RECORD_SIZE);
+				tRecord.setTerm(phraseWords[i]);
+				tRecord.setId(termId);
+				T->putRecord(tRecord);
+			} else {
+				this->booleanIndex->addDocToTerm(phraseWords[i], docId, this->getDictionary());
 			}
 		}
 	}
-
 	this->getMemorableQuotes()->insert(phrase);
 }
 
@@ -466,12 +470,14 @@ bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::st
 		  (command != COMMAND_LOAD_INDEXES) &&
 		  (command != COMMAND_LOAD_MEMORABLE_QUOTES) &&
 		  (command != COMMAND_BOOLEAN_SEARCH) &&
+		  (command != COMMAND_ADD_PHRASE) &&
 		  (command != COMMAND_PRINT_HELP)) ||
 		 (((command == COMMAND_PRINT_WORD_RANKING) ||
 		   (command == COMMAND_LOAD_DICTIONARY) ||
 		   (command == COMMAND_LOAD_MEMORABLE_QUOTES)) &&
 		  (commandParams.size() != 1))  ) {
 		return false;
+		//	TODO agregar condicion para que COMMAND_BOOLEAN_SEARCH requiera 1 o mas params
 	}
 
 	return true;
@@ -577,34 +583,56 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 		}
 
 		if (command == COMMAND_LOAD_INDEXES) {
-			T->open("tFile.bin", false);
+			T->open(T_FILE_PATH, false);
 			this->booleanIndex->load(this->T, this->ocurrenceFilePath, this->getDictionary());
+			T->close();
+		}
+
+		if (command == COMMAND_ADD_PHRASE) {
+			std::string phrase;
+			for(int i = 0; i < commandParams.size(); ++i) {
+				phrase.append(commandParams[i]);
+				phrase.push_back(' ');
+			}
+			this->addPhrase(phrase);
 		}
 
 		if (command == COMMAND_BOOLEAN_SEARCH) {
-			std::string word = commandParams[0];
-			std::list<unsigned int> res;
-			std::vector<std::list<unsigned int> > res_lists;
-			for(int i = 0; i < commandParams.size(); ++i) {
-				res_lists.push_back(this->booleanIndex->search(word, this->getDictionary()));
-			}
-			if(res_lists.size() > 1)
-				res = lAnd(res_lists);
-			else
-				res = res_lists[0];
-			std::list<unsigned int>::iterator it;
-			for(it = res.begin(); it != res.end(); ++it) {
-				std::string frase;
-				this->getMemorableQuotes()->getFrase(*it, frase);
-				std::cout << frase << std::endl;
-			}
+			search(commandParams, std::cout);
 		}
 
 		if (command == COMMAND_PRINT_HELP) {
 			this->printHelp();
 		}
+
 	} else {
 		std::cout << ERROR_TEXT_INVALID_COMMAND << command << std::endl;
+	}
+}
+
+void StatisticsManager::search(std::vector<std::string>& commandParams, std::ostream& os) {
+	double clock_start = clock();
+	std::string word;
+	std::list<unsigned int> res;
+	std::vector<std::list<unsigned int> > res_lists;
+	os << SEARCH_TERM_LIST_MSG << ' ';
+	for(int i = 0; i < commandParams.size(); ++i) {
+		word = commandParams[i];
+		os << word;
+		res_lists.push_back(this->booleanIndex->search(word, this->getDictionary()));
+	}
+	os << std::endl;
+	if(res_lists.size() > 1)
+		res = lAnd(res_lists);
+	else
+		res = res_lists[0];
+	std::list<unsigned int>::iterator it;
+	double clock_end = clock();
+	os << EXECUTION_TIME_MSG << (clock_end - clock_start)/(double)CLOCKS_PER_SEC << std::endl;
+	for(it = res.begin(); it != res.end(); ++it) {
+		std::string frase;
+		this->getMemorableQuotes()->getFrase(*it, frase);
+		os << *it << ' ' << frase << std::endl;
 	}
 }
 
@@ -689,18 +717,6 @@ std::vector<std::string> StatisticsManager::tokenizePhrase(std::string phrase) {
 	}
 	return ret;
 }
-
-void StatisticsManager::insertPhrase(std::string phrase) {
-/*	unsigned int phraseId = (this->getMemorableQuotes())->insert(phrase);
-	std::vector<std::string> terms = tokenizePhrase(phrase);
-	Phrase normalizedPhrase(terms, phraseId);
-	BooleanIndex indice;
-	TermMap	mapaDeTerminos;
-	indice.insertPhrase(normalizedPhrase);
-	mapaDeTerminos.insertPhrase(normalizedPhrase);
-*/
-}
-
 
 StatisticsManager::~StatisticsManager() {
 	this->saveStatus();

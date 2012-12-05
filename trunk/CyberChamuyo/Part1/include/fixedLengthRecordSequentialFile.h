@@ -27,8 +27,6 @@ private:
 
 	void setRecordSize(unsigned int recordSize);
 
-	unsigned int getLastRecordPosition() const;
-
 	void setLastRecordPosition(unsigned int lastRecordPosition);
 
 	Bitmap& getBitMap();
@@ -49,6 +47,8 @@ public:
 
 	//Constructor.
 	FixedLengthRecordSequentialFile(unsigned int recordSize);
+
+	unsigned int getLastRecordPosition() const;
 
 	//Metodo para abir el archivo.
 	void open(std::string filePath, bool overwrite = false);

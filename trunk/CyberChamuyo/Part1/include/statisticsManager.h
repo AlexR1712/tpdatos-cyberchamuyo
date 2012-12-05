@@ -16,6 +16,9 @@
 #include "BooleanIndex.h"
 
 #define T_RECORD_SIZE 50
+#define T_FILE_PATH "bin/tFile.bin"
+#define EXECUTION_TIME_MSG "Tiempo de ejecucion: "
+#define SEARCH_TERM_LIST_MSG "Terminos Buscados: "
 
 #ifndef CONFIG_DIRECTORY_PATH
 #define CONFIG_DIRECTORY_PATH "config"
@@ -203,9 +206,15 @@ private:
 
 	void insertPhrase(std::string phrase);
 
+	void erasePhrase(unsigned int phraseId);
+
+	void index();
+
 	std::vector<std::string> tokenizePhrase(std::string phrase);
 
-	void search(std::vector<std::string> terms);
+	void addPhrase(std::string phrase);
+
+	void search(std::vector<std::string>& terms, std::ostream& os);
 
 public:
 	//Constructor.
