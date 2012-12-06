@@ -39,7 +39,8 @@ public:
 	friend std::istream& operator>>(std::istream& oss,
 					 ListaInvertida &l);
 	ListaInvertida& operator+=(const ListaInvertida &l);
-
+	unsigned int size();
+	void borrar(unsigned int id);
 };
 
 std::ostream& operator<<(std::ostream& oss,

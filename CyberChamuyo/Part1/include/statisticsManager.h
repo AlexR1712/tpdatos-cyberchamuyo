@@ -216,6 +216,8 @@ private:
 
 	void search(std::vector<std::string>& terms, std::ostream& os);
 
+	void modify(unsigned int phraseId, std::vector<std::string> modifiedPhrase);
+
 public:
 	//Constructor.
 	StatisticsManager();

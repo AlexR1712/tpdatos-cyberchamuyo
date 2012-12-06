@@ -70,6 +70,12 @@ void DispersionEx::insert(std::string& phrase) {
 	this->insertarRegistro(reg, datoInsertar->getClave());
 }
 
+void DispersionEx::modificar(std::string frase, std::string autor, unsigned int id) {
+	Data::Frase* phrase = new Data::Frase(autor, frase, id);
+	Hash::RegistroDato* reg = new Hash::RegistroDato(phrase);
+	this->modificarRegistro(reg, id);
+}
+
 // FUNCIONAMIENTO CREAR NUEVO BLOQUE
 // Crea un nuevo bloque.
 

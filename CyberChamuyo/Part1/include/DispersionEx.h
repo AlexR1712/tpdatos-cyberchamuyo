@@ -57,6 +57,7 @@ public:
 	void createIndex(std::string path);
 	void insertarRegistro(RegistroDato* r, unsigned int clave);
 	void modificarRegistro(RegistroDato* r, unsigned int clave);
+	void modificar(std::string frase, std::string autor, unsigned int id);
 	void borrarRegistro(unsigned int clave);
 	void cargarFrases(const char* archFrases);
 	bool getFrase(unsigned int clave, std::string& frase);

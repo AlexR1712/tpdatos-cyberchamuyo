@@ -410,20 +410,20 @@ void StatisticsManager::erasePhrase(unsigned int idPhrase) {
 	std::string phrase;
 
 	this->getMemorableQuotes()->getFrase(idPhrase,phrase);
-	StringUtilities::splitString(phrase,phraseWords,QUOTES_WORDS_SEPARATOR);
-
-	for (unsigned int i = 0; i < phraseWords[i].size(); i++) {
+	StringUtilities::splitString(phrase,phraseWords,AUTHOR_QUOTE_SEPARATOR);
+	StringUtilities::splitString(phraseWords[phraseWords.size() - 1],phraseWords,QUOTES_WORDS_SEPARATOR);
+	unsigned int size = phraseWords.size();
+	for (unsigned int i = 0; i < size; i++) {
 		phraseWords[i] = wordNormalizer.normalizeWord(phraseWords[i]);
-		if ( (this->getStopWords().find(phraseWords[i]) != this->getStopWords().end()) && !(this->getNotFoundWords()->find(phraseWords[i])) ) {
+		if ( (this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) /* && !(this->getNotFoundWords()->find(phraseWords[i]))*/ ) {
 			//habria que tener un find que devuelva el id de la frase y el id de la lista invertida en un objeto o similar.
-			this->getDictionary()->find(phraseWords[i]);
 			//cosaQueHaceListasInvertidas.delete(idListaInvertida,idTermino,docId);
-			//cosaQueHacePorcionesDeFirmas.delete(idTermino,ocurrenceRecord.getDocId());
-			//this->getDictionary()->erase(phraseWords[i]);
+			this->booleanIndex->eraseTermInDoc(phraseWords[i], idPhrase, this->getDictionary());
 			this->setNumberOfWords(this->getNumberOfWords() - 1);
 		}
 	}
 	this->setNumberOfQuotes(this->getNumberOfQuotes() - 1);
+	this->getMemorableQuotes()->borrarRegistro(idPhrase);
 }
 
 void StatisticsManager::addPhrase(std::string phrase) {
@@ -471,13 +471,17 @@ bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::st
 		  (command != COMMAND_LOAD_MEMORABLE_QUOTES) &&
 		  (command != COMMAND_BOOLEAN_SEARCH) &&
 		  (command != COMMAND_ADD_PHRASE) &&
+		  (command != COMMAND_MODIFY_PHRASE) &&
+		  (command != COMMAND_ERASE_PHRASE) &&
 		  (command != COMMAND_PRINT_HELP)) ||
 		 (((command == COMMAND_PRINT_WORD_RANKING) ||
 		   (command == COMMAND_LOAD_DICTIONARY) ||
+		   (command == COMMAND_ERASE_PHRASE) ||
 		   (command == COMMAND_LOAD_MEMORABLE_QUOTES)) &&
 		  (commandParams.size() != 1))  ) {
 		return false;
 		//	TODO agregar condicion para que COMMAND_BOOLEAN_SEARCH requiera 1 o mas params
+		//	y COMMAND_MODIFY_PHRASE requiera 2 o mas parametros
 	}
 
 	return true;
@@ -601,6 +605,17 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 			search(commandParams, std::cout);
 		}
 
+		if (command == COMMAND_MODIFY_PHRASE) {
+			std::vector<std::string> phraseTerms;
+			for(int i = 1; i < commandParams.size(); ++i)
+				phraseTerms.push_back(commandParams[i]);
+			this->modify(Auxiliar::stoi(commandParams[0]), phraseTerms);
+		}
+
+		if (command == COMMAND_ERASE_PHRASE) {
+			erasePhrase(Auxiliar::stoi(commandParams[0]));
+		}
+
 		if (command == COMMAND_PRINT_HELP) {
 			this->printHelp();
 		}
@@ -608,6 +623,74 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 	} else {
 		std::cout << ERROR_TEXT_INVALID_COMMAND << command << std::endl;
 	}
+}
+
+std::vector<std::string> getNotMatchingTerms(std::vector<std::string>&  array, std::vector<std::string>& toMatchTerms) {
+	std::vector<std::string> ret;
+	for(int i = 0; i < array.size(); ++i) {
+		bool isPresent = false;
+		for(int j = 0; (j < toMatchTerms.size()) && !isPresent; ++j) {
+			if(array[i] == toMatchTerms[j])
+				isPresent = true;
+		}
+		if(!isPresent)
+			ret.push_back(array[i]);
+	}
+	return ret;
+}
+
+std::string termsToString(std::vector<std::string> terms) {
+	std::string ret;
+	int i = 0;
+	for(; i < (terms.size() - 1); ++i) {
+		ret.append(terms[i]);
+		ret.push_back(' ');
+	}
+	ret.append(terms[i]);
+	return ret;
+}
+
+void StatisticsManager::modify(unsigned int phraseId, std::vector<std::string> newPhraseTerms) {
+	std::string oldPhrase;
+	WordNormalizer wordNormalizer;
+	this->getMemorableQuotes()->getFrase(phraseId, oldPhrase);
+	std::vector<std::string> oldPhraseTerms;
+	std::vector<std::string> termsToAdd;
+	std::vector<std::string> termsToRemove;
+	T->open(T_FILE_PATH, false);
+	StringUtilities::splitString(oldPhrase, oldPhraseTerms,QUOTES_WORDS_SEPARATOR);
+	for(int i = 0; i < oldPhraseTerms.size(); ++i) {
+		oldPhraseTerms[i] = wordNormalizer.normalizeWord(oldPhraseTerms[i]);
+		StringUtilities::quitarPuntuacion(oldPhraseTerms[i]);
+	}
+	for(int i = 0; i < newPhraseTerms.size(); ++i) {
+		newPhraseTerms[i] = wordNormalizer.normalizeWord(newPhraseTerms[i]);
+		StringUtilities::quitarPuntuacion(newPhraseTerms[i]);
+	}
+	termsToAdd = getNotMatchingTerms(newPhraseTerms, oldPhraseTerms);
+	termsToRemove = getNotMatchingTerms(oldPhraseTerms, newPhraseTerms);
+	for(int i = 0; i < termsToAdd.size(); ++i) {
+		if(this->getStopWords().find(termsToAdd[i]) == this->getStopWords().end()) {
+			RegistroArbol reg = this->getDictionary()->textSearch(termsToAdd[i]);
+			if(reg.getListId() == 0) {
+				unsigned int termId = T->getLastRecordPosition() + 1;
+				FixedLengthTRecord tRecord(T_RECORD_SIZE);
+				tRecord.setTerm(termsToAdd[i]);
+				T->putRecord(tRecord);
+				unsigned int list_id = booleanIndex->addTerm(termsToAdd[i], phraseId);
+				this->getDictionary()->insert(termId, termsToAdd[i], list_id);
+			} else
+				booleanIndex->addDocToTerm(termsToAdd[i], phraseId, this->getDictionary());
+		}
+	}
+	for(int i = 0; i < termsToRemove.size(); ++i) {
+		if(this->getStopWords().find(termsToRemove[i]) == this->getStopWords().end())
+			booleanIndex->eraseTermInDoc(termsToRemove[i], phraseId, this->getDictionary());
+	}
+	T->close();
+	std::string author = "lala";	//	deshardcodear luego
+	std::string phrase_str = termsToString(newPhraseTerms);
+	this->getMemorableQuotes()->modificar(phrase_str, author, phraseId);
 }
 
 void StatisticsManager::search(std::vector<std::string>& commandParams, std::ostream& os) {
@@ -629,10 +712,14 @@ void StatisticsManager::search(std::vector<std::string>& commandParams, std::ost
 	std::list<unsigned int>::iterator it;
 	double clock_end = clock();
 	os << EXECUTION_TIME_MSG << (clock_end - clock_start)/(double)CLOCKS_PER_SEC << std::endl;
-	for(it = res.begin(); it != res.end(); ++it) {
-		std::string frase;
-		this->getMemorableQuotes()->getFrase(*it, frase);
-		os << *it << ' ' << frase << std::endl;
+	if(*(res_lists[0].begin()) != 0) {
+		for(it = res.begin(); it != res.end(); ++it) {
+			std::string frase;
+			this->getMemorableQuotes()->getFrase(*it, frase);
+			os << *it << ' ' << frase << std::endl;
+		}
+	} else {
+		os << "No hubo coincidencias para esta busqueda" << std::endl;
 	}
 }
 
