@@ -60,21 +60,32 @@ void BooleanIndex::addDocToTerm(std::string term, unsigned int docId, IndiceArbo
 
 std::list<unsigned int> BooleanIndex::search(std::string term, IndiceArbol* vocabulary) {
 	RegistroArbol reg(vocabulary->textSearch(term));
+	std::list<unsigned int> res;
 	unsigned int listId = reg.getListId();
+	if(listId == 0) {
+		res.push_back(0);
+		return res;
+	}
 	invertedList::ListaInvertida* inv_list = new invertedList::ListaInvertida;
 	inv_list = this->invertedListsFile.getLista(listId);
-	std::list<unsigned int> res = inv_list->getParticion();
-
-	//std::list<unsigned int>::iterator it;
-	//for(it = res.begin(); it != res.end(); ++it) {
-	//	std::cout << *it;
-	//}
-	//std::cout << std::endl;
+	res = inv_list->getParticion();
 	return res;
 }
 
 void erasePhrase(Phrase frase) {
 	//	TODO
+}
+
+void BooleanIndex::eraseTermInDoc(std::string term, unsigned int docId, IndiceArbol* vocabulary) {
+	RegistroArbol reg(vocabulary->textSearch(term));
+	unsigned int listId = reg.getListId();
+	invertedList::ListaInvertida* inv_list = new invertedList::ListaInvertida;
+	inv_list = this->invertedListsFile.getLista(listId);
+	inv_list->borrar(docId);
+	if(inv_list->size() == 0) {
+		invertedListsFile.liberarBloquesLista(listId);
+		vocabulary->modify(reg.getTermId(), term, 0);
+	}
 }
 
 void BooleanIndex::insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, unsigned int totalTerms) {

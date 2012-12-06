@@ -78,6 +78,10 @@ unsigned int RegistroArbol::getListId() {
 	return s;
 }
 
+void RegistroArbol::setListId(unsigned int lId) {
+	this->s = lId;
+}
+
 long RegistroArbol::timesSearched() {
 	return n;
 }

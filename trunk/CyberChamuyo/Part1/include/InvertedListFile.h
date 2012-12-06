@@ -24,7 +24,6 @@ private:
 	void crearBloque(invertedList::ListaInvertida* lista, unsigned int offset);
 	void vincularAnterior(unsigned int nuevaPos, unsigned int offset);
 	void llenarLista(invertedList::ListaInvertida* lista,  unsigned int pos);
-	void liberarBloquesLista(unsigned int offset);
 public:
 	InvertedListFile(const char* filename);
 	unsigned int getNuevoId(void);
@@ -38,6 +37,9 @@ public:
 					  InvertedListFile &listFile);
 	friend std::istream& operator>>(std::istream& oss,
 					  InvertedListFile &listFile);
+	//////////////// lo hice publico
+	void liberarBloquesLista(unsigned int offset);
+	///////////////////////////////
 };
 
 std::ostream& operator<<(std::ostream& oss,

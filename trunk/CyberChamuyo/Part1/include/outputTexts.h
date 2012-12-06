@@ -31,12 +31,20 @@
 #define COMMAND_LOAD_INDEXES "cargaIndices"
 #endif	/*COMMAND_LOAD_INDEXES*/
 
+#ifndef COMMAND_ERASE_PHRASE
+#define COMMAND_ERASE_PHRASE "borrarFrase"
+#endif
+
 #ifndef COMMAND_BOOLEAN_SEARCH
 #define COMMAND_BOOLEAN_SEARCH "busquedaBooleano"
 #endif
 
 #ifndef COMMAND_ADD_PHRASE
 #define COMMAND_ADD_PHRASE "agregarFrase"
+#endif
+
+#ifndef COMMAND_MODIFY_PHRASE
+#define COMMAND_MODIFY_PHRASE "modificarFrase"
 #endif
 
 #ifndef COMMAND_PRINT_HELP

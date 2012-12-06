@@ -20,6 +20,7 @@ public:
 	RegistroArbol(Clave* c, std::string s,long ne, unsigned int se);
 	RegistroArbol(RegistroArbol& reg);
 	unsigned int getListId();
+	void setListId(unsigned int id);
 	unsigned long getTermId();
 	virtual std::vector<char>* serializar(FrontCoding& encoder);
 	virtual void hidratar(const std::vector<char>* vec, FrontCoding& decoder,int& pos);

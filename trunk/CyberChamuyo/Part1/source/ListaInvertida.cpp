@@ -133,6 +133,18 @@ void ListaInvertida::deserialize(std::vector<unsigned char> data) {
 	}
 }
 
+void ListaInvertida::borrar(unsigned int id) {
+	listInt::iterator it;
+	for(it = lista.begin(); it != lista.end() && *it <= id; ++it) {
+		if(id == *it)
+			it = lista.erase(it);
+	}
+}
+
+unsigned int ListaInvertida::size() {
+	return lista.size();
+}
+
 } /* namespace invertedList */
 
 
