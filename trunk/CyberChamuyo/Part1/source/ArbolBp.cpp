@@ -291,7 +291,7 @@ int ArbolBp::encontrarPrimero() {
 }
 
 void ArbolBp::exportar(VariableLengthRecordSequentialFile<WordRankingRecord>& os) {
-	imprimirNodos();
+	//imprimirNodos();
 	WordRankingRecord record;
 	int primero = encontrarPrimero();
 	NodoExterno* nE = new NodoExterno(0, this);

@@ -43,6 +43,7 @@ std::string trim(std::string string);
 //Metodo para remover signos de puntuacion y de expresion en una linea
 void quitarPuntuacion(std::string& s);
 
+unsigned int count(std::string string, char character);
 }
 
 #endif /* STRINGUTILITIES_H_ */

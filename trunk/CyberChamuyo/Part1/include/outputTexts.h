@@ -16,7 +16,7 @@
 #endif /*COMMAND_PRINT_NOT_FOUND_WORDS*/
 
 #ifndef COMMAND_PRINT_WORD_RANKING
-#define COMMAND_PRINT_WORD_RANKING "palabrasMasBuscadas"
+#define COMMAND_PRINT_WORD_RANKING "palabrasMasPopulares"
 #endif /*COMMAND_PRINT_WORD_RANKING*/
 
 #ifndef COMMAND_LOAD_DICTIONARY
@@ -56,7 +56,7 @@
 #endif /*ERROR_TEXT_INVALID_COMMAND*/
 
 #ifndef ERROR_TEXT_INVALID_RANKING_SIZE
-#define ERROR_TEXT_INVALID_RANKING_SIZE "La cantidad de palabras del ranking debe ser mayor a 0."
+#define ERROR_TEXT_INVALID_RANKING_SIZE "La cantidad de palabras solicitadas debe ser mayor a 0."
 #endif /*ERROR_TEXT_INVALID_RANKING_SIZE*/
 
 #ifndef HELP_TITLE
@@ -76,7 +76,7 @@
 #endif /*HELP_TEXT_NOT_FOUND_WORDS*/
 
 #ifndef HELP_TEXT_WORD_RANKING
-#define HELP_TEXT_WORD_RANKING "	palabrasMasBuscadas N: Muestra el ranking de las N palabras mas buscadas."
+#define HELP_TEXT_WORD_RANKING "	palabrasMasPopulares N: Muestra el ranking de las N palabras mas buscadas."
 #endif /*HELP_TEXT_WORD_RANKING*/
 
 #ifndef HELP_TEXT_LOAD_DICTIONARY
@@ -95,6 +95,14 @@
 #define HELP_TEXT_EXIT "	salir: abandonar la aplicación."
 #endif /*HELP_TEXT_EXIT*/
 
+#ifndef HELP_TEXT_DICTIONARY_FILE_PATH
+#define HELP_TEXT_DICTIONARY_FILE_PATH "Archivo de diccionario cargado: "
+#endif /*HELP_TEXT_DICTIONARY_FILE_PATH*/
+
+#ifndef HELP_TEXT_MEMORABLE_QUOTES_FILE_PATH
+#define HELP_TEXT_MEMORABLE_QUOTES_FILE_PATH "Archivo de frases célebres cargado: "
+#endif /*HELP_TEXT_MEMORABLE_QUOTES_FILE_PATH*/
+
 #ifndef TEXT_AVG_WORDS_PER_QUOTE
 #define TEXT_AVG_WORDS_PER_QUOTE "Cantidad de terminos promedio por frase: "
 #endif /*TEXT_AVG_WORDS_PER_QUOTE*/
@@ -108,43 +116,87 @@
 #endif /*TEXT_NOT_FOUND_WORDS*/
 
 #ifndef TEXT_MOST_SEARCHED_WORDS_TITLE
-#define TEXT_MOST_SEARCHED_WORDS_TITLE(N) "Ranking de las " + N + " palabras mas buscadas: "
+#define TEXT_MOST_SEARCHED_WORDS_TITLE(N) "Ranking de las " + N + " palabras mas populares: "
 #endif /*TEXT_MOST_SEARCHED_WORDS_TITLE*/
 
 #ifndef TEXT_MOST_SEARCHED_WORDS_ITEM
 #define TEXT_MOST_SEARCHED_WORDS_ITEM(itemNumber,word,times) itemNumber + ") " + word + " - " + times + " veces."
 #endif /*TEXT_MOST_SEARCHED_WORDS_ITEM*/
 
-#ifndef INEXISTANT_INPUT_DIRECTORY_ERROR
-#define INEXISTANT_INPUT_DIRECTORY_ERROR "ERROR: No existe directorio de archivos de entrada inputFiles"
-#endif
+#ifndef TEXT_NO_NOT_FOUND_WORDS
+#define TEXT_NO_NOT_FOUND_WORDS "No hay palabras no encontradas."
+#endif /*TEXT_NO_NOT_FOUND_WORDS*/
 
-#ifndef INEXISTANT_CONFIG_DIRECTORY_INEXISTANT_ERROR
-#define INEXISTANT_CONFIG_DIRECTORY_INEXISTANT_ERROR "ERROR: No existe directorio de archivos de configuracion config"
-#endif
+#ifndef TEXT_DICTIONARY
+#define TEXT_DICTIONARY "diccionario"
+#endif /*TEXT_DICTIONARY*/
 
-#ifndef INEXISTANT_OR_BAD_STATUS_FILE_ERROR
-#define INEXISTANT_OR_BAD_STATUS_FILE_ERROR "ERROR: No existe archivo de configuracion statisticsManagerStatus"
-#endif
+#ifndef TEXT_MEMORABLE_QUOTES
+#define TEXT_MEMORABLE_QUOTES "frases célebres"
+#endif /*TEXT_MEMORABLE_QUOTES*/
 
-#ifndef INEXISTANT_OR_BAD_PROPERTIES_FILE_ERROR
-#define INEXISTANT_OR_BAD_PROPERTIES_FILE_ERROR "ERROR: No existe archivo de propiedades statisticsManager.properties"
-#endif
+#ifndef TEXT_NO_RESULTS_FOR_SEARCH
+#define TEXT_NO_RESULTS_FOR_SEARCH "No hubo coincidencias para esta busqueda"
+#endif /*TEXT_NO_RESULTS_FOR_SEARCH*/
 
-#ifndef INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR
-#define INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR "ERROR: No existe archivo de stopwords stop-words.txt"
-#endif
+#ifndef EXECUTION_TIME_MSG
+#define EXECUTION_TIME_MSG "Tiempo de ejecucion: "
+#endif /*EXECUTION_TIME_MSG*/
 
-#ifndef INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR
-#define INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR "ERROR: No existe archivo de configuracion de char map charMap"
-#endif
+#ifndef SEARCH_TERM_LIST_MSG
+#define SEARCH_TERM_LIST_MSG "Terminos Buscados: "
+#endif /*SEARCH_TERM_LIST_MSG*/
 
-#ifndef INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR
-#define INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR "ERROR: No existe archivo de entrada de diccionario dictionary.txt"
-#endif
+#ifndef ERROR_FILE_NOT_FOUND
+#define ERROR_FILE_NOT_FOUND "No se pudo recuperar el archivo ubicado en: "
+#endif /*ERROR_FILE_NOT_FOUND*/
 
-#ifndef INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR
-#define INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR "ERROR: No eiste archivo de entrada de frases frases-celebres.txt"
-#endif
+#ifndef ERROR_STATUS_RETRIEVAL_FAILURE
+#define ERROR_STATUS_RETRIEVAL_FAILURE "No se pudo recuperar el estado guardado del programa debido a los siguientes errores: "
+#endif /*ERROR_STATUS_RETRIEVAL_FAILURE*/
+
+#ifndef ERROR_CONFIG_DIRECTORY_NOT_FOUND
+#define ERROR_CONFIG_DIRECTORY_NOT_FOUND "No ese encontró el directorio de archivos de configuracion."
+#endif /*ERROR_CONFIG_DIRECTORY_NOT_FOUND*/
+
+#ifndef ERROR_RETRIEVING_WORD_RANKING
+#define ERROR_RETRIEVING_WORD_RANKING "Error al intentar reportar el ranking de palabras."
+#endif /*ERROR_RETRIEVING_WORD_RANKING*/
+
+#ifndef ERROR_COMMAND_PREREQUISITES
+#define ERROR_COMMAND_PREREQUISITES "Antes de realizar la operación debe cargar los siguientes archivos: "
+#endif /*ERROR_COMMAND_PREREQUISITES*/
+
+#ifndef ERROR_COMMAND_SEARCH_PREREQUISITES
+#define ERROR_COMMAND_SEARCH_PREREQUISITES "Para poder realizar búsquedas primero debe indexar"
+#endif /*ERROR_COMMAND_SEARCH_PREREQUISITES*/
+
+//#ifndef INEXISTANT_INPUT_DIRECTORY_ERROR
+//#define INEXISTANT_INPUT_DIRECTORY_ERROR "ERROR: No existe directorio de archivos de entrada inputFiles"
+//#endif
+//
+//#ifndef INEXISTANT_OR_BAD_STATUS_FILE_ERROR
+//#define INEXISTANT_OR_BAD_STATUS_FILE_ERROR "ERROR: No existe archivo de configuracion statisticsManagerStatus"
+//#endif
+//
+//#ifndef INEXISTANT_OR_BAD_PROPERTIES_FILE_ERROR
+//#define INEXISTANT_OR_BAD_PROPERTIES_FILE_ERROR "ERROR: No existe archivo de propiedades statisticsManager.properties"
+//#endif
+//
+//#ifndef INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR
+//#define INEXISTANT_OR_BAD_STOP_WORDS_FILE_ERROR "ERROR: No existe archivo de stopwords stop-words.txt"
+//#endif
+//
+//#ifndef INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR
+//#define INEXISTANT_OR_BAD_CHAR_MAP_FILE_ERROR "ERROR: No existe archivo de configuracion de char map charMap"
+//#endif
+//
+//#ifndef INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR
+//#define INEXISTANT_OR_BAD_DICTIONARY_FILE_ERROR "ERROR: No existe archivo de entrada de diccionario dictionary.txt"
+//#endif
+//
+//#ifndef INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR
+//#define INEXISTANT_OR_BAD_MEMORABLE_QUOTES_FILE_ERROR "ERROR: No existe archivo de entrada de frases frases-celebres.txt"
+//#endif
 
 #endif /* OUTPUTTEXTS_H_ */

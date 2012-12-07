@@ -328,6 +328,10 @@ bool DispersionEx::isEmpty() {
 	else return false;
 }
 
+unsigned int DispersionEx::getLastId() {
+	return this->arch_disp.getId() - 1;
+}
+
 void DispersionEx::createIndex(std::string path) {
 
 }

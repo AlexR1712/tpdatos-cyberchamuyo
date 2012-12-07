@@ -15,10 +15,13 @@
 #include "OcurrenceFileRecord.h"
 #include "BooleanIndex.h"
 
+#ifndef CONFIG_FILE_PATH
+#define CONFIG_FILE_PATH "config/statisticsManager.properties"
+#endif /*CONFIG_FILE_PATH*/
+
+#ifndef T_RECORD_SIZE
 #define T_RECORD_SIZE 50
-#define T_FILE_PATH "bin/tFile.bin"
-#define EXECUTION_TIME_MSG "Tiempo de ejecucion: "
-#define SEARCH_TERM_LIST_MSG "Terminos Buscados: "
+#endif /*T_RECORD_SIZE*/
 
 #ifndef CONFIG_DIRECTORY_PATH
 #define CONFIG_DIRECTORY_PATH "config"
@@ -35,10 +38,6 @@
 #ifndef STOP_WORDS_FILE_PATH_PROPERTY_NAME
 #define STOP_WORDS_FILE_PATH_PROPERTY_NAME "stopWordsFilePath"
 #endif /*STOP_WORDS_FILE_PATH_PROPERTY_NAME*/
-
-#ifndef CONFIG_FILE_PATH
-#define CONFIG_FILE_PATH "config/statisticsManager.properties"
-#endif /*CONFIG_FILE_PATH*/
 
 #ifndef STATUS_FILE_PATH
 #define STATUS_FILE_PATH "bin/statisticsManagerStatus"
@@ -64,6 +63,18 @@
 #define MEMORABLE_QUOTES_INDEX_FILE_PATH "bin/memquotes.bin"
 #endif /*MEMORABLE_QUOTES_INDEX_FILE_PATH*/
 
+#ifndef T_FILE_PATH
+#define T_FILE_PATH "bin/tFile.bin"
+#endif /*T_FILE_PATH*/
+
+#ifndef OCURRENCE_FILE_PATH
+#define OCURRENCE_FILE_PATH "bin/ocurrenceFile.bin"
+#endif /*OCURRENCE_FILE_PATH*/
+
+#ifndef OCURRENCE_FILE_PATH_ORDERED
+#define OCURRENCE_FILE_PATH_ORDERED "bin/orderedOcurrenceFile.bin"
+#endif /*OCURRENCE_FILE_PATH_ORDERED*/
+
 //#ifndef DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH
 //#define DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH "outputFiles/dictionary_RANDOMIZED_ORDERED"
 //#endif /*DICTIONARY_RANDOMIZED_ORDERED_FILE_PATH*/
@@ -84,7 +95,7 @@
 class StatisticsManager {
 private:
 
-	unsigned int numberOfErasedQuotes;
+//	unsigned int numberOfErasedQuotes;
 
 	//Ubicacion del archivo de diccionario.
 	std::string inputDictionaryFilePath;
@@ -124,8 +135,6 @@ private:
 
 	FixedLengthRecordSequentialFile<FixedLengthTRecord>* T;
 
-	std::string ocurrenceFilePath;
-
 	BooleanIndex* booleanIndex;
 
 	std::string getInputDictionaryFilePath() const;
@@ -160,11 +169,15 @@ private:
 
 	IndiceArbol* getNotFoundWords();
 
-	bool isFirstRun() const;
+	BooleanIndex* getBooleanIndex() const;
 
-	void setFirstRun(bool firstRun);
+	FixedLengthRecordSequentialFile<FixedLengthTRecord>* getT() const;
 
-	void setSuccessfullInit(bool successfullInit);
+//	bool isFirstRun() const;
+
+//	void setFirstRun(bool firstRun);
+
+	//void setSuccessfullInit(bool successfullInit);
 
 	//Metodo para cargar el estado del modulo desde un archivo.
 	void loadStatus();
@@ -173,10 +186,10 @@ private:
 	void loadStopWords();
 
 	//Metodo para crear el diccionario.
-	void createDictionary(bool force);
+	void createDictionary();
 
 	//Metodo para cargar las frases celebres.
-	void loadMemorableQuotes(bool insertInHash);
+	void loadMemorableQuotes();
 
 	//Metodo para limpiar las estadisticas.
 	void clearStatistics();
@@ -220,6 +233,8 @@ private:
 	void search(std::vector<std::string>& terms, std::ostream& os);
 
 	void modify(unsigned int phraseId, std::vector<std::string> modifiedPhrase);
+
+	bool validateDataStructureIntegrity(std::string& filesToLoad);
 
 public:
 	//Constructor.
