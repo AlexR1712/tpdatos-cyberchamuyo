@@ -19,7 +19,7 @@ ArchivoBloquesFijos::ArchivoBloquesFijos(const char* filename, long tamanoBloque
         std:: fstream archivo (filename, std::fstream::out|std::fstream::binary);
         archivo.close();
         path.open(filename, std::fstream::in|std::fstream::out|std::fstream::binary);
-        this->tamanoBloque=tamanoBloque;
+        this->tamanoBloque = tamanoBloque;
         this->autoId = 1;
     }else{ //probar
         path.seekg(0, std::ios::beg);

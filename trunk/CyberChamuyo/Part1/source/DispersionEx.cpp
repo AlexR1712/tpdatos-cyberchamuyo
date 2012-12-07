@@ -16,7 +16,6 @@ namespace Hash {
 
 DispersionEx::DispersionEx(std::string archDir) :
 		arch_disp(archDir.c_str(), TAM_BLOQUE),tabla(arch_disp) {
-
 }
 
 // FUNCIONAMIENTO CLEAR
