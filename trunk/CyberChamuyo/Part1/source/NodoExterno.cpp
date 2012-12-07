@@ -300,7 +300,7 @@ int NodoExterno::buscar(Clave* c, Registro* reg) {
 		arbol->setUltimoLeido(nE);
 		arbol->setUltimoRegistroLeido(0);
 		arbol->guardarNodo(nE, siguiente);
-		//delete nE;
+		delete nE;
 		delete nodo_data;
 		return 0;
 	}

@@ -12,6 +12,6 @@
 #include <string>
 #include <vector>
 
-std::string parseCommand(std::string userInput, std::vector<std::string>& commandParams);
+std::string parseCommand(std::string userInput, std::vector<std::string>* commandParams);
 
 #endif /* TP1_H_ */

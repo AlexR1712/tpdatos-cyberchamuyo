@@ -242,8 +242,8 @@ int NodoInterno::buscar(Clave* c, Registro* reg) {
 		if(res)
 			arbol->guardarNodo(nodo_Externo, hijo);
 		delete nodo_data;
-		//delete nodo_Externo;
-		//nodo_Externo = NULL;
+		delete nodo_Externo;
+		nodo_Externo = NULL;
 		return res;
 	} else {
 		NodoInterno* nodo_interno = new NodoInterno(nivel - 1, arbol);

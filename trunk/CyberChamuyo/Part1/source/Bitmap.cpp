@@ -84,8 +84,9 @@ unsigned int Bitmap::getBloqueLibre(void) {
 		return bloque;
 	}
 	else {
+		unsigned int ret = listaBl.front();
 		eliminarBloqueLista(listaBl.front());
-		return this->listaBl.front();
+		return ret;
 	}
 }
 

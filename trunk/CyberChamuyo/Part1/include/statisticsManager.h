@@ -83,6 +83,9 @@
 //Clase para obtener las estadísticas solicitadas en el TP.
 class StatisticsManager {
 private:
+
+	unsigned int numberOfErasedQuotes;
+
 	//Ubicacion del archivo de diccionario.
 	std::string inputDictionaryFilePath;
 
