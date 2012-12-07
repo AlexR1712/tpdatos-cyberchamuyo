@@ -76,10 +76,6 @@ int ArbolBp::insertarRegistro(Registro* r) {
 		std::cout << "Error registro ya existente" << std::endl;
 		return -1;
 	}
-	if(res == -1) {
-		std::cout << "Error registro ya existente" << std::endl;
-		return -1;
-	}
 	//delete r;
 	if(max == 0) {
 		if(res == OVERFLOW) {

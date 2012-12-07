@@ -146,6 +146,10 @@ void RegistroArbol::setReg(Registro& reg) {
 	termId = dynamic_cast<RegistroArbol&>(reg).termId;
 }
 
+void RegistroArbol::setTermId(int id) {
+	this->termId = id;
+}
+
 int RegistroArbol::totalSize() {
 	int regSize = Registro::totalSize();
 	return regSize + 3 * sizeof(int);

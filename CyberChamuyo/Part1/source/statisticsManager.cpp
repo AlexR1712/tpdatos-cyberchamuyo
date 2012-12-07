@@ -212,8 +212,11 @@ void StatisticsManager::createDictionary(bool force) {
 		dictionaryNormalizer.normalize(this->getInputDictionaryFilePath());
 		dictionaryRandomizer.randomizeDictionary(dictionaryNormalizer.getOutputFilePath(),false);
 
-		if(this->getDictionary()->isEmpty())
-			this->getDictionary()->createIndex(dictionaryRandomizer.getOrderedRandomizedDictionaryFilePath());
+		if(this->getDictionary()->isEmpty()) {
+			T->open(T_FILE_PATH,true);
+			this->getDictionary()->createIndex(dictionaryRandomizer.getOrderedRandomizedDictionaryFilePath(), T);
+			T->close();
+		}
 	} else {
 		std::cout << "Archivo inexistente" << std::endl;
 	}
@@ -232,7 +235,7 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 	memorableQuotesFile.open(this->getInputMemorableQuotesFilePath());
 	if (memorableQuotesFile.isFileExists()) {
 		////////////////// TEMPORAL /////////////////////
-		T->open(T_FILE_PATH,true);
+		T->open(T_FILE_PATH,false);
 		VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
 		ocurrenceFilePath = "ocurrenceFile.bin";
 		ocurrenceFile.open(ocurrenceFilePath,true);
@@ -300,9 +303,6 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		//Se genera el ranking de palabras.
 		this->getDictionary()->exportar(RANKINGS_FILE_PATH);
 		externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
-		std:: ofstream ofs;
-		ofs.open("HashExp");
-		ofs << *this->getMemorableQuotes();
 	} else {
 		std::cout << "Archivo inexistente" << std::endl;
 	}
@@ -717,7 +717,7 @@ void StatisticsManager::search(std::vector<std::string>& commandParams, std::ost
 		res = res_lists[0];
 	std::list<unsigned int>::iterator it;
 	double clock_end = clock();
-	os << EXECUTION_TIME_MSG << (clock_end - clock_start)/(double)CLOCKS_PER_SEC << std::endl;
+	os << EXECUTION_TIME_MSG << (1000*clock_end - 1000*clock_start)/(double)CLOCKS_PER_SEC << std::endl;
 	if(*(res_lists[0].begin()) != 0) {
 		for(it = res.begin(); it != res.end(); ++it) {
 			std::string frase;
