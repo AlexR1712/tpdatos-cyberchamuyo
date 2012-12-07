@@ -13,10 +13,10 @@ BooleanIndex::BooleanIndex() : invertedListsFile(INVERTED_LISTS_FILE_NAME) {
 	valid = false;
 }
 
-void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string ocurrenceFilePath, IndiceArbol* vocabulary) {
-	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(500,false);
-	std::string orderedOcurrenceFilePath = "orderedOcurrenceFile.bin";
-	sorter.sort(ocurrenceFilePath,orderedOcurrenceFilePath,true);
+void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string orderedOcurrenceFilePath, IndiceArbol* vocabulary) {
+//	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(5,false);
+//	std::string orderedOcurrenceFilePath = "orderedOcurrenceFile.bin";
+//	sorter.sort(ocurrenceFilePath,orderedOcurrenceFilePath,true);
 	VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
 	ocurrenceFile.open(orderedOcurrenceFilePath, false);
 	OcurrenceFileRecord ocurrenceRecord = ocurrenceFile.getNextRecord();

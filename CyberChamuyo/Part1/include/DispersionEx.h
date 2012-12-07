@@ -63,6 +63,7 @@ public:
 	bool getFrase(unsigned int clave, std::string& frase);
 	void insert(std::string& phrase);
 	bool isEmpty();
+	unsigned int getLastId();
 	void clear(void);
 	virtual ~DispersionEx();
 	friend std::ostream& operator<<(std::ostream& oss,

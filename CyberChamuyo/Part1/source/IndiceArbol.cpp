@@ -43,10 +43,8 @@ RegistroArbol& IndiceArbol::textSearch(std::string term) {
 	CAlfa* clave = new CAlfa(term);
 	RegistroArbol* ret_reg = new RegistroArbol();
 	bool resultado = arbol.buscar(clave, ret_reg);
-	if(!resultado) {
+	if(!resultado)
 		ret_reg->setListId(0);
-		ret_reg->setTermId(1000000);
-	}
 	return *ret_reg;
 }
 

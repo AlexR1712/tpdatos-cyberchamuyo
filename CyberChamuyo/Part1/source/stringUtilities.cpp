@@ -119,5 +119,19 @@ void quitarPuntuacion(std::string& s) {
 	}
 }
 
+unsigned int count(std::string string, char character) {
+	unsigned int from = 0;
+	unsigned int to = 0;
+	unsigned int counter = 0;
+
+	to = string.find(character,from);
+	while (to != string.npos) {
+		counter++;
+		from = to + 1;
+		to = string.find(character,from);
+	}
+
+	return counter;
+}
 
 }
