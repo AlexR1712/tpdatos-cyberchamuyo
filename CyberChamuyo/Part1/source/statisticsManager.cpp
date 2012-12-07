@@ -62,6 +62,7 @@ StatisticsManager::StatisticsManager() {
 		this->memorableQuotes = new Hash::DispersionEx(MEMORABLE_QUOTES_INDEX_FILE_PATH);
 		this->T = new FixedLengthRecordSequentialFile<FixedLengthTRecord>(T_RECORD_SIZE);
 		this->booleanIndex = new BooleanIndex();
+		this->numberOfErasedQuotes = 0;
 		this->numberOfFailures = 0;
 		this->numberOfQuotes = 0;
 		this->numberOfWords = 0;
@@ -410,8 +411,8 @@ void StatisticsManager::erasePhrase(unsigned int idPhrase) {
 	std::string phrase;
 
 	this->getMemorableQuotes()->getFrase(idPhrase,phrase);
-	StringUtilities::splitString(phrase,phraseWords,AUTHOR_QUOTE_SEPARATOR);
-	StringUtilities::splitString(phraseWords[phraseWords.size() - 1],phraseWords,QUOTES_WORDS_SEPARATOR);
+	//StringUtilities::splitString(phrase,phraseWords,AUTHOR_QUOTE_SEPARATOR);
+	StringUtilities::splitString(phrase,phraseWords,QUOTES_WORDS_SEPARATOR);
 	unsigned int size = phraseWords.size();
 	for (unsigned int i = 0; i < size; i++) {
 		phraseWords[i] = wordNormalizer.normalizeWord(phraseWords[i]);
@@ -424,6 +425,7 @@ void StatisticsManager::erasePhrase(unsigned int idPhrase) {
 	}
 	this->setNumberOfQuotes(this->getNumberOfQuotes() - 1);
 	this->getMemorableQuotes()->borrarRegistro(idPhrase);
+	this->numberOfErasedQuotes++;
 }
 
 void StatisticsManager::addPhrase(std::string phrase) {
@@ -440,7 +442,7 @@ void StatisticsManager::addPhrase(std::string phrase) {
 				//this->getNotFoundWords()->erase(phraseWords[i]));
 			}
 			unsigned int termId = 0;
-			unsigned int docId = this->getNumberOfQuotes();
+			unsigned int docId = this->getNumberOfQuotes() + this->numberOfErasedQuotes;
 			if (!this->getDictionary()->find(phraseWords[i])) {
 				termId = this->T->getLastRecordPosition() + 1;
 				this->setNumberOfFailures(this->getNumberOfFailures() + 1);
@@ -458,6 +460,8 @@ void StatisticsManager::addPhrase(std::string phrase) {
 			}
 		}
 	}
+	std::string nombre("Autor\t\t");
+	phrase = nombre.append(phrase);
 	this->getMemorableQuotes()->insert(phrase);
 }
 
@@ -609,11 +613,11 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 			std::vector<std::string> phraseTerms;
 			for(int i = 1; i < commandParams.size(); ++i)
 				phraseTerms.push_back(commandParams[i]);
-			this->modify(Auxiliar::stoi(commandParams[0]), phraseTerms);
+			this->modify(stoi(commandParams[0]), phraseTerms);
 		}
 
 		if (command == COMMAND_ERASE_PHRASE) {
-			erasePhrase(Auxiliar::stoi(commandParams[0]));
+			erasePhrase(stoi(commandParams[0]));
 		}
 
 		if (command == COMMAND_PRINT_HELP) {

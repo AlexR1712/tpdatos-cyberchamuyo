@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]){
 	std::string userInput;
 	std::string command;
-	std::vector<std::string> commandParams;
+	std::vector<std::string>* commandParams = new std::vector<std::string>;
 	StatisticsManager statisticsManager;
 
 	//cargaDiccionario inputFiles/dictionary2.txt
@@ -27,9 +27,9 @@ int main(int argc, char *argv[]){
 			std::getline(std::cin,userInput);
 			command = parseCommand(userInput,commandParams);
 			if (command != USER_COMMAND_EXIT) {
-				statisticsManager.processCommand(command,commandParams);
+				statisticsManager.processCommand(command,*commandParams);
 			}
-			commandParams.clear();
+			commandParams->clear();
 		} while (command != USER_COMMAND_EXIT);
 
 		return EXIT_SUCCESS;
@@ -39,12 +39,12 @@ int main(int argc, char *argv[]){
 	}
 }
 
-std::string parseCommand(std::string userInput, std::vector<std::string>& commandParams) {
+std::string parseCommand(std::string userInput, std::vector<std::string>* commandParams) {
 	std::string command = "";
 
-	StringUtilities::splitString(userInput,commandParams,USER_COMMAND_SEPARATOR);
-	command = commandParams[0];
-	commandParams.erase(commandParams.begin());
+	StringUtilities::splitString(userInput,*commandParams,USER_COMMAND_SEPARATOR);
+	command = (*commandParams)[0];
+	commandParams->erase(commandParams->begin());
 
 	return command;
 
