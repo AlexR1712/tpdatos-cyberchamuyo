@@ -13,6 +13,8 @@
 #include "variableLengthRecordSequentialFile.h"
 #include "binaryDictionaryRecord.h"
 #include "RegistroArbol.h"
+#include "FixedLengthTRecord.h"
+#include "fixedLengthRecordSequentialFile.h"
 
 /*	IndiceArbol: Clase que se utiliza como una capa externa al arbol para ofrecer
  * 	cierta funcionalidad
@@ -27,7 +29,7 @@ public:
 
 	//  inicializa el arbol. Carga cada linea del archivo con nombre "path" y
 	//  las inserta en el arbol
-	void createIndex(std::string path);
+	void createIndex(std::string in_path, FixedLengthRecordSequentialFile<FixedLengthTRecord>* T);
 
 	//  devuelve 1 si la palabra "word" esta en el arbol, 0 sino
 	bool find(std::string word);

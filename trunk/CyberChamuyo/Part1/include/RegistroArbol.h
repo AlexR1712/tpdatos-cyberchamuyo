@@ -31,6 +31,7 @@ public:
 	virtual Registro& operator=(RegistroArbol& r);
 	friend std::ostream& operator<<(std::ostream& os, const RegistroArbol& r);
 	virtual void setReg(Registro& r);
+	void setTermId(int id);
 	virtual int totalSize();
 private:
 	long n;

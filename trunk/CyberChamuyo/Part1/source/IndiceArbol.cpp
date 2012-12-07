@@ -14,6 +14,10 @@
 #include "../include/wordNormalizer.h"
 #include "../include/wordRankingRecord.h"
 
+#ifndef T_RECORD_SIZE
+#define T_RECORD_SIZE 50
+#endif
+
 IndiceArbol::IndiceArbol(std::string file_name) : arbol(file_name.c_str(), N_SIZE) {
 	totalTerms = 1;
 }
@@ -39,8 +43,10 @@ RegistroArbol& IndiceArbol::textSearch(std::string term) {
 	CAlfa* clave = new CAlfa(term);
 	RegistroArbol* ret_reg = new RegistroArbol();
 	bool resultado = arbol.buscar(clave, ret_reg);
-	if(!resultado)
+	if(!resultado) {
 		ret_reg->setListId(0);
+		ret_reg->setTermId(1000000);
+	}
 	return *ret_reg;
 }
 
@@ -71,27 +77,36 @@ void IndiceArbol::exportar(const char* path) {
 	arbol.exportar(file);
 }
 
-void IndiceArbol::createIndex(std::string in_path) {
+void IndiceArbol::createIndex(std::string in_path, FixedLengthRecordSequentialFile<FixedLengthTRecord>* T) {
 	VariableLengthRecordSequentialFile<BinaryDictionaryRecord<true> > arch_sec;
 	BinaryDictionaryRecord<true> record;
-
 	arch_sec.open(in_path);
-	record = arch_sec.getNextRecord();
-	while(!arch_sec.endOfFile()) {
+	//record = arch_sec.getNextRecord();
+	if(arch_sec.endOfFile()) {
+		std::cout << "Archivo inexistente" << std::endl;
+		return;
+	}
+	do {
+		record = arch_sec.getNextRecord();
 		std::string s = record.getWord();
 		if(s.size() > 1 && s != "\n") {
 			StringUtilities::sacarR(s);
 			StringUtilities::sacarN(s);
 			CAlfa* c = new CAlfa(s);
-			Registro* reg = new RegistroArbol(c);
+			RegistroArbol* reg = new RegistroArbol(c, 0, 0);
+			reg->setTermId(T->getLastRecordPosition() + 1);
 			if(arbol.insertarRegistro(reg) == OK)
 				totalTerms++;
 			delete reg;
-			record = arch_sec.getNextRecord();
-		} else {
+			FixedLengthTRecord tRecord(T_RECORD_SIZE);
+			tRecord.setTerm(s);
+			tRecord.setId(T->getLastRecordPosition() + 1);
+			T->putRecord(tRecord);
+		}
+	else {
 			record = arch_sec.getNextRecord();
 		}
-	}
+	} while(!arch_sec.endOfFile());
 }
 
 void IndiceArbol::rewind() {
