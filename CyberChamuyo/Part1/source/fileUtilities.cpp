@@ -21,4 +21,11 @@ bool directoryExists(std::string path) {
 	return false;
 }
 
+std::ifstream::pos_type fileSize(const char* filename)
+{
+    std::ifstream in(filename, std::ifstream::in | std::ifstream::binary);
+    in.seekg(0, std::ifstream::end);
+    return in.tellg();
+}
+
 }

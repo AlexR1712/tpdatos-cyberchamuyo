@@ -300,6 +300,9 @@ void StatisticsManager::loadMemorableQuotes(bool insertInHash) {
 		//Se genera el ranking de palabras.
 		this->getDictionary()->exportar(RANKINGS_FILE_PATH);
 		externalSorter.sort(RANKINGS_FILE_PATH,RANKINGS_FILE_PATH_ORDERED,true);
+		std:: ofstream ofs;
+		ofs.open("HashExp");
+		ofs << *this->getMemorableQuotes();
 	} else {
 		std::cout << "Archivo inexistente" << std::endl;
 	}
@@ -460,7 +463,7 @@ void StatisticsManager::addPhrase(std::string phrase) {
 			}
 		}
 	}
-	std::string nombre("Autor\t\t");
+	std::string nombre("\t\t");
 	phrase = nombre.append(phrase);
 	this->getMemorableQuotes()->insert(phrase);
 }
@@ -538,7 +541,6 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 		if (command == COMMAND_PRINT_AVG_WORDS_PER_QUOTE) {
 			this->printAverageWordsPerPhrase();
 			//this->dictionary->exportar("/home/lucasj/workspace/TpDatos2012/outputFiles/out.txt");
-
 		}
 
 		if (command == COMMAND_PRINT_AVG_FAILURES) {

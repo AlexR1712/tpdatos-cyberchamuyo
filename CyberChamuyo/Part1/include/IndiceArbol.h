@@ -65,6 +65,8 @@ public:
 	void mostrar();
 
 	unsigned int getTotalTerms();
+
+	void clearLists();
 private:
 	void crearIndice(std::ifstream& arch);
 	ArbolBp arbol;

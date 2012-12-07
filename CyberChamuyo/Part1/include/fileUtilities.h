@@ -3,6 +3,8 @@
 
 #include <sys/stat.h>
 #include <string>
+#include <fstream>
+
 
 namespace FileUtilities {
 
@@ -17,6 +19,8 @@ void deleteFile(std::string fileName);
 
 //Chequea si existe un directorio
 bool directoryExists(std::string path);
+
+std::ifstream::pos_type fileSize(const char* filename);
 
 }
 

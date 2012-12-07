@@ -123,6 +123,10 @@ void IndiceArbol::modify(unsigned int termId, std::string word, unsigned int inv
 	arbol.modify(ret_reg);
 }
 
+void IndiceArbol::clearLists() {
+	(this->arbol).clearListReferences();
+}
+
 void IndiceArbol::mostrar() {
 	arbol.imprimirNodos();
 }

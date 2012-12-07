@@ -90,6 +90,8 @@ public:
 
 	//  devuelve el ultimo nodo leido en memoria
 	NodoExterno* getUltimoNodoLeido();
+
+	void clearListReferences();
 private:
 	Nodo* raiz;											//  nodo raiz del arbol
 	ArchivoBloquesFijos arch_arbol;						//  archivo de bloques donde se guardan los nodos

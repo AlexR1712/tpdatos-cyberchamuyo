@@ -319,6 +319,28 @@ void ArbolBp::exportar(VariableLengthRecordSequentialFile<WordRankingRecord>& os
 	//	delete nE;
 }
 
+void ArbolBp::clearListReferences() {
+	int primero = encontrarPrimero();
+	NodoExterno* nE = new NodoExterno(0, this);
+	int pos = 0;
+	std::vector<char>* nodo_data = leerNodo2(primero);
+	nE->hidratar(nodo_data, pos);
+	ultimoNodoLeido = nE;
+	Registro* reg = new RegistroArbol();
+	reg = nE->getRegistro(0, reg);
+	while(reg != NULL) {
+		dynamic_cast<RegistroArbol*>(reg)->setListId(0);
+		this->modify(reg);
+		reg = siguiente();
+	}
+	delete reg;
+	if(ultimoNodoLeido == nE)
+		ultimoNodoLeido = NULL;
+	delete nodo_data;
+	//if(ultimoNodoLeido != nE)
+	//	delete nE;
+}
+
 bool ArbolBp::hasNext() {
 	if(ultimoNodoLeido == NULL)
 		return false;

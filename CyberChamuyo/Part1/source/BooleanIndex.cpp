@@ -6,17 +6,15 @@
  */
 
 #include "../include/BooleanIndex.h"
-//#include "../include/Phrase.h"
-//#include "../include/BloqueLista.h"
 
 #define MAX_TERM_SIZE 20
 
-BooleanIndex::BooleanIndex() : invertedListsFile("invertedLists.bin") {
-	vocabulary = NULL;
+BooleanIndex::BooleanIndex() : invertedListsFile(INVERTED_LISTS_FILE_NAME) {
+	valid = false;
 }
 
 void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string ocurrenceFilePath, IndiceArbol* vocabulary) {
-	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(5,false);
+	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(500,false);
 	std::string orderedOcurrenceFilePath = "orderedOcurrenceFile.bin";
 	sorter.sort(ocurrenceFilePath,orderedOcurrenceFilePath,true);
 	VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
@@ -40,6 +38,7 @@ void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, 
 		else
 			vocabulary->modify(ocurrenceRecord.getTermId(), term, inv_list_id);
 	}
+	valid = true;
 }
 
 unsigned int BooleanIndex::addTerm(std::string term, unsigned int docId) {
@@ -113,6 +112,14 @@ void BooleanIndex::insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLeng
 }
 
 
+bool BooleanIndex::isLoaded() {
+	return valid;
+}
+
+void BooleanIndex::printFileInfo(std::ostream& os) {
+	os << MSG_FILE_NAME_INFO << INVERTED_LISTS_FILE_NAME << std::endl;
+	os << MSG_FILE_SIZE_INFO << FileUtilities::fileSize(INVERTED_LISTS_FILE_NAME);
+}
+
 BooleanIndex::~BooleanIndex() {
-	// TODO Auto-generated destructor stub
 }
