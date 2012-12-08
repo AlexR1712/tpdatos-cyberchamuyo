@@ -40,7 +40,7 @@ private:
 */
 
 public:
-	SignaturePortionIndex(void);
+	SignaturePortionIndex(std::string file_name);
 	virtual ~SignaturePortionIndex();
 	void load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string ocurrenceFilePath, IndiceArbol* vocabulary);
 	std::list<unsigned int> search(std::string term, IndiceArbol* vocabulary);

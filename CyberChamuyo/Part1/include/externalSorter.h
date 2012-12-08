@@ -77,7 +77,7 @@ private:
 	void loadMergeBuffer(std::list<ReadBuffer<File,Record>*>& readBuffers, std::string folderName, unsigned int inputFileLevelCounter, unsigned int& inputFileFileCounter);
 
 	//Metodo para generar el nombre de la carpeta temporal segun la fecha y hora actual
-	std::string generateTempFolderName();
+	std::string generateTempFolderName(std::string inputFilepath);
 
 	//Metodo para borrar los archivos de trabajo creados en las sucesivas etapas de ordenamiento.
 	void clearPhase(std::string parentFolderName, unsigned int level);
@@ -105,7 +105,7 @@ public:
 template<class File,class Record> ExternalSorter<File,Record>::ExternalSorter(unsigned int filesBufferSize, bool showId) {
 	this->showId = showId;
 	this->buffersSize = filesBufferSize;
-	this->tempFolderName = this->generateTempFolderName();
+	this->tempFolderName = "";
 }
 
 template<class File,class Record> Heap<Record>& ExternalSorter<File,Record>::getSortBuffer() {
@@ -301,6 +301,7 @@ template<class File,class Record> void ExternalSorter<File,Record>::merge(std::s
 }
 
 template<class File,class Record> void ExternalSorter<File,Record>::sort(std::string inputFilepath, std::string outputFilepath, bool leaveTraces) {
+	this->tempFolderName = this->generateTempFolderName(inputFilepath);
 	FileUtilities::createFolder(this->getTempFolderName());
 	this->getLog().open(this->getTempFolderName() + "/" + LOG_FILE_NAME,true);
 
@@ -332,15 +333,19 @@ template<class File,class Record> void ExternalSorter<File,Record>::loadMergeBuf
 	}
 }
 
-template<class File,class Record> std::string ExternalSorter<File,Record>::generateTempFolderName() {
+template<class File,class Record> std::string ExternalSorter<File,Record>::generateTempFolderName(std::string inputFilepath) {
 	time_t rawtime;
 	struct tm* timeinfo;
 	time(&rawtime);
 	timeinfo = localtime (&rawtime);
 	std::string tempFolderName = OUTPUTFILES_FOLDER_NAME;
+	unsigned int from = inputFilepath.rfind('/') + 1;
+	unsigned int to = inputFilepath.rfind('.');
+	std::string inputFfileName = inputFilepath.substr(from,to - from);
 
 	tempFolderName = tempFolderName + "/" +
 					 TEMP_FOLDER_NAME_PREFIX +
+					 "-" + inputFfileName + "-" +
 					 StringUtilities::intToString(timeinfo->tm_year + 1900) +
 					 StringUtilities::intToString(timeinfo->tm_mon + 1) +
 					 StringUtilities::intToString(timeinfo->tm_mday) +

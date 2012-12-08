@@ -30,18 +30,18 @@
 #ifndef COMMAND_LOAD_INDEXES
 #define COMMAND_LOAD_INDEXES "cargaIndices"
 #endif	/*COMMAND_LOAD_INDEXES*/
-#ifndef COMMAND_BOOLEAN_SEARCH
-#define COMMAND_BOOLEAN_SEARCH "busquedaBooleano"
-#endif
 
 #ifndef COMMAND_ERASE_PHRASE
 #define COMMAND_ERASE_PHRASE "borrarFrase"
 #endif
 
+#ifndef COMMAND_BOOLEAN_SEARCH
+#define COMMAND_BOOLEAN_SEARCH "busquedaBooleano"
+#endif
+
 #ifndef COMMAND_SIGNATURE_SEARCH
 #define COMMAND_SIGNATURE_SEARCH "busquedaXFirma"
 #endif
-
 
 #ifndef COMMAND_ADD_PHRASE
 #define COMMAND_ADD_PHRASE "agregarFrase"
@@ -160,15 +160,15 @@
 #endif /*TEXT_MEMORABLE_QUOTES*/
 
 #ifndef TEXT_NO_RESULTS_FOR_SEARCH
-#define TEXT_NO_RESULTS_FOR_SEARCH "No hubo coincidencias para esta busqueda"
+#define TEXT_NO_RESULTS_FOR_SEARCH "		No hubo coincidencias para esta busqueda"
 #endif /*TEXT_NO_RESULTS_FOR_SEARCH*/
 
 #ifndef EXECUTION_TIME_MSG
-#define EXECUTION_TIME_MSG "Tiempo de ejecucion: "
+#define EXECUTION_TIME_MSG "	Tiempo de ejecucion: "
 #endif /*EXECUTION_TIME_MSG*/
 
 #ifndef SEARCH_TERM_LIST_MSG
-#define SEARCH_TERM_LIST_MSG "Terminos Buscados: "
+#define SEARCH_TERM_LIST_MSG "		Terminos Buscados: "
 #endif /*SEARCH_TERM_LIST_MSG*/
 
 #ifndef ERROR_FILE_NOT_FOUND

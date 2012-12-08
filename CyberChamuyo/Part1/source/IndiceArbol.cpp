@@ -100,8 +100,7 @@ void IndiceArbol::createIndex(std::string in_path, FixedLengthRecordSequentialFi
 			tRecord.setTerm(s);
 			tRecord.setId(T->getLastRecordPosition() + 1);
 			T->putRecord(tRecord);
-		}
-	else {
+		} else {
 			record = arch_sec.getNextRecord();
 		}
 	} while(!arch_sec.endOfFile());
