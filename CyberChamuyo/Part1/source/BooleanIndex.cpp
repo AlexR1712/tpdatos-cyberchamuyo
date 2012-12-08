@@ -126,3 +126,8 @@ void BooleanIndex::printFileInfo(std::ostream& os) {
 
 BooleanIndex::~BooleanIndex() {
 }
+
+std::ostream& operator<<(std::ostream& oss, BooleanIndex &booleanIndex) {
+	oss << booleanIndex.invertedListsFile;
+	return oss;
+}

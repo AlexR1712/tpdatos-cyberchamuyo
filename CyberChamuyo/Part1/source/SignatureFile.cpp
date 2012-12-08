@@ -22,7 +22,7 @@ bool SignatureFile::insertarFirma(Signature* firma, unsigned int idTerm) {
 	RegistroFirma* reg = new RegistroFirma(firma);
 	bl.addRegistro(reg);
 	firma->setClaveDato(idTerm);
-	if (this->archSig.Escribir(&bl, firma->getClaveDato()) != RES_OK)
+	if (this->archSig.Escribir(&bl, firma->getClaveDato() - 1) != RES_OK)
 		return false;
 	else return true;
 }
@@ -92,15 +92,30 @@ void SignatureFile::getListaFrases(unsigned int nTermino, listaFrases& lista) {
 }
 
 bool SignatureFile::inicializar(unsigned int N) {
-	for (unsigned int i = 0; i < N; ++i) {
+	for (unsigned int i = 1; i < N + 1; ++i) {
 		BloqueFirma* bl = new BloqueFirma(this->archSig.getTamanoBloque());
 		Signature* firma = new Signature;
 		RegistroFirma* reg = new RegistroFirma(firma);
 		bl->addRegistro(reg);
 		firma->setClaveDato(this->archSig.getNuevoId());
-		if (this->archSig.Escribir(bl, firma->getClaveDato() - 1) != RES_OK)
+		if (this->archSig.Escribir(bl, firma->getClaveDato() - 1) != RES_OK) {
+			delete bl;
 			return false;
+		}
 		delete bl;
+	}
+	return true;
+}
+
+bool SignatureFile::insertarTermino(unsigned int nTermino) {
+	BloqueFirma* bl = new BloqueFirma(this->archSig.getTamanoBloque());
+	Signature* firma = new Signature;
+	RegistroFirma* reg = new RegistroFirma(firma);
+	bl->addRegistro(reg);
+	firma->setClaveDato(nTermino);
+	if (this->archSig.Escribir(bl, firma->getClaveDato() - 1) != RES_OK) {
+		delete bl;
+		return false;
 	}
 	return true;
 }

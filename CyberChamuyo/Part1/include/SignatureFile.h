@@ -27,6 +27,7 @@ public:
 	void insertarFrase(unsigned int nFrase, unsigned int nTermino);
 	void borrarFrase(unsigned int nFrase, unsigned int nTermino);
 	void getListaFrases(unsigned int nTermino, listaFrases& lista);
+	bool insertarTermino(unsigned int nTermino);
 	void cargar();
 	void clear(void);
 	virtual ~SignatureFile();

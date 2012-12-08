@@ -39,7 +39,7 @@ void SignaturePortionIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRec
 			ocurrenceRecord = ocurrenceFile.getNextRecord();
 		}
 		if(!ocurrenceFile.endOfFile())
-			this->sigFile.insertarFirma(firma, previousTerm);
+			this->sigFile.insertarFirma(firma, previousTerm + 1);
 	}
 }
 
@@ -53,6 +53,19 @@ std::list<unsigned int> SignaturePortionIndex::search(std::string term, IndiceAr
 	}
 	this->sigFile.getListaFrases(termId, res);
 	return res;
+}
+
+void SignaturePortionIndex::addTerm(unsigned int idTerm, unsigned int docId) {
+	this->sigFile.insertarTermino(idTerm);
+	Signature::Signature* firma = new Signature::Signature;
+	firma->setBit(docId);
+	this->sigFile.insertarFirma(firma, idTerm);
+}
+
+void SignaturePortionIndex::addDocToTerm(std::string term, unsigned int docId, IndiceArbol* vocabulary) {
+	RegistroArbol reg(vocabulary->textSearch(term));
+	unsigned int termId = reg.getTermId();
+	this->sigFile.insertarFrase(docId, termId);
 }
 
 std::ostream& operator<<(std::ostream& oss, SignaturePortionIndex &sigPortionIndex) {
