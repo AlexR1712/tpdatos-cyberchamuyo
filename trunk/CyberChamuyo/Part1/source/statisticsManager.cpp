@@ -1,5 +1,4 @@
 #include "../include/statisticsManager.h"
-
 #include "../include/propertiesLoader.h"
 #include "../include/binaryDictionaryRecord.h"
 #include "../include/textRecord.h"
@@ -66,6 +65,7 @@ StatisticsManager::StatisticsManager() {
 		this->numberOfFailures = 0;
 		this->numberOfQuotes = 0;
 		this->numberOfWords = 0;
+		this->sigPortionIndex = new SignaturePortionIndex;
 		this->loadStatus();
 		this->loadStopWords();
 	} else {
@@ -422,6 +422,7 @@ void StatisticsManager::erasePhrase(unsigned int idPhrase) {
 	std::string phrase;
 
 	this->getMemorableQuotes()->getFrase(idPhrase,phrase);
+	//StringUtilities::splitString(phrase,phraseWords,AUTHOR_QUOTE_SEPARATOR);
 	StringUtilities::splitString(phrase,phraseWords,QUOTES_WORDS_SEPARATOR);
 	unsigned int size = phraseWords.size();
 	for (unsigned int i = 0; i < size; i++) {
@@ -491,6 +492,9 @@ bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::st
 		  (command != COMMAND_LOAD_INDEXES) &&
 		  (command != COMMAND_LOAD_MEMORABLE_QUOTES) &&
 		  (command != COMMAND_BOOLEAN_SEARCH) &&
+		  (command != COMMAND_SIGNATURE_SEARCH) &&
+		  (command != COMMAND_INDEX_BY_BOOLEAN) &&
+		  (command != COMMAND_INDEX_BY_SIGNATURE) &&
 		  (command != COMMAND_ADD_PHRASE) &&
 		  (command != COMMAND_MODIFY_PHRASE) &&
 		  (command != COMMAND_ERASE_PHRASE) &&
@@ -544,6 +548,12 @@ void StatisticsManager::printHelp() {
 				<< std::endl
 				<< HELP_TEXT_LOAD_MEMORABLE_QUOTES << std::endl
 				<< std::endl
+				<< HELP_TEXT_SIGNATURE_SEARCH << std::endl
+				<< std::endl
+				<< HELP_TEXT_INDEX_BY_BOOLEAN << std::endl
+				<< std::endl
+				<< HELP_TEXT_INDEX_BY_SIGNATURE << std::endl
+				<< std::endl
 				<< HELP_TEXT_CALLHELP << std::endl
 				<< std::endl
 				<< HELP_TEXT_EXIT <<std::endl
@@ -573,6 +583,8 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 	if (this->isValidCommand(command,commandParams)) {
 		if (command == COMMAND_PRINT_AVG_WORDS_PER_QUOTE) {
 			this->printAverageWordsPerPhrase();
+			//this->dictionary->exportar("/home/lucasj/workspace/TpDatos2012/outputFiles/out.txt");
+
 		}
 
 		if (command == COMMAND_PRINT_AVG_FAILURES) {
@@ -635,6 +647,7 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 //			this->getNotFoundWords()->clear();
 //			delete notFoundWords;
 //			notFoundWords = new IndiceArbol(NOTFOUND_NAME);
+			this->loadMemorableQuotes();
 		}
 
 		if (command == COMMAND_LOAD_INDEXES) {
@@ -645,14 +658,16 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 				sorter.sort(OCURRENCE_FILE_PATH,OCURRENCE_FILE_PATH_ORDERED,true);
 
 				getT()->open(T_FILE_PATH,false);
+				this->sigPortionIndex->load(this->getT(),OCURRENCE_FILE_PATH_ORDERED,this->getDictionary());
 				this->getBooleanIndex()->load(this->getT(),OCURRENCE_FILE_PATH_ORDERED,this->getDictionary());
+
 				getT()->close();
 			} else {
 				std::cout << ERROR_COMMAND_PREREQUISITES << filesToLoad << std::endl;
 			}
 		}
 
-		if (command == COMMAND_ADD_PHRASE) {
+			if (command == COMMAND_ADD_PHRASE) {
 			std::string filesToLoad;
 
 			if (validateDataStructureIntegrity(filesToLoad)) {
@@ -698,6 +713,14 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 				search(commandParams, std::cout);
 			else
 				std::cout << ERROR_COMMAND_SEARCH_PREREQUISITES << std::endl;
+		}
+
+		if (command == COMMAND_SIGNATURE_SEARCH) {
+			searchSignature(commandParams, std::cout);
+			/*if (this->getBooleanIndex()->isLoaded())
+				search(commandParams, std::cout);
+			else
+				std::cout << ERROR_COMMAND_SEARCH_PREREQUISITES << std::endl;*/
 		}
 
 		if (command == COMMAND_PRINT_HELP) {
@@ -814,6 +837,38 @@ void StatisticsManager::search(std::vector<std::string>& commandParams, std::ost
 		os << TEXT_NO_RESULTS_FOR_SEARCH << std::endl;
 	}
 }
+
+void StatisticsManager::searchSignature(std::vector<std::string>& commandParams, std::ostream& os) {
+	double clock_start = clock();
+	std::string word;
+	std::list<unsigned int> res;
+	std::vector<std::list<unsigned int> > res_lists;
+	os << SEARCH_TERM_LIST_MSG << ' ';
+	for(int i = 0; i < commandParams.size(); ++i) {
+		word = commandParams[i];
+		os << word;
+		res_lists.push_back(this->sigPortionIndex->search(word, this->getDictionary()));
+	}
+	os << std::endl;
+	if(res_lists.size() > 1)
+		res = lAnd(res_lists);
+	else
+		res = res_lists[0];
+	std::list<unsigned int>::iterator it;
+	double clock_end = clock();
+	os << EXECUTION_TIME_MSG << (clock_end - clock_start)/(double)CLOCKS_PER_SEC << std::endl;
+	if(*(res_lists[0].begin()) != 0) {
+		for(it = res.begin(); it != res.end(); ++it) {
+			std::string frase;
+			this->getMemorableQuotes()->getFrase(*it, frase);
+
+			os << *it << ' ' << frase << std::endl;
+		}
+	} else {
+		os << "No hubo coincidencias para esta busqueda" << std::endl;
+	}
+}
+
 
 bool StatisticsManager::checkDirectoryStructure() {
 	if(!FileUtilities::directoryExists(CONFIG_DIRECTORY_PATH)) {

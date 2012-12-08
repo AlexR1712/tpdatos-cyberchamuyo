@@ -82,6 +82,10 @@ void RegistroArbol::setListId(unsigned int lId) {
 	this->s = lId;
 }
 
+void RegistroArbol::setTermId(unsigned int id) {
+	this->termId = id;
+}
+
 long RegistroArbol::timesSearched() {
 	return n;
 }
@@ -144,10 +148,6 @@ void RegistroArbol::setReg(Registro& reg) {
 	n = dynamic_cast<RegistroArbol&>(reg).n;
 	s = dynamic_cast<RegistroArbol&>(reg).s;
 	termId = dynamic_cast<RegistroArbol&>(reg).termId;
-}
-
-void RegistroArbol::setTermId(int id) {
-	this->termId = id;
 }
 
 int RegistroArbol::totalSize() {
