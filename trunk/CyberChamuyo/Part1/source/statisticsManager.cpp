@@ -460,9 +460,12 @@ void StatisticsManager::addPhrase(std::string phrase) {
 				///////// Especifico indice Booleano //////////
 				if (this->getBooleanIndex()->isLoaded()) {
 					//listId = this->booleanIndex->addTerm(phraseWords[i],this->getNumberOfQuotes() + this->numberOfErasedQuotes);
-					listId = this->getBooleanIndex()->addTerm(phraseWords[i],this->getMemorableQuotes()->getLastId() + 1);
+					listId = this->getBooleanIndex()->addTerm(phraseWords[i], this->getMemorableQuotes()->getLastId() + 1);
 					///////////////////////////////////////////////
 				}
+				/////////////////////////////////////////////////////////////////////////
+				this->sigPortionIndex->addTerm(termId, this->getMemorableQuotes()->getLastId() + 1);
+				/////////////////////////////////////////////////////////////////////////
 				this->getDictionary()->insert(termId, phraseWords[i], listId);
 				//cosaQueHacePorcionesDeFirmas.add(idTermino,ocurrenceRecord.getDocId());
 				FixedLengthTRecord tRecord(T_RECORD_SIZE);
@@ -473,6 +476,9 @@ void StatisticsManager::addPhrase(std::string phrase) {
 				if (this->getBooleanIndex()->isLoaded())
 					//this->booleanIndex->addDocToTerm(phraseWords[i],this->getNumberOfQuotes() + this->numberOfErasedQuotes,this->getDictionary());
 					this->getBooleanIndex()->addDocToTerm(phraseWords[i],this->getMemorableQuotes()->getLastId() + 1,this->getDictionary());
+				/////////////////////////////////////////////////////////////////////////
+				this->sigPortionIndex->addDocToTerm(phraseWords[i],this->getMemorableQuotes()->getLastId() + 1,this->getDictionary());
+				/////////////////////////////////////////////////////////////////////////
 			}
 		}
 	}
@@ -659,8 +665,11 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 
 				getT()->open(T_FILE_PATH,false);
 				this->sigPortionIndex->load(this->getT(),OCURRENCE_FILE_PATH_ORDERED,this->getDictionary());
+				std::ofstream arch ("archSig.txt");
+				arch << *(this->sigPortionIndex);
 				this->getBooleanIndex()->load(this->getT(),OCURRENCE_FILE_PATH_ORDERED,this->getDictionary());
-
+				std::ofstream arch2 ("archInv.txt");
+				arch2 << *(this->booleanIndex);
 				getT()->close();
 			} else {
 				std::cout << ERROR_COMMAND_PREREQUISITES << filesToLoad << std::endl;
@@ -717,10 +726,6 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 
 		if (command == COMMAND_SIGNATURE_SEARCH) {
 			searchSignature(commandParams, std::cout);
-			/*if (this->getBooleanIndex()->isLoaded())
-				search(commandParams, std::cout);
-			else
-				std::cout << ERROR_COMMAND_SEARCH_PREREQUISITES << std::endl;*/
 		}
 
 		if (command == COMMAND_PRINT_HELP) {
@@ -957,4 +962,7 @@ StatisticsManager::~StatisticsManager() {
 	delete this->getNotFoundWords();
 	delete this->getDictionary();
 	delete this->getMemorableQuotes();
+	delete this->getBooleanIndex();
+	delete this->getT();
+	delete this->sigPortionIndex;
 }

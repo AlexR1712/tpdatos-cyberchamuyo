@@ -45,6 +45,8 @@ public:
 	void load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string ocurrenceFilePath, IndiceArbol* vocabulary);
 	std::list<unsigned int> search(std::string term, IndiceArbol* vocabulary);
 	friend std::ostream& operator<<(std::ostream& oss, SignaturePortionIndex &sigPortionIndex);
+	void addTerm(unsigned int idTerm, unsigned int docId);
+	void addDocToTerm(std::string term, unsigned int docId, IndiceArbol* vocabulary);
 	/*
 
 	//PARTE A

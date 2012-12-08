@@ -52,6 +52,9 @@ public:
 	bool isLoaded();
 	void printFileInfo(std::ostream& os);
 	virtual ~BooleanIndex();
+	friend std::ostream& operator<<(std::ostream& oss, BooleanIndex &boooleanIndex);
 };
+
+std::ostream& operator<<(std::ostream& oss, BooleanIndex &booleanIndex);
 
 #endif /* BOOLEANINDEX_H_ */
