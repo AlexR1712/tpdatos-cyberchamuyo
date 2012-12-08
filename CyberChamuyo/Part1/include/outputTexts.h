@@ -30,14 +30,18 @@
 #ifndef COMMAND_LOAD_INDEXES
 #define COMMAND_LOAD_INDEXES "cargaIndices"
 #endif	/*COMMAND_LOAD_INDEXES*/
+#ifndef COMMAND_BOOLEAN_SEARCH
+#define COMMAND_BOOLEAN_SEARCH "busquedaBooleano"
+#endif
 
 #ifndef COMMAND_ERASE_PHRASE
 #define COMMAND_ERASE_PHRASE "borrarFrase"
 #endif
 
-#ifndef COMMAND_BOOLEAN_SEARCH
-#define COMMAND_BOOLEAN_SEARCH "busquedaBooleano"
+#ifndef COMMAND_SIGNATURE_SEARCH
+#define COMMAND_SIGNATURE_SEARCH "busquedaXFirma"
 #endif
+
 
 #ifndef COMMAND_ADD_PHRASE
 #define COMMAND_ADD_PHRASE "agregarFrase"
@@ -45,6 +49,14 @@
 
 #ifndef COMMAND_MODIFY_PHRASE
 #define COMMAND_MODIFY_PHRASE "modificarFrase"
+#endif
+
+#ifndef COMMAND_INDEX_BY_BOOLEAN
+#define COMMAND_INDEX_BY_BOOLEAN "indexarXBooleano"
+#endif
+
+#ifndef COMMAND_INDEX_BY_SIGNATURE
+#define COMMAND_INDEX_BY_SIGNATURE "indexarXFirma"
 #endif
 
 #ifndef COMMAND_PRINT_HELP
@@ -89,6 +101,18 @@
 
 #ifndef HELP_TEXT_CALLHELP
 #define HELP_TEXT_CALLHELP "	ayuda: reimprimir esta ayuda."
+#endif /*HELP_TEXT_CALLHELP*/
+
+#ifndef HELP_TEXT_SIGNATURE_SEARCH
+#define HELP_TEXT_SIGNATURE_SEARCH "	busquedaXFirma: Buscar frases por índice de porción de firmas."
+#endif /*HELP_TEXT_CALLHELP*/
+
+#ifndef HELP_TEXT_INDEX_BY_BOOLEAN
+#define HELP_TEXT_INDEX_BY_BOOLEAN "	indexarXBooleano: Indexa por índice booleano."
+#endif /*HELP_TEXT_CALLHELP*/
+
+#ifndef HELP_TEXT_INDEX_BY_SIGNATURE
+#define HELP_TEXT_INDEX_BY_SIGNATURE "	indexarXFirma: Indexa por índice de porciones de firma."
 #endif /*HELP_TEXT_CALLHELP*/
 
 #ifndef HELP_TEXT_EXIT

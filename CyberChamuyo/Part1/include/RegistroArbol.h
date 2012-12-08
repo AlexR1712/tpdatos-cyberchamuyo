@@ -21,6 +21,7 @@ public:
 	RegistroArbol(RegistroArbol& reg);
 	unsigned int getListId();
 	void setListId(unsigned int id);
+	void setTermId(unsigned int id);
 	unsigned long getTermId();
 	virtual std::vector<char>* serializar(FrontCoding& encoder);
 	virtual void hidratar(const std::vector<char>* vec, FrontCoding& decoder,int& pos);
@@ -31,7 +32,6 @@ public:
 	virtual Registro& operator=(RegistroArbol& r);
 	friend std::ostream& operator<<(std::ostream& os, const RegistroArbol& r);
 	virtual void setReg(Registro& r);
-	void setTermId(int id);
 	virtual int totalSize();
 private:
 	long n;

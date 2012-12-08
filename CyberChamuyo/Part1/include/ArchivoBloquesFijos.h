@@ -55,6 +55,8 @@ public:
     unsigned int getNuevoId(void);
     unsigned int getId();
     void clear(void);
+    void insertarBit(unsigned int byte, unsigned int offset, unsigned int corr);
+    void borrarBit(unsigned int byte, unsigned int offset, unsigned int corr);
     friend std::ostream& operator<<(std::ostream& oss,
 					  ArchivoBloquesFijos &arch);
 };

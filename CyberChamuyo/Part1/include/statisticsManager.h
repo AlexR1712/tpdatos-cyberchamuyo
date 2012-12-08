@@ -14,6 +14,7 @@
 #include "fixedLengthRecord.h"
 #include "OcurrenceFileRecord.h"
 #include "BooleanIndex.h"
+#include "SignaturePortionIndex.h"
 
 #ifndef CONFIG_FILE_PATH
 #define CONFIG_FILE_PATH "config/statisticsManager.properties"
@@ -21,6 +22,9 @@
 
 #ifndef T_RECORD_SIZE
 #define T_RECORD_SIZE 50
+#define T_FILE_PATH "bin/tFile.bin"
+#define EXECUTION_TIME_MSG "Tiempo de ejecucion: "
+#define SEARCH_TERM_LIST_MSG "Terminos Buscados: "
 #endif /*T_RECORD_SIZE*/
 
 #ifndef CONFIG_DIRECTORY_PATH
@@ -38,6 +42,10 @@
 #ifndef STOP_WORDS_FILE_PATH_PROPERTY_NAME
 #define STOP_WORDS_FILE_PATH_PROPERTY_NAME "stopWordsFilePath"
 #endif /*STOP_WORDS_FILE_PATH_PROPERTY_NAME*/
+
+#ifndef CONFIG_FILE_PATH
+#define CONFIG_FILE_PATH "config/statisticsManager.properties"
+#endif /*CONFIG_FILE_PATH*/
 
 #ifndef STATUS_FILE_PATH
 #define STATUS_FILE_PATH "bin/statisticsManagerStatus"
@@ -135,7 +143,11 @@ private:
 
 	FixedLengthRecordSequentialFile<FixedLengthTRecord>* T;
 
+	std::string ocurrenceFilePath;
+
 	BooleanIndex* booleanIndex;
+
+	SignaturePortionIndex* sigPortionIndex;
 
 	std::string getInputDictionaryFilePath() const;
 
@@ -231,6 +243,8 @@ private:
 	void addPhrase(std::string phrase);
 
 	void search(std::vector<std::string>& terms, std::ostream& os);
+
+	void searchSignature(std::vector<std::string>& terms, std::ostream& os);
 
 	void modify(unsigned int phraseId, std::vector<std::string> modifiedPhrase);
 

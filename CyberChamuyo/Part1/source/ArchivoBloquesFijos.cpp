@@ -145,3 +145,39 @@ unsigned int ArchivoBloquesFijos::getNuevoId(void) {
 unsigned int ArchivoBloquesFijos::getId() {
 	return this->autoId;
 }
+
+
+void ArchivoBloquesFijos::insertarBit(unsigned int byte, unsigned int offset, unsigned int corr) {
+	long int corrimiento = (offset + 1) * tamanoBloque * metadatasize;
+	corrimiento = corrimiento + corr;
+	unsigned int numByte = byte / 8;
+	corrimiento = corrimiento + numByte;
+	unsigned int numBit = byte % 8;
+	unsigned char mask = 1;
+	mask = mask << numBit;
+	path.seekg(corrimiento, std::ios::beg);
+	unsigned char nuevoValor = 0;
+	path.read((char*) (&nuevoValor), sizeof(unsigned char));
+	nuevoValor = nuevoValor | mask;
+	path.seekg(corrimiento, std::ios::beg);
+	path.write((char*) (&nuevoValor), sizeof(unsigned char));
+}
+
+void ArchivoBloquesFijos::borrarBit(unsigned int byte, unsigned int offset, unsigned int corr) {
+	long int corrimiento = (offset + 1) * tamanoBloque * metadatasize;
+	corrimiento = corrimiento + corr;
+	unsigned int numByte = byte / 8;
+	corrimiento = corrimiento + numByte;
+	unsigned int numBit = byte % 8;
+	unsigned char mask = 1;
+	mask = mask << numBit;
+	path.seekg(corrimiento, std::ios::beg);
+	unsigned char nuevoValor = 0;
+	path.read((char*) (&nuevoValor), sizeof(unsigned char));
+	nuevoValor = nuevoValor ^ mask;
+	path.seekg(corrimiento, std::ios::beg);
+	path.write((char*) (&nuevoValor), sizeof(unsigned char));
+}
+
+
+

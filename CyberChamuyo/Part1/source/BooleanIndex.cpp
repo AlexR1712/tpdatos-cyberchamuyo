@@ -23,6 +23,9 @@ void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, 
 	while(!ocurrenceFile.endOfFile()) {
 		FixedLengthTRecord termRecord = T->getRecord(ocurrenceRecord.getTermId());
 		std::string term = termRecord.getTerm();
+		std::string termSearch = "mundo";
+		if (term == termSearch)
+			std::cout << "hola";
 		unsigned int inv_list_id;
 		unsigned int previousTerm = ocurrenceRecord.getTermId();
 		invertedList::ListaInvertida* inv_list = new invertedList::ListaInvertida;
