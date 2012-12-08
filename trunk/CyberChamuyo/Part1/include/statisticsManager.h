@@ -22,9 +22,6 @@
 
 #ifndef T_RECORD_SIZE
 #define T_RECORD_SIZE 50
-#define T_FILE_PATH "bin/tFile.bin"
-#define EXECUTION_TIME_MSG "Tiempo de ejecucion: "
-#define SEARCH_TERM_LIST_MSG "Terminos Buscados: "
 #endif /*T_RECORD_SIZE*/
 
 #ifndef CONFIG_DIRECTORY_PATH
@@ -42,10 +39,6 @@
 #ifndef STOP_WORDS_FILE_PATH_PROPERTY_NAME
 #define STOP_WORDS_FILE_PATH_PROPERTY_NAME "stopWordsFilePath"
 #endif /*STOP_WORDS_FILE_PATH_PROPERTY_NAME*/
-
-#ifndef CONFIG_FILE_PATH
-#define CONFIG_FILE_PATH "config/statisticsManager.properties"
-#endif /*CONFIG_FILE_PATH*/
 
 #ifndef STATUS_FILE_PATH
 #define STATUS_FILE_PATH "bin/statisticsManagerStatus"
@@ -74,6 +67,14 @@
 #ifndef T_FILE_PATH
 #define T_FILE_PATH "bin/tFile.bin"
 #endif /*T_FILE_PATH*/
+
+#ifndef	BOOLEAN_INDEX_FILE_NAME
+#define BOOLEAN_INDEX_FILE_NAME "bin/invertedLists.bin"
+#endif /*BOOLEAN_INDEX_FILE_NAME*/
+
+#ifndef	BITSLICE_INDEX_FILE_NAME
+#define BITSLICE_INDEX_FILE_NAME "bin/SignatureFile.bin"
+#endif /*BITSLICE_INDEX_FILE_NAME*/
 
 #ifndef OCURRENCE_FILE_PATH
 #define OCURRENCE_FILE_PATH "bin/ocurrenceFile.bin"
@@ -143,8 +144,6 @@ private:
 
 	FixedLengthRecordSequentialFile<FixedLengthTRecord>* T;
 
-	std::string ocurrenceFilePath;
-
 	BooleanIndex* booleanIndex;
 
 	SignaturePortionIndex* sigPortionIndex;
@@ -203,9 +202,6 @@ private:
 	//Metodo para cargar las frases celebres.
 	void loadMemorableQuotes();
 
-	//Metodo para limpiar las estadisticas.
-	void clearStatistics();
-
 	//Indica si el comando ingresado es valido.
 	bool isValidCommand(std::string& command, std::vector<std::string>& commandParams);
 
@@ -226,11 +222,20 @@ private:
 
 	bool checkDirectoryStructure();
 
+	//Metodo para limpiar las estadisticas.
+	void clearStatistics();
+
 	void clearDictionary();
 
 	void clearNotFoundWords();
 
 	void clearMemorableQuotes();
+
+	void clearIndex();
+
+	void clearTFile();
+
+	void clearAll();
 
 	void insertPhrase(std::string phrase);
 

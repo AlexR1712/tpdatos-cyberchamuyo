@@ -126,6 +126,10 @@ void InvertedListFile::clear(void) {
 	this->archList.clear();
 }
 
+bool InvertedListFile::isLoaded() {
+	return this->archList.getCantidadBloques();
+}
+
 unsigned int InvertedListFile::getNuevoId(void) {
 	return this->archList.getNuevoId();
 }

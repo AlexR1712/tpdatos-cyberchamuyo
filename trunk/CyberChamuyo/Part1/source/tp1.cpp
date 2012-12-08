@@ -17,6 +17,8 @@ int main(int argc, char *argv[]){
 
 	//cargaDiccionario inputFiles/dictionary2.txt
 	//cargaFrases inputFiles/frases-celebres.txt
+	//cargaIndices
+	//busquedaBooleano perro
 
 	if
 	(statisticsManager.isSuccessfullInit()) {
@@ -29,7 +31,6 @@ int main(int argc, char *argv[]){
 			if (command != USER_COMMAND_EXIT) {
 				statisticsManager.processCommand(command,*commandParams);
 			}
-			commandParams->clear();
 		} while (command != USER_COMMAND_EXIT);
 
 		return EXIT_SUCCESS;
@@ -41,11 +42,25 @@ int main(int argc, char *argv[]){
 
 std::string parseCommand(std::string userInput, std::vector<std::string>* commandParams) {
 	std::string command = "";
+	unsigned int from = 0;
+	unsigned int to = 0;
 
-	StringUtilities::splitString(userInput,*commandParams,USER_COMMAND_SEPARATOR);
-	command = (*commandParams)[0];
-	commandParams->erase(commandParams->begin());
+	to = userInput.find(' ',from);
+	command = userInput.substr(from,to);
+
+	commandParams->clear();
+	while (to != userInput.npos && to < userInput.length()) {
+		from = to + 1;
+		if (userInput[from] == '"') {
+			from++;
+			to = userInput.find('"',from);
+			commandParams->push_back(userInput.substr(from,(to-from)));
+			to++;
+		} else {
+			to = userInput.find(' ',from);
+			commandParams->push_back(userInput.substr(from,(to-from)));
+		}
+	}
 
 	return command;
-
 }

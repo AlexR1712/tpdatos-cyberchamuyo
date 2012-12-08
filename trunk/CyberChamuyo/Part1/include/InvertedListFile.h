@@ -32,7 +32,7 @@ public:
 	void actualizarLista(invertedList::ListaInvertida* lista, unsigned int offset);
 	invertedList::ListaInvertida* getLista(unsigned int offset);
 	void clear(void);
-	virtual ~InvertedListFile();
+	bool isLoaded();
 	friend std::ostream& operator<<(std::ostream& oss,
 					  InvertedListFile &listFile);
 	friend std::istream& operator>>(std::istream& oss,
@@ -40,6 +40,7 @@ public:
 	//////////////// lo hice publico
 	void liberarBloquesLista(unsigned int offset);
 	///////////////////////////////
+	virtual ~InvertedListFile();
 };
 
 std::ostream& operator<<(std::ostream& oss,

@@ -9,14 +9,10 @@
 
 #define MAX_TERM_SIZE 20
 
-BooleanIndex::BooleanIndex() : invertedListsFile(INVERTED_LISTS_FILE_NAME) {
-	valid = false;
+BooleanIndex::BooleanIndex(std::string file_name) : invertedListsFile(file_name.c_str()) {
 }
 
 void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string orderedOcurrenceFilePath, IndiceArbol* vocabulary) {
-//	ExternalSorter<VariableLengthRecordSequentialFile<OcurrenceFileRecord>,OcurrenceFileRecord> sorter(5,false);
-//	std::string orderedOcurrenceFilePath = "orderedOcurrenceFile.bin";
-//	sorter.sort(ocurrenceFilePath,orderedOcurrenceFilePath,true);
 	VariableLengthRecordSequentialFile<OcurrenceFileRecord> ocurrenceFile;
 	ocurrenceFile.open(orderedOcurrenceFilePath, false);
 	OcurrenceFileRecord ocurrenceRecord = ocurrenceFile.getNextRecord();
@@ -41,7 +37,6 @@ void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, 
 		else
 			vocabulary->modify(ocurrenceRecord.getTermId(), term, inv_list_id);
 	}
-	valid = true;
 }
 
 unsigned int BooleanIndex::addTerm(std::string term, unsigned int docId) {
@@ -116,12 +111,7 @@ void BooleanIndex::insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLeng
 
 
 bool BooleanIndex::isLoaded() {
-	return valid;
-}
-
-void BooleanIndex::printFileInfo(std::ostream& os) {
-	os << MSG_FILE_NAME_INFO << INVERTED_LISTS_FILE_NAME << std::endl;
-	os << MSG_FILE_SIZE_INFO << FileUtilities::fileSize(INVERTED_LISTS_FILE_NAME);
+	return this->invertedListsFile.isLoaded();
 }
 
 BooleanIndex::~BooleanIndex() {

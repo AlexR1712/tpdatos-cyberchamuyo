@@ -7,7 +7,7 @@
 
 #include "../include/SignaturePortionIndex.h"
 
-SignaturePortionIndex::SignaturePortionIndex(void):sigFile("bin/SignatureFile.bin") {
+SignaturePortionIndex::SignaturePortionIndex(std::string file_name):sigFile(file_name.c_str()) {
 	vocabulary = NULL;
 }
 

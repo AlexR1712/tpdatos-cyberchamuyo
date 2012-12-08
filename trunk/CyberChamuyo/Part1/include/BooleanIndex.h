@@ -24,10 +24,6 @@
 #include "InvertedListFile.h"
 #include "ListaInvertida.h"
 
-#ifndef	INVERTED_LISTS_FILE_NAME
-#define INVERTED_LISTS_FILE_NAME "bin/invertedLists.bin"
-#endif
-
 #ifndef MSG_FILE_SIZE_INFO
 #define MSG_FILE_SIZE_INFO "size : "
 #endif
@@ -39,9 +35,8 @@
 class BooleanIndex {
 private:
 	invertedList::InvertedListFile invertedListsFile;
-	bool valid;
 public:
-	BooleanIndex();
+	BooleanIndex(std::string file_name);
 	void eraseTermInDoc(std::string term, unsigned int docId, IndiceArbol* vocabulary);
 	void addDocToTerm(std::string term, unsigned int docIds, IndiceArbol* vocabulary);
 	void insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, unsigned int totalTerms );
