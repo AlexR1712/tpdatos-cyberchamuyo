@@ -22,7 +22,7 @@ bool SignatureFile::insertarFirma(Signature* firma, unsigned int idTerm) {
 	RegistroFirma* reg = new RegistroFirma(firma);
 	bl.addRegistro(reg);
 	firma->setClaveDato(idTerm);
-	if (this->archSig.Escribir(&bl, firma->getClaveDato() - 1) != RES_OK)
+	if (this->archSig.Escribir(&bl, firma->getClaveDato()) != RES_OK)
 		return false;
 	else return true;
 }
