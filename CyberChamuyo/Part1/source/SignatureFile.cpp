@@ -22,7 +22,7 @@ bool SignatureFile::insertarFirma(Signature* firma, unsigned int idTerm) {
 	RegistroFirma* reg = new RegistroFirma(firma);
 	bl.addRegistro(reg);
 	firma->setClaveDato(idTerm);
-	if (this->archSig.Escribir(&bl, firma->getClaveDato() - 1) != RES_OK)
+	if (this->archSig.Escribir(&bl, firma->getClaveDato()) != RES_OK)
 		return false;
 	else return true;
 }
@@ -84,15 +84,14 @@ std::ostream& operator<<(std::ostream& oss, SignatureFile &sigFile) {
 }
 
 void SignatureFile::getListaFrases(unsigned int nTermino, listaFrases& lista) {
-	nTermino--;
 	BloqueFirma bl(this->archSig.getTamanoBloque());
-	if (this->archSig.Leer(nTermino, &bl) == RES_OK) {
+	if (this->archSig.Leer(nTermino - 1, &bl) == RES_OK) {
 		bl.obtenerListaFrases(lista);
 	}
 }
 
 bool SignatureFile::inicializar(unsigned int N) {
-	for (unsigned int i = 1; i < N + 1; ++i) {
+	for (unsigned int i = 0; i < N; ++i) {
 		BloqueFirma* bl = new BloqueFirma(this->archSig.getTamanoBloque());
 		Signature* firma = new Signature;
 		RegistroFirma* reg = new RegistroFirma(firma);

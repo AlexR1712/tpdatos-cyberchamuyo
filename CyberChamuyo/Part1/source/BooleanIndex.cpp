@@ -7,7 +7,6 @@
 
 #include "../include/BooleanIndex.h"
 
-#define MAX_TERM_SIZE 20
 
 BooleanIndex::BooleanIndex(std::string file_name) : invertedListsFile(file_name.c_str()) {
 }
@@ -115,6 +114,11 @@ bool BooleanIndex::isLoaded() {
 }
 
 BooleanIndex::~BooleanIndex() {
+}
+
+void BooleanIndex::printFileInfo(std::ostream& os) {
+	os << MSG_FILE_NAME_INFO << INVERTED_LISTS_FILE_NAME << std::endl;
+	os << MSG_FILE_SIZE_INFO << FileUtilities::fileSize(INVERTED_LISTS_FILE_NAME);
 }
 
 std::ostream& operator<<(std::ostream& oss, BooleanIndex &booleanIndex) {

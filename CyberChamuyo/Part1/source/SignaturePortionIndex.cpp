@@ -26,20 +26,15 @@ void SignaturePortionIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRec
 	while(!ocurrenceFile.endOfFile()) {
 		FixedLengthTRecord termRecord = T->getRecord(ocurrenceRecord.getTermId());
 		std::string term = termRecord.getTerm();
-		std::string termSearch = "mundo";
-		if (term == termSearch)
-			std::cout << "hola";
 		unsigned int previousTerm = ocurrenceRecord.getTermId();
 		Signature::Signature* firma = new Signature::Signature;
 		while(ocurrenceRecord.getTermId() == previousTerm) {
 			unsigned int docId = ocurrenceRecord.getDocId();
-			/*if (docId == 69)
-				std::cout << "hola";*/
 			firma->setBit(docId);
 			ocurrenceRecord = ocurrenceFile.getNextRecord();
 		}
 		if(!ocurrenceFile.endOfFile())
-			this->sigFile.insertarFirma(firma, previousTerm + 1);
+			this->sigFile.insertarFirma(firma, previousTerm);
 	}
 }
 
@@ -55,17 +50,48 @@ std::list<unsigned int> SignaturePortionIndex::search(std::string term, IndiceAr
 	return res;
 }
 
+void SignaturePortionIndex::addTerm(unsigned int termId, unsigned int docId) {
+	Signature::Signature* sign = new Signature::Signature(termId);
+	sign->setBit(docId);
+	this->sigFile.insertarFirma(sign, termId - 1);
+}
+
+/*
 void SignaturePortionIndex::addTerm(unsigned int idTerm, unsigned int docId) {
 	this->sigFile.insertarTermino(idTerm);
 	Signature::Signature* firma = new Signature::Signature;
 	firma->setBit(docId);
 	this->sigFile.insertarFirma(firma, idTerm);
-}
-
+}*/
+/*
 void SignaturePortionIndex::addDocToTerm(std::string term, unsigned int docId, IndiceArbol* vocabulary) {
 	RegistroArbol reg(vocabulary->textSearch(term));
 	unsigned int termId = reg.getTermId();
 	this->sigFile.insertarFrase(docId, termId);
+}*/
+
+void SignaturePortionIndex::addDocToTerm(std::string term, unsigned int docId,IndiceArbol* vocabulary) {
+	RegistroArbol reg(vocabulary->textSearch(term));
+	Signature::Signature* sign = new Signature::Signature();
+	//std::list<unsigned int> list;
+	//this->sigFile.getListaFrases(reg.getTermId(), list);
+	//std::list<unsigned int>::iterator it;
+	//for(it = list.begin(); it != list.end(); ++it) {
+	//	sign->setBit(*it);
+	//}
+	//sign->setBit(docId);
+	this->sigFile.insertarFrase(docId, reg.getTermId());
+	//this->sigFile.insertarFirma(sign, reg.getTermId() - 1);
+}
+
+
+void SignaturePortionIndex::eraseTermInDoc(std::string term, unsigned int docId, IndiceArbol* vocabulary) {
+	RegistroArbol reg(vocabulary->textSearch(term));
+	Signature::Signature* sign = new Signature::Signature;
+	//std::list<unsigned int> docs;
+	//this->sigFile.getListaFrases(reg.getTermId(), docs);
+	//std::list<unsigned int>::iterator it;
+	sigFile.borrarFrase(docId, reg.getTermId());
 }
 
 std::ostream& operator<<(std::ostream& oss, SignaturePortionIndex &sigPortionIndex) {
