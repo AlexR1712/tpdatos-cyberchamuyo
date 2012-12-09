@@ -18,9 +18,9 @@ void BooleanIndex::load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, 
 	while(!ocurrenceFile.endOfFile()) {
 		FixedLengthTRecord termRecord = T->getRecord(ocurrenceRecord.getTermId());
 		std::string term = termRecord.getTerm();
-		std::string termSearch = "mundo";
-		if (term == termSearch)
-			std::cout << "hola";
+//		std::string termSearch = "mundo";
+//		if (term == termSearch)
+//			std::cout << "hola";
 		unsigned int inv_list_id;
 		unsigned int previousTerm = ocurrenceRecord.getTermId();
 		invertedList::ListaInvertida* inv_list = new invertedList::ListaInvertida;
@@ -54,6 +54,22 @@ void BooleanIndex::addDocToTerm(std::string term, unsigned int docId, IndiceArbo
 	invertedListsFile.actualizarLista(inv_list, listId);
 }
 
+std::list<unsigned int> BooleanIndex::quitarDuplicados(std::list<unsigned int>& list) {
+       std::list<unsigned int>::iterator it;
+       std::list<unsigned int>::iterator it2;
+       std::list<unsigned int> ins;
+       for(it = list.begin(); it != list.end(); ++it) {
+               bool enc = false;
+               for(it2 = ins.begin(); it2 != ins.end(); ++it2) {
+                       if(*it == *it2)
+                               enc = true;
+               }
+               if(!enc)
+                       ins.push_back(*it);
+               }
+       return ins;
+}
+
 std::list<unsigned int> BooleanIndex::search(std::string term, IndiceArbol* vocabulary) {
 	RegistroArbol reg(vocabulary->textSearch(term));
 	std::list<unsigned int> res;
@@ -65,7 +81,7 @@ std::list<unsigned int> BooleanIndex::search(std::string term, IndiceArbol* voca
 	invertedList::ListaInvertida* inv_list = new invertedList::ListaInvertida;
 	inv_list = this->invertedListsFile.getLista(listId);
 	res = inv_list->getParticion();
-	return res;
+	return this->quitarDuplicados(res);
 }
 
 void erasePhrase(Phrase frase) {
@@ -116,10 +132,10 @@ bool BooleanIndex::isLoaded() {
 BooleanIndex::~BooleanIndex() {
 }
 
-void BooleanIndex::printFileInfo(std::ostream& os) {
-	os << MSG_FILE_NAME_INFO << INVERTED_LISTS_FILE_NAME << std::endl;
-	os << MSG_FILE_SIZE_INFO << FileUtilities::fileSize(INVERTED_LISTS_FILE_NAME);
-}
+//void BooleanIndex::printFileInfo(std::ostream& os) {
+//	os << MSG_FILE_NAME_INFO << INVERTED_LISTS_FILE_NAME << std::endl;
+//	os << MSG_FILE_SIZE_INFO << FileUtilities::fileSize(INVERTED_LISTS_FILE_NAME);
+//}
 
 std::ostream& operator<<(std::ostream& oss, BooleanIndex &booleanIndex) {
 	oss << booleanIndex.invertedListsFile;

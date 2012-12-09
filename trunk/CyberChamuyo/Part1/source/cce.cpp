@@ -1,4 +1,4 @@
-#include "../include/statisticsManager.h"
+#include "../include/cce.h"
 #include "../include/propertiesLoader.h"
 #include "../include/binaryDictionaryRecord.h"
 #include "../include/textRecord.h"
@@ -17,7 +17,7 @@
 #include <ctime>
 #include <chrono>
 
-StatisticsManager::StatisticsManager() {
+CCE::CCE() {
 	if (this->checkDirectoryStructure()) {
 		PropertiesLoader propertiesLoader(CONFIG_FILE_PATH);
 
@@ -39,83 +39,83 @@ StatisticsManager::StatisticsManager() {
 	}
 }
 
-std::string StatisticsManager::getInputDictionaryFilePath() const {
+std::string CCE::getInputDictionaryFilePath() const {
 	return this->inputDictionaryFilePath;
 }
 
-void StatisticsManager::setInputDictionaryFilePath(std::string inputDictionaryFilePath) {
+void CCE::setInputDictionaryFilePath(std::string inputDictionaryFilePath) {
 	this->inputDictionaryFilePath = inputDictionaryFilePath;
 }
 
-std::string StatisticsManager::getInputMemorableQuotesFilePath() const {
+std::string CCE::getInputMemorableQuotesFilePath() const {
 	return this->inputMemorableQuotesFilePath;
 }
 
-void StatisticsManager::setInputMemorableQuotesFilePath(std::string inputMemorableQuotesFilePath) {
+void CCE::setInputMemorableQuotesFilePath(std::string inputMemorableQuotesFilePath) {
 	this->inputMemorableQuotesFilePath = inputMemorableQuotesFilePath;
 }
 
-std::string StatisticsManager::getStopWordsFilePath() const {
+std::string CCE::getStopWordsFilePath() const {
 	return this->stopWordsFilePath;
 }
 
-void StatisticsManager::setStopWordsFilePath(std::string stopWordsFilePath) {
+void CCE::setStopWordsFilePath(std::string stopWordsFilePath) {
 	this->stopWordsFilePath = stopWordsFilePath;
 }
 
-unsigned int StatisticsManager::getNumberOfWords() const {
+unsigned int CCE::getNumberOfWords() const {
 	return this->numberOfWords;
 }
 
-void StatisticsManager::setNumberOfWords(unsigned int numberOfWords) {
+void CCE::setNumberOfWords(unsigned int numberOfWords) {
 	this->numberOfWords = numberOfWords;
 }
 
-unsigned int StatisticsManager::getNumberOfQuotes() const {
+unsigned int CCE::getNumberOfQuotes() const {
 	return this->numberOfQuotes;
 }
 
-void StatisticsManager::setNumberOfQuotes(unsigned int numberOfQuotes) {
+void CCE::setNumberOfQuotes(unsigned int numberOfQuotes) {
 	this->numberOfQuotes = numberOfQuotes;
 }
 
-unsigned int StatisticsManager::getNumberOfFailures() const {
+unsigned int CCE::getNumberOfFailures() const {
 	return this->numberOfFailures;
 }
 
-void StatisticsManager::setNumberOfFailures(unsigned int numberOfFailures) {
+void CCE::setNumberOfFailures(unsigned int numberOfFailures) {
 	this->numberOfFailures = numberOfFailures;
 }
 
-std::set<std::string>& StatisticsManager::getStopWords() {
+std::set<std::string>& CCE::getStopWords() {
 	return this->stopWords;
 }
 
-IndiceArbol* StatisticsManager::getDictionary() {
+IndiceArbol* CCE::getDictionary() {
 	return this->dictionary;
 }
 
-Hash::DispersionEx* StatisticsManager::getMemorableQuotes() {
+Hash::DispersionEx* CCE::getMemorableQuotes() {
 	return this->memorableQuotes;
 }
 
-IndiceArbol* StatisticsManager::getNotFoundWords() {
+IndiceArbol* CCE::getNotFoundWords() {
 	return this->notFoundWords;
 }
 
-bool StatisticsManager::isSuccessfullInit() const	{
+bool CCE::isSuccessfullInit() const	{
     return this->successfullInit;
 }
 
-BooleanIndex* StatisticsManager::getBooleanIndex() const {
+BooleanIndex* CCE::getBooleanIndex() const {
 	return this->booleanIndex;
 }
 
-FixedLengthRecordSequentialFile<FixedLengthTRecord>* StatisticsManager::getT() const {
+FixedLengthRecordSequentialFile<FixedLengthTRecord>* CCE::getT() const {
 	return this->T;
 }
 
-void StatisticsManager::loadStatus() {
+void CCE::loadStatus() {
 	TextFile<TextRecord> statusFile;
 	std::string errorMessage;
 
@@ -148,7 +148,7 @@ void StatisticsManager::loadStatus() {
 	}
 }
 
-void StatisticsManager::loadStopWords() {
+void CCE::loadStopWords() {
 	TextFile<TextRecord> stopWordsFile;
 
 	stopWordsFile.open(this->getStopWordsFilePath());
@@ -161,7 +161,7 @@ void StatisticsManager::loadStopWords() {
 	}
 }
 
-void StatisticsManager::createDictionary() {
+void CCE::createDictionary() {
 	VariableLengthRecordSequentialFile<TextRecord> inputDictionaryFile;
 
 	inputDictionaryFile.open(this->getInputDictionaryFilePath());
@@ -183,7 +183,7 @@ void StatisticsManager::createDictionary() {
 	}
 }
 
-void StatisticsManager::loadMemorableQuotes() {
+void CCE::loadMemorableQuotes() {
 	TextFile<TextRecord> memorableQuotesFile;
 	std::string phrase;
 	WordNormalizer normalizer;
@@ -282,7 +282,7 @@ std::list<unsigned int> lAnd(std::vector<std::list<unsigned int> > searchResultL
 	return totalRes;
 }
 
-void StatisticsManager::printAverageWordsPerPhrase() {
+void CCE::printAverageWordsPerPhrase() {
 	float result;
 
 	if (this->getNumberOfQuotes() != 0)
@@ -295,7 +295,7 @@ void StatisticsManager::printAverageWordsPerPhrase() {
 			  << std::endl;
 }
 
-void StatisticsManager::printAverageFailures() {
+void CCE::printAverageFailures() {
 	float result;
 
 	if (this->getNumberOfWords() != 0)
@@ -308,7 +308,7 @@ void StatisticsManager::printAverageFailures() {
 			  << std::endl;
 }
 
-void StatisticsManager::printNotFoundWords() {
+void CCE::printNotFoundWords() {
 	BinaryDictionaryRecord<true> record;
 
 	std::cout << TEXT_NOT_FOUND_WORDS << std::endl;
@@ -322,7 +322,7 @@ void StatisticsManager::printNotFoundWords() {
 		std::cout << TEXT_NO_NOT_FOUND_WORDS << std::endl;
 }
 
-void StatisticsManager::printWordRanking(unsigned int rankingSize) {
+void CCE::printWordRanking(unsigned int rankingSize) {
 	VariableLengthRecordSequentialFile<WordRankingRecord> wordRankingFile;
 	WordRankingRecord record;
 	unsigned int i = 0;
@@ -344,7 +344,7 @@ void StatisticsManager::printWordRanking(unsigned int rankingSize) {
 	}
 }
 
-void StatisticsManager::erasePhrase(unsigned int idPhrase) {
+void CCE::erasePhrase(unsigned int idPhrase) {
 	WordNormalizer wordNormalizer;
 	std::vector<std::string> phraseWords;
 	std::string phrase;
@@ -355,10 +355,11 @@ void StatisticsManager::erasePhrase(unsigned int idPhrase) {
 		for (unsigned int i = 0; i < size; i++) {
 			phraseWords[i] = wordNormalizer.normalizeWord(phraseWords[i]);
 			if (this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
-				if (this->getBooleanIndex()->isLoaded())
+				if (this->getBooleanIndex()->isLoaded()) {
 					this->getBooleanIndex()->eraseTermInDoc(phraseWords[i], idPhrase, this->getDictionary());
-				this->sigPortionIndex->eraseTermInDoc(phraseWords[i], idPhrase, this->getDictionary());
-this->setNumberOfWords(this->getNumberOfWords() - 1);
+					this->sigPortionIndex->eraseTermInDoc(phraseWords[i], idPhrase, this->getDictionary());
+				}
+			this->setNumberOfWords(this->getNumberOfWords() - 1);
 			}
 		}
 		this->setNumberOfQuotes(this->getNumberOfQuotes() - 1);
@@ -368,7 +369,7 @@ this->setNumberOfWords(this->getNumberOfWords() - 1);
 	}
 }
 
-void StatisticsManager::addPhrase(std::string phrase) {
+void CCE::addPhrase(std::string phrase) {
 	WordNormalizer wordNormalizer;
 	std::vector<std::string> phraseWords;
 	unsigned int listId = 0;
@@ -382,23 +383,23 @@ void StatisticsManager::addPhrase(std::string phrase) {
 		if ( (this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) && (phraseWords[i].size() > 0) ) {
 			this->setNumberOfWords(this->getNumberOfWords() + 1);
 			unsigned int docId = this->getMemorableQuotes()->getLastId() + 1;		
-		if (!this->getDictionary()->find(phraseWords[i])) {
+			if (!this->getDictionary()->find(phraseWords[i])) {
 				this->setNumberOfFailures(this->getNumberOfFailures() + 1);
 				termId = this->getT()->getLastRecordPosition() + 1;
-				if (this->getBooleanIndex()->isLoaded())
+				if (this->getBooleanIndex()->isLoaded()) {
 					listId = this->getBooleanIndex()->addTerm(phraseWords[i], this->getMemorableQuotes()->getLastId() + 1);
-				//if (this->getSignatureIndex()->isLoaded())
 					this->sigPortionIndex->addTerm(termId, docId);
+				}
 				this->getDictionary()->insert(termId, phraseWords[i], listId);
 				FixedLengthTRecord tRecord(T_RECORD_SIZE);
 				tRecord.setTerm(phraseWords[i]);
 				tRecord.setId(termId);
 				this->getT()->putRecord(tRecord);
 			} else {
-				if (this->getBooleanIndex()->isLoaded())
+				if (this->getBooleanIndex()->isLoaded()) {
 					this->getBooleanIndex()->addDocToTerm(phraseWords[i],docId,this->getDictionary());
-				//if (this->getSignatureIndex()->isLoaded())
 					this->sigPortionIndex->addDocToTerm(phraseWords[i],docId,this->getDictionary());
+				}
 			}
 		}
 	}
@@ -410,7 +411,7 @@ void StatisticsManager::addPhrase(std::string phrase) {
 	this->getMemorableQuotes()->insert(phrase);
 }
 
-bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::string>& commandParams) {
+bool CCE::isValidCommand(std::string& command, std::vector<std::string>& commandParams) {
 	//TODO cambiar a un mapa de command params size
 	if ( ((command != COMMAND_PRINT_AVG_WORDS_PER_QUOTE) &&
 		  (command != COMMAND_PRINT_AVG_FAILURES) &&
@@ -419,10 +420,10 @@ bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::st
 		  (command != COMMAND_LOAD_DICTIONARY) &&
 		  (command != COMMAND_LOAD_INDEXES) &&
 		  (command != COMMAND_LOAD_MEMORABLE_QUOTES) &&
-		  (command != COMMAND_BOOLEAN_SEARCH) &&
-		  (command != COMMAND_SIGNATURE_SEARCH) &&
-		  (command != COMMAND_INDEX_BY_BOOLEAN) &&
-		  (command != COMMAND_INDEX_BY_SIGNATURE) &&
+		  (command != COMMAND_SEARCH) &&
+//		  (command != COMMAND_SIGNATURE_SEARCH) &&
+		  (command != COMMAND_LOAD_INDEXES) &&
+//		  (command != COMMAND_INDEX_BY_SIGNATURE) &&
 		  (command != COMMAND_ADD_PHRASE) &&
 		  (command != COMMAND_MODIFY_PHRASE) &&
 		  (command != COMMAND_ERASE_PHRASE) &&
@@ -431,20 +432,18 @@ bool StatisticsManager::isValidCommand(std::string& command, std::vector<std::st
 		   (command == COMMAND_LOAD_DICTIONARY) ||
 		   (command == COMMAND_ERASE_PHRASE) ||
 		   (command == COMMAND_ADD_PHRASE) ||
-		   (command == COMMAND_BOOLEAN_SEARCH) ||
+		   (command == COMMAND_SEARCH) ||
 		   (command == COMMAND_LOAD_MEMORABLE_QUOTES)) &&
 		  (commandParams.size() != 1)) ||
 		 ((command == COMMAND_MODIFY_PHRASE) &&
 		   (commandParams.size() != 2))  ) {
 		return false;
-		//	TODO agregar condicion para que COMMAND_BOOLEAN_SEARCH requiera 1 o mas params
-		//	y COMMAND_MODIFY_PHRASE requiera 2 o mas parametros
 	}
 
 	return true;
 }
 
-void StatisticsManager::saveStatus() {
+void CCE::saveStatus() {
 	TextFile<TextRecord> statusFile;
 	TextRecord statusRecord;
 
@@ -461,9 +460,13 @@ void StatisticsManager::saveStatus() {
 	statusFile.putRecord(statusRecord);
 }
 
-void StatisticsManager::printHelp() {
+void CCE::printHelp() {
 	std::cout 	<< std::endl
 				<< HELP_TITLE << std::endl
+				<< HELP_TEXT_LOAD_DICTIONARY << std::endl
+				<< std::endl
+				<< HELP_TEXT_LOAD_MEMORABLE_QUOTES << std::endl
+				<< std::endl
 				<< HELP_TEXT_AVG_WORDS_PER_QUOTE << std::endl
 				<< std::endl
 				<< HELP_TEXT_AVG_FAILURES << std::endl
@@ -472,17 +475,15 @@ void StatisticsManager::printHelp() {
 				<< std::endl
 				<< HELP_TEXT_WORD_RANKING << std::endl
 				<< std::endl
-				<< HELP_TEXT_LOAD_DICTIONARY << std::endl
+				<< HELP_TEXT_LOAD_INDEX << std::endl
 				<< std::endl
-				<< HELP_TEXT_LOAD_MEMORABLE_QUOTES << std::endl
+				<< HELP_TEXT_SEARCH << std::endl
 				<< std::endl
-				<< HELP_TEXT_SIGNATURE_SEARCH << std::endl
+				<< HELP_TEXT_ADD_PHRASE << std::endl
 				<< std::endl
-				<< HELP_TEXT_INDEX_BY_BOOLEAN << std::endl
+				<< HELP_TEXT_MODIFY_PHRASE << std::endl
 				<< std::endl
-				<< HELP_TEXT_INDEX_BY_SIGNATURE << std::endl
-				<< std::endl
-				<< HELP_TEXT_CALLHELP << std::endl
+				<< HELP_TEXT_ERASE_PHRASE << std::endl
 				<< std::endl
 				<< HELP_TEXT_EXIT <<std::endl
 				<< std::endl
@@ -492,7 +493,7 @@ void StatisticsManager::printHelp() {
 				<< std::endl;
 }
 
-bool StatisticsManager::validateDataStructureIntegrity(std::string& filesToLoad) {
+bool CCE::validateDataStructureIntegrity(std::string& filesToLoad) {
 	filesToLoad = "";
 	if (this->getInputDictionaryFilePath() == "") {
 		filesToLoad += TEXT_DICTIONARY;
@@ -507,7 +508,7 @@ bool StatisticsManager::validateDataStructureIntegrity(std::string& filesToLoad)
 	return (filesToLoad == "");
 }
 
-void StatisticsManager::processCommand(std::string& command, std::vector<std::string>& commandParams) {
+void CCE::processCommand(std::string& command, std::vector<std::string>& commandParams) {
 	if (this->isValidCommand(command,commandParams)) {
 		if (command == COMMAND_PRINT_AVG_WORDS_PER_QUOTE) {
 			this->printAverageWordsPerPhrase();
@@ -580,7 +581,6 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 		}
 
 		if (command == COMMAND_MODIFY_PHRASE) {
-			//TODO ARREGLAR!!!! SI MODIFICO UNA FRASE Y LA BUSCO POR VARIOS TERMINOS NO LA ENCUENTRA
 			std::string filesToLoad;
 
 			if (validateDataStructureIntegrity(filesToLoad)) {
@@ -588,8 +588,7 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 					std::vector<std::string> newPhraseTerms;
 
 					StringUtilities::splitString(commandParams[1],newPhraseTerms,' ');
-					this->modify(StringUtilities::stringToInt(commandParams[0]),newPhraseTerms);
-					//this->modify(StringUtilities::stringToInt(commandParams[0]), newPhraseTerms);
+						this->modify(StringUtilities::stringToInt(commandParams[0]),newPhraseTerms);
 				} else {
 					std::cout << "El id de la frase a modificar debe ser numerico y mayor a cero." << filesToLoad << std::endl;
 				}
@@ -608,7 +607,7 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 			}
 		}
 
-		if (command == COMMAND_BOOLEAN_SEARCH) {
+		if (command == COMMAND_SEARCH) {
 			std::chrono::time_point<std::chrono::high_resolution_clock> searchPreparationsStart;
 			std::chrono::time_point<std::chrono::high_resolution_clock> searchPreparationsEnd;
 			std::chrono::time_point<std::chrono::high_resolution_clock> booleansearchStart;
@@ -675,14 +674,14 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 			} else
 				std::cout << ERROR_COMMAND_SEARCH_PREREQUISITES << std::endl;
 		}
-
-		if (command == COMMAND_SIGNATURE_SEARCH) {
-			searchSignature(commandParams, std::cout);
-			/*if (this->getBooleanIndex()->isLoaded())
-				search(commandParams, std::cout);
-			else
-				std::cout << ERROR_COMMAND_SEARCH_PREREQUISITES << std::endl;*/
-		}
+//
+//		if (command == COMMAND_SIGNATURE_SEARCH) {
+//			searchSignature(commandParams, std::cout);
+//			/*if (this->getBooleanIndex()->isLoaded())
+//				search(commandParams, std::cout);
+//			else
+//				std::cout << ERROR_COMMAND_SEARCH_PREREQUISITES << std::endl;*/
+//		}
 
 		if (command == COMMAND_PRINT_HELP) {
 			this->printHelp();
@@ -718,7 +717,7 @@ std::string termsToString(std::vector<std::string> terms) {
 	return ret;
 }
 
-void StatisticsManager::modify(unsigned int phraseId, std::vector<std::string> newPhraseTerms) {
+void CCE::modify(unsigned int phraseId, std::vector<std::string> newPhraseTerms) {
 	std::string oldPhrase;
 	WordNormalizer wordNormalizer;
 	this->getMemorableQuotes()->getFrase(phraseId, oldPhrase);
@@ -750,29 +749,30 @@ void StatisticsManager::modify(unsigned int phraseId, std::vector<std::string> n
 				this->getT()->putRecord(tRecord);
 				if (this->getBooleanIndex()->isLoaded()) {
 					list_id = this->getBooleanIndex()->addTerm(termsToAdd[i], phraseId);
+					this->sigPortionIndex->addTerm(termId, phraseId);
 				}
-				this->sigPortionIndex->addTerm(termId, phraseId);
 				this->getDictionary()->insert(termId, termsToAdd[i], list_id);
 			} else {
 				if (this->getBooleanIndex()->isLoaded()) {
 					this->getBooleanIndex()->addDocToTerm(termsToAdd[i], phraseId, this->getDictionary());
+					this->sigPortionIndex->addDocToTerm(termsToAdd[i], phraseId, this->getDictionary());
 				}
-				this->sigPortionIndex->addDocToTerm(termsToAdd[i], phraseId, this->getDictionary());
 			}
 		}
 	}
 	if (this->getBooleanIndex()->isLoaded()) {
 		for(unsigned int i = 0; i < termsToRemove.size(); ++i) {
-			if(this->getStopWords().find(termsToRemove[i]) == this->getStopWords().end())
+			if(this->getStopWords().find(termsToRemove[i]) == this->getStopWords().end()) {
 				this->getBooleanIndex()->eraseTermInDoc(termsToRemove[i], phraseId, this->getDictionary());
-			this->sigPortionIndex->eraseTermInDoc(termsToRemove[i], phraseId, this->getDictionary());
+				this->sigPortionIndex->eraseTermInDoc(termsToRemove[i], phraseId, this->getDictionary());
+			}
 		}
 	}
 	getT()->close();
 	this->getMemorableQuotes()->modificar(phrase_str,"",phraseId);
 }
 
-void StatisticsManager::search(std::vector<std::string>& wordsToSearch, std::ostream& os) {
+void CCE::search(std::vector<std::string>& wordsToSearch, std::ostream& os) {
 	std::string word;
 	std::list<unsigned int> res;
 	std::vector<std::list<unsigned int> > res_lists;
@@ -800,7 +800,7 @@ void StatisticsManager::search(std::vector<std::string>& wordsToSearch, std::ost
 	}
 }
 
-void StatisticsManager::searchSignature(std::vector<std::string>& commandParams, std::ostream& os) {
+void CCE::searchSignature(std::vector<std::string>& commandParams, std::ostream& os) {
 	std::string word;
 	std::list<unsigned int> res;
 	std::vector<std::list<unsigned int> > res_lists;
@@ -824,12 +824,12 @@ void StatisticsManager::searchSignature(std::vector<std::string>& commandParams,
 			os << "\t\t" << *it << " - " << frase << std::endl;
 		}
 	} else {
-		os << "No hubo coincidencias para esta busqueda" << std::endl;
+		os << TEXT_NO_RESULTS_FOR_SEARCH << std::endl;
 	}
 }
 
 
-bool StatisticsManager::checkDirectoryStructure() {
+bool CCE::checkDirectoryStructure() {
 	if(!FileUtilities::directoryExists(CONFIG_DIRECTORY_PATH)) {
 		std::cout << ERROR_CONFIG_DIRECTORY_NOT_FOUND << std::endl;
 		return false;
@@ -844,25 +844,25 @@ bool StatisticsManager::checkDirectoryStructure() {
 	}
 }
 
-void StatisticsManager::clearDictionary() {
+void CCE::clearDictionary() {
 	delete this->getDictionary();
 	FileUtilities::deleteFile(DICTIONARY_INDEX_FILE_PATH);
 	this->dictionary = new IndiceArbol(DICTIONARY_INDEX_FILE_PATH);
 }
 
-void StatisticsManager::clearNotFoundWords() {
+void CCE::clearNotFoundWords() {
 	delete this->getNotFoundWords();
 	FileUtilities::deleteFile(NOT_FOUND_WORDS_INDEX_FILE_PATH);
 	this->notFoundWords = new IndiceArbol(NOT_FOUND_WORDS_INDEX_FILE_PATH);
 }
 
-void StatisticsManager::clearMemorableQuotes() {
+void CCE::clearMemorableQuotes() {
 	delete this->getMemorableQuotes();
 	FileUtilities::deleteFile(MEMORABLE_QUOTES_INDEX_FILE_PATH);
 	this->memorableQuotes = new Hash::DispersionEx(MEMORABLE_QUOTES_INDEX_FILE_PATH);
 }
 
-void StatisticsManager::clearIndex() {
+void CCE::clearIndex() {
 	delete this->getBooleanIndex();
 	delete this->sigPortionIndex;
 	FileUtilities::deleteFile(BOOLEAN_INDEX_FILE_NAME);
@@ -871,17 +871,17 @@ void StatisticsManager::clearIndex() {
 	this->sigPortionIndex = new SignaturePortionIndex(BITSLICE_INDEX_FILE_NAME);
 }
 
-void StatisticsManager::clearTFile() {
+void CCE::clearTFile() {
 	this->getT()->open(T_FILE_PATH,true);
 }
 
-void StatisticsManager::clearStatistics() {
+void CCE::clearStatistics() {
 	this->setNumberOfWords(0);
 	this->setNumberOfQuotes(0);
 	this->setNumberOfFailures(0);
 }
 
-void StatisticsManager::clearAll() {
+void CCE::clearAll() {
 	this->setInputDictionaryFilePath("");
 	this->setInputMemorableQuotesFilePath("");
 	this->clearStatistics();
@@ -892,7 +892,7 @@ void StatisticsManager::clearAll() {
 	this->clearIndex();
 }
 
-std::vector<std::string> StatisticsManager::tokenizePhrase(std::string phrase) {
+std::vector<std::string> CCE::tokenizePhrase(std::string phrase) {
 	std::vector<std::string> phraseWords;
 	std::vector<std::string> ret;
 	WordNormalizer normalizer;
@@ -908,7 +908,7 @@ std::vector<std::string> StatisticsManager::tokenizePhrase(std::string phrase) {
 	return ret;
 }
 
-StatisticsManager::~StatisticsManager() {
+CCE::~CCE() {
 	this->saveStatus();
 	delete this->getNotFoundWords();
 	delete this->getDictionary();

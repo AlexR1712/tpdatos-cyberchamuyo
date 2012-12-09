@@ -1,4 +1,4 @@
-Anonimo		Arbil Arbil arbil arbil perro, y por pan, si se lo dan.
+Anonimo		Por dinero baila el perro, y por pan, si se lo dan.
 Anonimo		Una vez al año no hace daño.
 Anonimo		A palabras necias, oídos sordos.
 Anonimo		Cuando las barbas de tu vecino veas pelar, pon las tuyas a remojar.
@@ -9,7 +9,7 @@ Anonimo		La dicha de la fea, la hermosa la desea.
 Anonimo		Del dicho al hecho hay mucho trecho.
 Anonimo		De noche todos los gatos son pardos.
 Anonimo		Genio y figura hasta la sepultura.
-Anonimo		El que no llora, no mama ababol.
+Anonimo		El que no llora, no mama.
 Anonimo		Quien a hierro mata, a hierro muere.
 Anonimo		A río revuelto, ganancia de pescadores.
 Anonimo		Mal de muchos, consuelo de tontos.
@@ -19,8 +19,8 @@ Anonimo		El que la sigue la consigue.
 Anonimo		El infierno está lleno de buenas intenciones y el cielo de buenas obras.
 Anonimo		Quien no oye consejo, no llega a viejo.
 Aristóteles		La amistad es un alma que habita en dos cuerpos; un corazón que habita en dos almas.
-Aristóteles 		El ignorante afirma, el sabio duda y reflexiona.
-Aristóteles 		Algunos creen que para ser amigos basta con querer, como si para estar sano bastara con desear la salud.
+Aristóteles		El ignorante afirma, el sabio duda y reflexiona.
+Aristóteles		Algunos creen que para ser amigos basta con querer, como si para estar sano bastara con desear la salud.
 Aristóteles		La inteligencia consiste no sólo en el conocimiento, sino también en la destreza de aplicar los conocimientos en la práctica.
 Aristóteles		No basta decir solamente la verdad, mas conviene mostrar la causa de la falsedad.
 Aristóteles		La esperanza es el sueño del hombre despierto.
@@ -28,15 +28,16 @@ Aristóteles		Sólo hay felicidad donde hay virtud y esfuerzo serio, pues la vida 
 Aristóteles		El sabio no dice todo lo que piensa, pero siempre piensa todo lo que dice.
 Aristóteles		Considero más valiente al que conquista sus deseos que al que conquista a sus enemigos, ya que la victoria más dura es la victoria sobre uno mismo.
 Aristóteles		La ciencia es respecto del alma lo que es la luz respecto de los ojos, y si las raíces son amargas, los frutos son muy dulces.
-Bacon Sir	Francis	Si comienza uno con certezas, terminará con dudas; mas si se acepta empezar con dudas, llegará a terminar con certezas.
-Bacon Sir	Francis	El dinero es como el estiércol: no es bueno a no ser que se esparza.
-Bacon Sir	Francis	La amistad duplica las alegrías y divide las angustias por la mitad.
-Bacon Sir	Francis	Vengándose, uno se iguala a su enemigo; perdonándolo, se muestra superior a él.
-Bacon Sir	Francis	Vieja madera para arder, viejo vino para beber, viejos amigos en quien confiar, y viejos autores para leer.
-Bacon Sir	Francis	Algunos libros son probados, otros devorados, poquísimos masticados y digeridos.
-Bacon Sir	Francis	Si comienza uno con certezas, terminará con dudas; mas si se acepta empezar con dudas, llegará a terminar con certezas.
-Bacon Sir	Francis	La ocasión hay que crearla, no esperar a que llegue.
-Bacon Sir	Francis	Quien no quiere pensar es un fanático; quien no puede pensar, es un idiota; quien no osa pensar es un cobarde.
+Bacon	Sir Francis	Si comienza uno con certezas, terminará con dudas; mas si se acepta empezar con dudas, llegará a terminar con certezas.
+Bacon	Sir Francis	El dinero es como el estiércol: no es bueno a no ser que se esparza.
+Bacon	Sir Francis	La amistad duplica las alegrías y divide las angustias por la mitad.
+Bacon	Sir Francis	Vengándose, uno se iguala a su enemigo; perdonándolo, se muestra superior a él.
+Bacon	Sir Francis	Vieja madera para arder, viejo vino para beber, viejos amigos en quien confiar, y viejos autores para leer.
+Bacon	Sir Francis	Algunos libros son probados, otros devorados, poquísimos masticados y digeridos.
+Bacon	Sir Francis	El dinero es como el estiércol: no es bueno a no ser que se esparza.
+Bacon	Sir Francis	Si comienza uno con certezas, terminará con dudas; mas si se acepta empezar con dudas, llegará a terminar con certezas.
+Bacon	Sir Francis	La ocasión hay que crearla, no esperar a que llegue.
+Bacon	Sir Francis	Quien no quiere pensar es un fanático; quien no puede pensar, es un idiota; quien no osa pensar es un cobarde.
 Benavente	Jacinto	La peor verdad sólo cuesta un gran disgusto. La mejor mentira cuesta muchos disgustos pequeños y al final, un disgusto grande.
 Benavente	Jacinto	El que es celoso, no es nunca celoso por lo que ve; con lo que se imagina basta.
 Benavente	Jacinto	Si la pasión, si la locura no pasaran alguna vez por las almas... ¿Qué valdría la vida?
@@ -70,7 +71,7 @@ Casona	Alejandro	Si eres feliz, escóndete. No se puede andar cargado de joyas po
 Casona	Alejandro	Llorar, sí; pero llorar de pie, trabajando; vale más sembrar una cosecha que llorar por lo que se perdió.
 Casona	Alejandro	Hablar poco, pero mal, ya es mucho hablar.
 Castelao	Alfonso	El verdadero heroísmo está en transformar los deseos en realidades y las ideas en hechos.
-Castells	Manuel	[Internet] es mucho más que una tecnología. Es un medio de comunicación, de interacción y de organización social.
+Castells	Manuel	Internet es mucho más que una tecnología. Es un medio de comunicación, de interacción y de organización social.
 Castiglione	Baldassare	No hay maldad tan mala como la que nace de la semilla del bien.
 Chesterton	Gilbert	La aventura podrá ser loca, pero el aventurero ha de ser cuerdo.
 Chesterton	Gilbert	El optimista cree en los demás y el pesimista sólo cree en sí mismo.
@@ -113,7 +114,7 @@ Cicerón	Marco Tulio	Cuanto más altos estamos, más debemos bajarnos hacia nuestro
 Cicerón	Marco Tulio	No solamente es ciega la fortuna, sino que de ordinario vuelve también ciegos a aquellos a quienes acaricia.
 Cicerón	Marco Tulio	La naturaleza ha puesto en nuestras mentes un insaciable deseo de ver la verdad.
 Cicerón	Marco Tulio	No basta con alcanzar la sabiduría, es necesario saber utilizarla.
-Cicerón	Marco Tulio	No sé, si, con excepción de la sabiduría, los dioses inmortales han otorgado al hombre algo mejor que la amistad.
+Cicerón 	Marco Tulio	No sé, si, con excepción de la sabiduría, los dioses inmortales han otorgado al hombre algo mejor que la amistad.
 Confucio		Cada cosa tiene su belleza, pero no todos pueden verla.
 Confucio		¿Me preguntas por qué compro arroz y flores? Compro arroz para vivir y flores para tener algo por lo que vivir.
 Confucio		Elige un trabajo que te guste y no tendrás que trabajar ni un día de tu vida.
@@ -196,8 +197,8 @@ Frost	Robert Lee	El cerebro es un órgano maravilloso. Comienza a trabajar nada m
 Frost	Robert Lee	El mejor camino para salir es siempre a través.
 Frost	Robert Lee	A la pista de tenis se va a jugar al tenis, no a ver si las líneas son rectas.
 Frost	Robert Lee	Un poema comienza en deleite y termina en sabiduría.
-Fuentes	Carlos	Necesito, luego imagino.
-Fuentes	Carlos	No existe la libertad, sino la búsqueda de la libertad, y esa búsqueda es la que nos hace libres.
+Fuentes	Carlos Necesito, luego imagino.
+Fuentes	Carlos No existe la libertad, sino la búsqueda de la libertad, y esa búsqueda es la que nos hace libres.
 Fulbright	James William	No existe la libertad, sino la búsqueda de la libertad, y esa búsqueda es la que nos hace libres.
 Fulbright	James William	Para ser un hombre de estado, primero debes ser elegido.
 Fuller	Thomas	Los médicos como la cerveza, mejor cuanto más viejos.
@@ -274,7 +275,7 @@ Proverbio		Estaba furioso de no tener zapatos; entonces encontré a un hombre que
 Proverbio		El sabio puede sentarse en un hormiguero, pero sólo el necio se queda sentado en él.
 Proverbio		El corazón es un niño: espera lo que desea.
 Proverbio		Antes de poner en duda el buen juicio de tu mujer, fíjate con quien se ha casado ella.
-Proverbio		­Caer está permitido. Levantarse es obligatorio!.
+Proverbio		­¡Caer está permitido. Levantarse es obligatorio!.
 Proverbio americano	Coherencia	Si quieres miel no des puntapiés sobre la colmena.
 Proverbio árabe	Comprensión	Quien no comprende una mirada tampoco comprenderá una larga explicación.
 Proverbio árabe	Comprensión	Quien no comprende una mirada tampoco comprenderá una larga explicación
@@ -283,7 +284,7 @@ Proverbio árabe	Hablar	Si lo que vas a decir no es más bello que el silencio: no
 Proverbio árabe	Libros	Un libro es como un jardín que se lleva en el bolsillo.
 Proverbio árabe	Modestia	El hombre no puede saltar fuera de su sombra.
 Proverbio árabe	Presente	Lo pasado ha huido, lo que esperas está ausente, pero el presente es tuyo .
-Proverbio árabe			Castiga a los que tienen envidia haciéndoles bien.
+Proverbio árabe		Castiga a los que tienen envidia haciéndoles bien.
 Proverbio chino	Comprensión	Si te caes siete veces, levántate ocho
 Proverbio chino	Grandeza	Las grandes almas tienen voluntades; las débiles tan solo deseos
 Proverbio chino	Gratitud	Cuando bebas agua, recuerda la fuente.

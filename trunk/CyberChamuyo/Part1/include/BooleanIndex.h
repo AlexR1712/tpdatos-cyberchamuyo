@@ -24,10 +24,6 @@
 #include "InvertedListFile.h"
 #include "ListaInvertida.h"
 
-#ifndef	INVERTED_LISTS_FILE_NAME
-#define INVERTED_LISTS_FILE_NAME "bin/invertedLists.bin"
-#endif
-
 #ifndef MSG_FILE_SIZE_INFO
 #define MSG_FILE_SIZE_INFO "size : "
 #endif
@@ -50,6 +46,7 @@ public:
 	void erasePhrase(unsigned int phraseId);
 	bool isLoaded();
 	void printFileInfo(std::ostream& os);
+	std::list<unsigned int> quitarDuplicados(std::list<unsigned int>& list);
 	virtual ~BooleanIndex();
 	friend std::ostream& operator<<(std::ostream& oss, BooleanIndex &boooleanIndex);
 };

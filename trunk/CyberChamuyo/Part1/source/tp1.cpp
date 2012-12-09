@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include "../include/stringUtilities.h"
-#include "../include/statisticsManager.h"
+#include "../include/cce.h"
 #include "../include/fixedLengthRecordSequentialFile.h"
 #include "../include/fixedLengthTextRecord.h"
 #include "../include/InvertedList.h"
@@ -13,23 +13,23 @@ int main(int argc, char *argv[]){
 	std::string userInput;
 	std::string command;
 	std::vector<std::string>* commandParams = new std::vector<std::string>;
-	StatisticsManager statisticsManager;
+	CCE cce;
 
 	//cargaDiccionario inputFiles/dictionary2.txt
 	//cargaFrases inputFiles/frases-celebres.txt
 	//cargaIndices
-	//busquedaBooleano perro
+	//buscar perro
 
 	if
-	(statisticsManager.isSuccessfullInit()) {
-		statisticsManager.printHelp();
+	(cce.isSuccessfullInit()) {
+		cce.printHelp();
 		do {
 			std::cout << "Ingrese un comando: " << std::endl;
 			userInput = "";
 			std::getline(std::cin,userInput);
 			command = parseCommand(userInput,commandParams);
 			if (command != USER_COMMAND_EXIT) {
-				statisticsManager.processCommand(command,*commandParams);
+				cce.processCommand(command,*commandParams);
 			}
 		} while (command != USER_COMMAND_EXIT);
 

@@ -1,5 +1,5 @@
-﻿#ifndef STATISTICSMANAGER_H_
-#define STATISTICSMANAGER_H_
+﻿#ifndef CCE_H_
+#define CCE_H_
 
 #include <string>
 #include <set>
@@ -17,7 +17,7 @@
 #include "SignaturePortionIndex.h"
 
 #ifndef CONFIG_FILE_PATH
-#define CONFIG_FILE_PATH "config/statisticsManager.properties"
+#define CONFIG_FILE_PATH "config/cce.properties"
 #endif /*CONFIG_FILE_PATH*/
 
 #ifndef T_RECORD_SIZE
@@ -101,7 +101,7 @@
 #endif /*QUOTES_WORDS_SEPARATOR*/
 
 //Clase para obtener las estadísticas solicitadas en el TP.
-class StatisticsManager {
+class CCE {
 private:
 
 //	unsigned int numberOfErasedQuotes;
@@ -257,7 +257,7 @@ private:
 
 public:
 	//Constructor.
-	StatisticsManager();
+	CCE();
 
 	bool isSuccessfullInit() const;
 
@@ -268,7 +268,7 @@ public:
 	void printHelp();
 
 	//Destructor.
-	~StatisticsManager();
+	~CCE();
 };
 
-#endif /* STATISTICSMANAGER_H_ */
+#endif /* CCE_H_ */
