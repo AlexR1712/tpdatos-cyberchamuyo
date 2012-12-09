@@ -8,6 +8,10 @@
 #ifndef FIXEDLENGTHTRECORD_H_
 #define FIXEDLENGTHTRECORD_H_
 
+#ifndef MAX_TERM_SIZE
+#define MAX_TERM_SIZE 20
+#endif
+
 #include "record.h"
 #include "common.h"
 #include <string>

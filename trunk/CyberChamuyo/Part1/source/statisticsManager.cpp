@@ -357,7 +357,8 @@ void StatisticsManager::erasePhrase(unsigned int idPhrase) {
 			if (this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) {
 				if (this->getBooleanIndex()->isLoaded())
 					this->getBooleanIndex()->eraseTermInDoc(phraseWords[i], idPhrase, this->getDictionary());
-				this->setNumberOfWords(this->getNumberOfWords() - 1);
+				this->sigPortionIndex->eraseTermInDoc(phraseWords[i], idPhrase, this->getDictionary());
+this->setNumberOfWords(this->getNumberOfWords() - 1);
 			}
 		}
 		this->setNumberOfQuotes(this->getNumberOfQuotes() - 1);
@@ -380,13 +381,14 @@ void StatisticsManager::addPhrase(std::string phrase) {
 		phraseWords[i] = wordNormalizer.normalizeWord(phraseWords[i]);
 		if ( (this->getStopWords().find(phraseWords[i]) == this->getStopWords().end()) && (phraseWords[i].size() > 0) ) {
 			this->setNumberOfWords(this->getNumberOfWords() + 1);
-			if (!this->getDictionary()->find(phraseWords[i])) {
+			unsigned int docId = this->getMemorableQuotes()->getLastId() + 1;		
+		if (!this->getDictionary()->find(phraseWords[i])) {
 				this->setNumberOfFailures(this->getNumberOfFailures() + 1);
 				termId = this->getT()->getLastRecordPosition() + 1;
 				if (this->getBooleanIndex()->isLoaded())
 					listId = this->getBooleanIndex()->addTerm(phraseWords[i], this->getMemorableQuotes()->getLastId() + 1);
 				//if (this->getSignatureIndex()->isLoaded())
-					this->sigPortionIndex->addTerm(termId, this->getMemorableQuotes()->getLastId() + 1);
+					this->sigPortionIndex->addTerm(termId, docId);
 				this->getDictionary()->insert(termId, phraseWords[i], listId);
 				FixedLengthTRecord tRecord(T_RECORD_SIZE);
 				tRecord.setTerm(phraseWords[i]);
@@ -394,9 +396,9 @@ void StatisticsManager::addPhrase(std::string phrase) {
 				this->getT()->putRecord(tRecord);
 			} else {
 				if (this->getBooleanIndex()->isLoaded())
-					this->getBooleanIndex()->addDocToTerm(phraseWords[i],this->getMemorableQuotes()->getLastId() + 1,this->getDictionary());
+					this->getBooleanIndex()->addDocToTerm(phraseWords[i],docId,this->getDictionary());
 				//if (this->getSignatureIndex()->isLoaded())
-					this->sigPortionIndex->addDocToTerm(phraseWords[i],this->getMemorableQuotes()->getLastId() + 1,this->getDictionary());
+					this->sigPortionIndex->addDocToTerm(phraseWords[i],docId,this->getDictionary());
 			}
 		}
 	}
@@ -586,7 +588,8 @@ void StatisticsManager::processCommand(std::string& command, std::vector<std::st
 					std::vector<std::string> newPhraseTerms;
 
 					StringUtilities::splitString(commandParams[1],newPhraseTerms,' ');
-						this->modify(StringUtilities::stringToInt(commandParams[0]),newPhraseTerms);
+					this->modify(StringUtilities::stringToInt(commandParams[0]),newPhraseTerms);
+					//this->modify(StringUtilities::stringToInt(commandParams[0]), newPhraseTerms);
 				} else {
 					std::cout << "El id de la frase a modificar debe ser numerico y mayor a cero." << filesToLoad << std::endl;
 				}
@@ -748,17 +751,21 @@ void StatisticsManager::modify(unsigned int phraseId, std::vector<std::string> n
 				if (this->getBooleanIndex()->isLoaded()) {
 					list_id = this->getBooleanIndex()->addTerm(termsToAdd[i], phraseId);
 				}
+				this->sigPortionIndex->addTerm(termId, phraseId);
 				this->getDictionary()->insert(termId, termsToAdd[i], list_id);
-			} else
+			} else {
 				if (this->getBooleanIndex()->isLoaded()) {
 					this->getBooleanIndex()->addDocToTerm(termsToAdd[i], phraseId, this->getDictionary());
 				}
+				this->sigPortionIndex->addDocToTerm(termsToAdd[i], phraseId, this->getDictionary());
+			}
 		}
 	}
 	if (this->getBooleanIndex()->isLoaded()) {
 		for(unsigned int i = 0; i < termsToRemove.size(); ++i) {
 			if(this->getStopWords().find(termsToRemove[i]) == this->getStopWords().end())
 				this->getBooleanIndex()->eraseTermInDoc(termsToRemove[i], phraseId, this->getDictionary());
+			this->sigPortionIndex->eraseTermInDoc(termsToRemove[i], phraseId, this->getDictionary());
 		}
 	}
 	getT()->close();

@@ -15,6 +15,7 @@
 #include "OcurrenceFileRecord.h"
 #include "externalSorter.h"
 #include "variableLengthRecordSequentialFile.h"
+#include "Phrase.h"
 
 class SignaturePortionIndex {
 private:
@@ -41,13 +42,17 @@ private:
 
 public:
 	SignaturePortionIndex(std::string file_name);
+void insertPhrase(Phrase frase, IndiceArbol* vocabulary, FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, unsigned int totalTerms);
+	
 	virtual ~SignaturePortionIndex();
 	void load(FixedLengthRecordSequentialFile<FixedLengthTRecord>* T, std::string ocurrenceFilePath, IndiceArbol* vocabulary);
 	std::list<unsigned int> search(std::string term, IndiceArbol* vocabulary);
 	friend std::ostream& operator<<(std::ostream& oss, SignaturePortionIndex &sigPortionIndex);
-	void addTerm(unsigned int idTerm, unsigned int docId);
 	void addDocToTerm(std::string term, unsigned int docId, IndiceArbol* vocabulary);
-	/*
+	void addTerm(unsigned int termId, unsigned int docId);
+	void eraseTermInDoc(std::string term, unsigned int docId, IndiceArbol* vocabulary);
+		
+/*
 
 	//PARTE A
 
