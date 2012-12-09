@@ -28,36 +28,24 @@
 #endif /*COMMAND_LOAD_MEMORABLE_QUOTES*/
 
 #ifndef COMMAND_LOAD_INDEXES
-#define COMMAND_LOAD_INDEXES "cargaIndices"
+#define COMMAND_LOAD_INDEXES "indexar"
 #endif	/*COMMAND_LOAD_INDEXES*/
 
-#ifndef COMMAND_ERASE_PHRASE
-#define COMMAND_ERASE_PHRASE "borrarFrase"
-#endif
-
-#ifndef COMMAND_BOOLEAN_SEARCH
-#define COMMAND_BOOLEAN_SEARCH "busquedaBooleano"
-#endif
-
-#ifndef COMMAND_SIGNATURE_SEARCH
-#define COMMAND_SIGNATURE_SEARCH "busquedaXFirma"
-#endif
+#ifndef COMMAND_SEARCH
+#define COMMAND_SEARCH "buscar"
+#endif /*COMMAND_SEARCH*/
 
 #ifndef COMMAND_ADD_PHRASE
 #define COMMAND_ADD_PHRASE "agregarFrase"
-#endif
+#endif /*COMMAND_ADD_PHRASE*/
 
 #ifndef COMMAND_MODIFY_PHRASE
 #define COMMAND_MODIFY_PHRASE "modificarFrase"
-#endif
+#endif /*COMMAND_MODIFY_PHRASE*/
 
-#ifndef COMMAND_INDEX_BY_BOOLEAN
-#define COMMAND_INDEX_BY_BOOLEAN "indexarXBooleano"
-#endif
-
-#ifndef COMMAND_INDEX_BY_SIGNATURE
-#define COMMAND_INDEX_BY_SIGNATURE "indexarXFirma"
-#endif
+#ifndef COMMAND_ERASE_PHRASE
+#define COMMAND_ERASE_PHRASE "borrarFrase"
+#endif /*COMMAND_ERASE_PHRASE*/
 
 #ifndef COMMAND_PRINT_HELP
 #define COMMAND_PRINT_HELP "ayuda"
@@ -103,17 +91,25 @@
 #define HELP_TEXT_CALLHELP "	ayuda: reimprimir esta ayuda."
 #endif /*HELP_TEXT_CALLHELP*/
 
-#ifndef HELP_TEXT_SIGNATURE_SEARCH
-#define HELP_TEXT_SIGNATURE_SEARCH "	busquedaXFirma: Buscar frases por índice de porción de firmas."
-#endif /*HELP_TEXT_CALLHELP*/
+#ifndef HELP_TEXT_SEARCH
+#define HELP_TEXT_SEARCH "	buscar palabras: Buscar frases por índice de porción de firmas."
+#endif /*HELP_TEXT_SEARCH*/
 
-#ifndef HELP_TEXT_INDEX_BY_BOOLEAN
-#define HELP_TEXT_INDEX_BY_BOOLEAN "	indexarXBooleano: Indexa por índice booleano."
-#endif /*HELP_TEXT_CALLHELP*/
+#ifndef HELP_TEXT_LOAD_INDEX
+#define HELP_TEXT_LOAD_INDEX "	indexar: Crea los indices."
+#endif /*HELP_TEXT_LOAD_INDEX*/
 
-#ifndef HELP_TEXT_INDEX_BY_SIGNATURE
-#define HELP_TEXT_INDEX_BY_SIGNATURE "	indexarXFirma: Indexa por índice de porciones de firma."
-#endif /*HELP_TEXT_CALLHELP*/
+#ifndef HELP_TEXT_ADD_PHRASE
+#define HELP_TEXT_ADD_PHRASE "	agregarFrase frase: Agrega una frase."
+#endif /*HELP_TEXT_ADD_PHRASE*/
+
+#ifndef HELP_TEXT_MODIFY_PHRASE
+#define HELP_TEXT_MODIFY_PHRASE "	modificarFrase idFrase frase: Modifica una frase."
+#endif /*HELP_TEXT_MODIFY_PHRASE*/
+
+#ifndef HELP_TEXT_ERASE_PHRASE
+#define HELP_TEXT_ERASE_PHRASE "	borrarFrase idFrase: Elimina una frase."
+#endif /*HELP_TEXT_ERASE_PHRASE*/
 
 #ifndef HELP_TEXT_EXIT
 #define HELP_TEXT_EXIT "	salir: abandonar la aplicación."
