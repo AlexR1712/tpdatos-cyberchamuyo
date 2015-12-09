@@ -1,0 +1,1 @@
+La idea del Trabajo Práctico es ayudar a nuestro emprendedor, que desconoce las técnicas disponibles para el procesamiento e indexación de información, a desarrollar el corazón del Asistente: el Motor de Sugerencias de Frases basadas en el contexto (CCE).
